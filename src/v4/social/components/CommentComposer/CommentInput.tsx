@@ -205,6 +205,7 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
         }}
       >
         <div
+          data-qa-anchor={accessibilityId}
           className={styles.editorContainer}
           style={
             {
