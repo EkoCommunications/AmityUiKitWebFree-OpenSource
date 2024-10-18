@@ -47,4 +47,25 @@ export {
   CommunityProfilePage as AmityCommunityProfilePage,
 } from '~/v4/social/pages';
 
+export {
+  MyCommunities as AmityMyCommunitiesComponent,
+  EmptyNewsfeed as AmityEmptyNewsFeedComponent,
+  GlobalFeed as AmityGlobalFeedComponent,
+  PostContent as AmityPostContentComponent,
+  TopSearchBar as AmityTopSearchBarComponent,
+  Newsfeed as AmityNewsFeedComponent,
+  CommunitySearchResult as AmityCommunitySearchResultComponent,
+  UserSearchResult as AmityUserSearchResultComponent,
+  DetailedMediaAttachment as AmityDetailedMediaAttachmentComponent,
+  MediaAttachment as AmityMediaAttachmentComponent,
+  CreatePostMenu as AmityCreatePostMenuComponent,
+  ReactionList as AmityReactionListComponent,
+  TopNavigation as AmitySocialHomeTopNavigationComponent,
+  CommentTray as AmityCommentTrayComponent,
+  StoryTab as AmityStoryTabComponent,
+  CommunityHeader as AmityCommunityHeaderComponent,
+  CommunityFeed as AmityCommunityFeedComponent,
+  CommunityPinnedPost as AmityCommunityPinnedPostComponent,
+} from '~/v4/social/components/';
+
 export { HomePageTab as AmitySocialHomePageTab } from '~/v4/social/pages/SocialHomePage';
