@@ -33,6 +33,7 @@ export function MentionItem({
       key={option.key}
       tabIndex={-1}
       data-is-selected={isSelected}
+      data-qa-ancgor={`${pageId}/${componentId}/mention_item`}
       className={styles.userMentionItem__item}
       ref={option.setRefElement}
       role="option"

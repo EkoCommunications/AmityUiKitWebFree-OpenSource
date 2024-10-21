@@ -348,6 +348,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
             } as React.CSSProperties
           }
           className={styles.mentionTextInput_item}
+          data-qa-anchor={`${pageId}/mention_text_input_options`}
         />
       </form>
       <div ref={drawerRef}></div>
