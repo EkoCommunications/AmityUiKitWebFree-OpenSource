@@ -300,7 +300,6 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
           <CommunityDisplayName pageId={pageId} community={community} />
           <CreateNewPostButton
             pageId={pageId}
-            onSubmit={handleSubmit(onSubmit)}
             isValid={textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0}
           />
         </div>

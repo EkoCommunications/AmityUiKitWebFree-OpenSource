@@ -7,7 +7,7 @@ interface CreateNewPostButtonProps {
   pageId: string;
   componentId?: string;
   isValid: boolean;
-  onSubmit: () => void;
+  onSubmit?: () => void;
 }
 
 export function CreateNewPostButton({
