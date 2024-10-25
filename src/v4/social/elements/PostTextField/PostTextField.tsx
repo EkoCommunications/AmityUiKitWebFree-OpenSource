@@ -211,6 +211,8 @@ export const PostTextField = ({
                   {options.map((option, i: number) => {
                     return (
                       <MentionItem
+                        pageId={pageId}
+                        componentId={componentId}
                         isSelected={selectedIndex === i}
                         onClick={() => {
                           setHighlightedIndex(i);

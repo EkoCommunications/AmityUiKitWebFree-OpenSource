@@ -55,6 +55,7 @@ export const Permissions = Object.freeze({
   EditCommunityCategoryPermission: 'EDIT_COMMUNITY_CATEGORY',
   DeleteCommunityCategoryPermission: 'DELETE_COMMUNITY_CATEGORY',
   ManageStoryPermission: 'MANAGE_COMMUNITY_STORY',
+  CreatePivillegedPostPermission: 'CREATE_PRIVILEGED_POST',
 });
 
 export const MAXIMUM_MENTIONEES = 30;
