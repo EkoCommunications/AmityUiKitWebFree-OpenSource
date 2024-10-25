@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { SubscriptionLevels } from '@amityco/ts-sdk';
 import { FormattedMessage } from 'react-intl';
 import CommunityCreatedModal from '~/social/components/CommunityCreatedModal';
 
@@ -11,12 +10,12 @@ import MediaGallery from '~/social/components/MediaGallery';
 import CommunityInfo from '~/social/components/CommunityInfo';
 import CommunityMembers from '~/social/components/CommunityMembers';
 import FeedHeaderTabs from '~/social/components/FeedHeaderTabs';
+
 import { CommunityFeedTabs } from './constants';
 import { getTabs } from './utils';
 import { DeclineBanner, Wrapper } from './styles';
-import useCommunityPermission from '~/social/hooks/useCommunityPermission';
-import useCommunitySubscription from '~/social/hooks/useCommunitySubscription';
 
+import useCommunityPermission from '~/social/hooks/useCommunityPermission';
 import usePostsCollection from '~/social/hooks/collections/usePostsCollection';
 
 import {
@@ -27,7 +26,6 @@ import {
   StyledCommunitySideMenu,
 } from '../NewsFeed/styles';
 
-import { useNavigation } from '~/social/providers/NavigationProvider';
 import { useGetActiveStoriesByTarget } from '~/v4/social/hooks/useGetActiveStories';
 
 interface CommunityFeedProps {
@@ -38,19 +36,9 @@ interface CommunityFeedProps {
 }
 
 const CommunityFeed = ({ communityId, isNewCommunity, isOpen, toggleOpen }: CommunityFeedProps) => {
-  const { goToDraftStoryPage } = useNavigation();
-  const { stories } = useGetActiveStoriesByTarget({
-    targetId: communityId,
-    targetType: 'community',
-    options: {
-      orderBy: 'asc',
-      sortBy: 'createdAt',
-    },
-  });
-
   const community = useCommunity(communityId);
 
-  const { canReview } = useCommunityPermission({ community });
+  const { canReview, canCreatePost } = useCommunityPermission({ community });
 
   const { posts } = usePostsCollection({
     targetId: communityId,
@@ -87,7 +75,7 @@ const CommunityFeed = ({ communityId, isNewCommunity, isOpen, toggleOpen }: Comm
           <FormattedMessage id="sidebar.community" />
         </HeadTitle>
       </MobileContainer>
-      <CommunityInfo communityId={communityId} stories={stories} />
+      <CommunityInfo communityId={communityId} />
       <FeedHeaderTabs
         data-qa-anchor="community-feed-header"
         tabs={tabs}
@@ -100,7 +88,7 @@ const CommunityFeed = ({ communityId, isNewCommunity, isOpen, toggleOpen }: Comm
           targetType={'community'}
           targetId={communityId}
           readonly={!isJoined}
-          showPostCreator={isJoined}
+          showPostCreator={isJoined && canCreatePost}
           feedType={'published'}
         />
       )}
