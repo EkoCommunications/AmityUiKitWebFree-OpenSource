@@ -17,8 +17,11 @@ import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import useSDK from '~/v4/core/hooks/useSDK';
 import { Mode } from '~/v4/social/pages/PostComposerPage/';
 import { Button } from '~/v4/core/natives/Button';
+import { canCreatePostCommunity } from '~/v4/social/utils';
 
 export function SelectPostTargetPage() {
+  const { client } = useSDK();
+
   const pageId = 'select_post_target_page';
   const { themeStyles } = useAmityPage({
     pageId,
@@ -40,31 +43,33 @@ export function SelectPostTargetPage() {
     node: intersectionNode,
   });
 
-  const renderCommunity = communities.map((community) => {
-    return (
-      <div
-        onClick={() => {
-          AmityPostTargetSelectionPage?.goToPostComposerPage?.({
-            targetId: community.communityId,
-            targetType: 'community',
-            mode: Mode.CREATE,
-            community: community,
-          });
-        }}
-        key={community.communityId}
-        className={styles.selectPostTargetPage__timeline}
-      >
-        <div className={styles.selectPostTargetPage__communityAvatar}>
-          <CommunityAvatar pageId={pageId} community={community} />
+  const renderCommunity = communities
+    .filter((community) => canCreatePostCommunity(client, community))
+    .map((community) => {
+      return (
+        <div
+          onClick={() => {
+            AmityPostTargetSelectionPage?.goToPostComposerPage?.({
+              targetId: community.communityId,
+              targetType: 'community',
+              mode: Mode.CREATE,
+              community: community,
+            });
+          }}
+          key={community.communityId}
+          className={styles.selectPostTargetPage__timeline}
+        >
+          <div className={styles.selectPostTargetPage__communityAvatar}>
+            <CommunityAvatar pageId={pageId} community={community} />
+          </div>
+          <CommunityDisplayName pageId={pageId} community={community} />
+          <div>
+            {community.isOfficial && <CommunityOfficialBadge />}
+            {!community.isPublic && <CommunityPrivateBadge />}
+          </div>
         </div>
-        <CommunityDisplayName pageId={pageId} community={community} />
-        <div>
-          {community.isOfficial && <CommunityOfficialBadge />}
-          {!community.isPublic && <CommunityPrivateBadge />}
-        </div>
-      </div>
-    );
-  });
+      );
+    });
 
   return (
     <div className={styles.selectPostTargetPage} style={themeStyles}>

@@ -9,10 +9,9 @@ import { useConfirmContext } from '~/core/providers/ConfirmProvider';
 
 interface CommunityInfoProps {
   communityId: string;
-  stories: (Amity.Story | undefined)[];
 }
 
-const CommunityInfo = ({ communityId, stories }: CommunityInfoProps) => {
+const CommunityInfo = ({ communityId }: CommunityInfoProps) => {
   const {
     community,
     communityCategories,
