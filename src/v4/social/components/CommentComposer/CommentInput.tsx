@@ -177,6 +177,9 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
         const root = $getRoot();
         root.clear();
       });
+      setTimeout(() => {
+        editorRef.current?.blur();
+      }, 500);
     };
 
     useImperativeHandle(ref, () => ({
@@ -202,7 +205,6 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
         }}
       >
         <div
-          data-qa-anchor={accessibilityId}
           className={styles.editorContainer}
           style={
             {
@@ -211,7 +213,12 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
           }
         >
           <RichTextPlugin
-            contentEditable={<ContentEditable className={styles.editorEditableContent} />}
+            contentEditable={
+              <ContentEditable
+                data-qa-anchor={accessibilityId}
+                className={styles.editorEditableContent}
+              />
+            }
             placeholder={
               placehoder ? <div className={styles.editorPlaceholder}>{placehoder}</div> : null
             }

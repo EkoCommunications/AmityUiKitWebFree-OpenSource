@@ -70,7 +70,7 @@ export const CommunityFeedStory = ({
   const dragEventTarget = useRef(new EventTarget());
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  const { stories } = useGetActiveStoriesByTarget({
+  const { stories: storiesData } = useGetActiveStoriesByTarget({
     targetId: communityId,
     targetType: 'community',
     options: {
@@ -78,6 +78,22 @@ export const CommunityFeedStory = ({
       sortBy: 'createdAt',
     },
   });
+
+  const stories = storiesData.reduce(
+    (acc: (Amity.Ad | Amity.Story)[], current: Amity.Ad | Amity.Story) => {
+      const isDuplicate = acc.find((item) => {
+        if (isStory(item) && isStory(current)) {
+          return item.storyId === current.storyId;
+        }
+        return false;
+      });
+      if (!isDuplicate) {
+        acc.push(current);
+      }
+      return acc;
+    },
+    [],
+  );
 
   const communityFeedRenderers = useMemo(
     () =>
@@ -115,7 +131,7 @@ export const CommunityFeedStory = ({
 
   const nextStory = () => {
     if (currentIndex === stories.length - 1) {
-      onBack();
+      onClose(communityId);
       return;
     }
     setCurrentIndex(currentIndex + 1);
@@ -214,7 +230,7 @@ export const CommunityFeedStory = ({
 
   const increaseIndex = () => {
     if (currentIndex === stories.length - 1) {
-      onBack();
+      onClose(communityId);
       return;
     }
     setCurrentIndex((prevIndex) => prevIndex + 1);
