@@ -5,6 +5,7 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 
 import styles from './ShareStoryButton.module.css';
 import { CommunityAvatar } from '~/v4/social/elements/CommunityAvatar';
+import { Button } from '~/v4/core/natives/Button';
 
 const ArrowRightIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
@@ -47,11 +48,10 @@ export const ShareStoryButton = ({
   if (isExcluded) return null;
 
   return (
-    <button
-      role="button"
+    <Button
       className={clsx(styles.shareStoryButton)}
       data-qa-anchor={accessibilityId}
-      onClick={onClick}
+      onPress={onClick}
       data-hideAvatar={config?.hide_avatar}
     >
       {!config?.hide_avatar && (
@@ -64,6 +64,6 @@ export const ShareStoryButton = ({
       )}
       <Typography.BodyBold>{config?.text || 'Share story'}</Typography.BodyBold>
       <ArrowRightIcon />
-    </button>
+    </Button>
   );
 };
