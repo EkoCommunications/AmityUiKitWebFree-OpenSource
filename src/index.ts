@@ -20,52 +20,22 @@ export { useSDK as useAmitySDK } from '~/core/hooks/useSDK';
 
 export { AmityUIKitManager } from '~/v4/core/AmityUIKitManager';
 
-export { ReactionList as AmityReactionList } from '~/v4/social/components/ReactionList';
+// v4 Export only components and pages related to Story feature
 
 import type { ReactionListProps } from '~/v4/social/components/ReactionList';
 export type { ReactionListProps as AmityReactionListProps };
 
-export { LiveChat as AmityLiveChatPage } from '~/v4/chat/pages/LiveChat';
-
-// v4 internal use only (Amity Console)
-export {
-  StoryPreview as AmityStoryPreview,
-  StoryPreviewThumbnail as AmityStoryPreviewThumbnail,
-} from './v4/social/internal-components/StoryPreview';
-
 // v4 Social
 export {
-  SocialHomePage as AmitySocialHomePage,
   AmityDraftStoryPage,
   ViewStoryPage as AmityViewStoryPage,
   StoryTargetSelectionPage as AmityStoryTargetSelectionPage,
-  PostDetailPage as AmityPostDetailPage,
-  SocialGlobalSearchPage as AmitySocialGlobalSearchPage,
-  MyCommunitiesSearchPage as AmityMyCommunitiesSearchPage,
-  SelectPostTargetPage as AmityPostTargetSelectionPage,
-  PostComposerPage as AmityPostComposerPage,
-  CommunityProfilePage as AmityCommunityProfilePage,
 } from '~/v4/social/pages';
 
 export {
-  MyCommunities as AmityMyCommunitiesComponent,
-  EmptyNewsfeed as AmityEmptyNewsFeedComponent,
-  GlobalFeed as AmityGlobalFeedComponent,
-  PostContent as AmityPostContentComponent,
-  TopSearchBar as AmityTopSearchBarComponent,
-  Newsfeed as AmityNewsFeedComponent,
-  CommunitySearchResult as AmityCommunitySearchResultComponent,
-  UserSearchResult as AmityUserSearchResultComponent,
-  DetailedMediaAttachment as AmityDetailedMediaAttachmentComponent,
-  MediaAttachment as AmityMediaAttachmentComponent,
-  CreatePostMenu as AmityCreatePostMenuComponent,
   ReactionList as AmityReactionListComponent,
-  TopNavigation as AmitySocialHomeTopNavigationComponent,
   CommentTray as AmityCommentTrayComponent,
   StoryTab as AmityStoryTabComponent,
-  CommunityHeader as AmityCommunityHeaderComponent,
-  CommunityFeed as AmityCommunityFeedComponent,
-  CommunityPinnedPost as AmityCommunityPinnedPostComponent,
 } from '~/v4/social/components/';
 
 export { HomePageTab as AmitySocialHomePageTab } from '~/v4/social/pages/SocialHomePage';
