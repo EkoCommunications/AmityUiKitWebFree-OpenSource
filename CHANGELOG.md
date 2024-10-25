@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 4.0.0-beta.17 (2024-10-25)
+
+
+### Features
+
+* ASC-26123 - filter only admin can post ([#680](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/680)) ([d47d6d7](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/d47d6d7474d3dd4a44ac3a526301f8a6b4848e25))
+
 ## 4.0.0-beta.16 (2024-10-25)
 
 
