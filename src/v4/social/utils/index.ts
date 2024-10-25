@@ -210,3 +210,22 @@ export function formatTimeAgo(dateString: string | Date | undefined) {
     return `${hours}h`;
   }
 }
+
+export function canCreatePostCommunity(
+  client: Amity.Client | null | undefined,
+  community: Amity.Community,
+) {
+  if (!client) {
+    return false;
+  }
+
+  const communityPermission = client
+    .hasPermission(Permissions.CreatePivillegedPostPermission)
+    .community(community.communityId);
+
+  if (communityPermission || community.postSetting !== 'ONLY_ADMIN_CAN_POST') {
+    return true;
+  }
+
+  return false;
+}
