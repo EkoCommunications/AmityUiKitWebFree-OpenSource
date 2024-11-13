@@ -19,7 +19,9 @@ const commonButtonStyles = ({ theme }: { theme: DefaultTheme }) => css<{ fullWid
   }
 `;
 
-export const DefaultButton = styled.button<{ fullWidth?: boolean }>`
+export const DefaultButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'fullWidth',
+})<{ fullWidth?: boolean }>`
   ${commonButtonStyles};
   background-color: #fff;
   border: 1px solid #e3e4e8;
@@ -32,7 +34,9 @@ export const DefaultButton = styled.button<{ fullWidth?: boolean }>`
   }
 `;
 
-export const PrimaryButton = styled.button<{ fullWidth?: boolean }>`
+export const PrimaryButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'fullWidth',
+})<{ fullWidth?: boolean }>`
   ${commonButtonStyles};
   border: none;
   background-color: ${({ theme }) => theme.palette.primary.main};
@@ -45,7 +49,9 @@ export const PrimaryButton = styled.button<{ fullWidth?: boolean }>`
   }
 `;
 
-export const SecondaryButton = styled.button<{ active?: boolean; fullWidth?: boolean }>`
+export const SecondaryButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'fullWidth',
+})<{ active?: boolean; fullWidth?: boolean }>`
   ${commonButtonStyles};
   color: ${({ theme }) => theme.palette.neutral.shade1};
   background-color: transparent;

@@ -49,7 +49,7 @@ const ChildrenContent = ({ contents }: { contents: Amity.Post[] }) => {
             return (
               <>
                 {items.map((poll) => (
-                  <PollContent key={dataType} pollId={poll.data.pollId} />
+                  <PollContent key={poll.data.pollId} pollId={poll.data.pollId} />
                 ))}
               </>
             );
