@@ -19,7 +19,9 @@ export const Name = styled.div`
   padding-right: 1ch;
 `;
 
-export const NameContainer = styled.div<{
+export const NameContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isTitle',
+})<{
   isActive?: boolean;
   isTitle?: boolean;
 }>`

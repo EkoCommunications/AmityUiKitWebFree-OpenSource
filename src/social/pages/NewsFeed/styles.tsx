@@ -32,7 +32,9 @@ export const MobileContainer = styled.div`
   }
 `;
 
-export const CommunitySideMenuOverlay = styled.div<{ isOpen: boolean }>`
+export const CommunitySideMenuOverlay = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isOpen',
+})<{ isOpen?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -48,7 +50,9 @@ export const CommunitySideMenuOverlay = styled.div<{ isOpen: boolean }>`
   cursor: pointer;
 `;
 
-export const StyledCommunitySideMenu = styled(CommunitySideMenu)<{ isOpen: boolean }>`
+export const StyledCommunitySideMenu = styled(CommunitySideMenu).withConfig({
+  shouldForwardProp: (prop) => prop !== 'isOpen',
+})<{ isOpen?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;

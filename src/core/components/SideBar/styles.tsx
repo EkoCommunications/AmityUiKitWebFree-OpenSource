@@ -19,7 +19,9 @@ export const MenuName = styled.div`
   white-space: normal;
 `;
 
-export const MenuTabContainer = styled.div<{ active?: boolean }>`
+export const MenuTabContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active?: boolean }>`
   flex-direction: column;
   display: flex;
   align-items: center;

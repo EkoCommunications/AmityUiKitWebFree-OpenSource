@@ -21,7 +21,9 @@ const ItemContainer = styled.div`
   overflow: hidden;
 `;
 
-const Cover = styled.div<{ backgroundImage?: string }>`
+const Cover = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'backgroundImage',
+})<{ backgroundImage?: string }>`
   padding-left: 100%;
 
   ${({ backgroundImage, theme }) => `

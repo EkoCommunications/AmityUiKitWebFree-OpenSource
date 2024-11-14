@@ -32,7 +32,9 @@ export const Container = styled.div`
   margin-bottom: 12px;
 `;
 
-export const Cover = styled.div<{ backgroundImage?: string }>`
+export const Cover = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'backgroundImage',
+})<{ backgroundImage?: string }>`
   padding-top: 56.25%;
   position: relative;
 
