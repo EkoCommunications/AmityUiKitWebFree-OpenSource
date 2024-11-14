@@ -65,7 +65,9 @@ function findColumnByWidth(width: number, columns: { [width: number]: number }) 
   return founded[1];
 }
 
-const StretchedList = styled.div<{ currentWidth: number; columns: { [width: number]: number } }>`
+const StretchedList = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'currentWidth' && prop !== 'columns',
+})<{ currentWidth: number; columns: { [width: number]: number } }>`
   margin-bottom: 0.188rem; // give the shadow a little space
   display: grid;
   grid-auto-flow: column;
