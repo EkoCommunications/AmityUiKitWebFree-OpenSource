@@ -26,6 +26,7 @@
   position: fixed;
   bottom: 1rem;
   right: 1rem;
+  z-index: 1;
 }
 
 .communityProfilePage__pullToRefresh {
@@ -43,4 +44,11 @@
   animation-duration: 1000ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
+}
+
+.communityProfile__divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--asc-color-base-shade4);
+  margin-bottom: 0.25rem;
 }

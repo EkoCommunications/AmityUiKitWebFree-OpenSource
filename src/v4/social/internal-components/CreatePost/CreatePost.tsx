@@ -1,8 +1,6 @@
 import React, { RefObject, useEffect, useRef, useState } from 'react';
 import styles from './CreatePost.module.css';
-import { PostRepository } from '@amityco/ts-sdk';
-import { useMutation } from '@tanstack/react-query';
-import { LexicalEditor } from 'lexical';
+import { CommunityPostSettings, FileType, PostRepository } from '@amityco/ts-sdk';
 import { useForm } from 'react-hook-form';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
@@ -28,6 +26,11 @@ import { DetailedMediaAttachment } from '~/v4/social/components/DetailedMediaAtt
 import { CloseButton } from '~/v4/social/elements/CloseButton/CloseButton';
 import { Notification } from '~/v4/core/components/Notification';
 import { Mentioned, Mentionees } from '~/v4/helpers/utils';
+import useCommunityModeratorsCollection from '~/v4/social/hooks/collections/useCommunityModeratorsCollection';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
+import { ERROR_RESPONSE } from '~/v4/social/constants/errorResponse';
+import { MAXIMUM_POST_CHARACTERS } from './constants';
+import { PageTypes, useNavigation } from '~/v4/core/providers/NavigationProvider';
 
 const useResizeObserver = ({ ref }: { ref: RefObject<HTMLDivElement> }) => {
   const [height, setHeight] = useState<number | undefined>(undefined);
@@ -71,6 +74,10 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   const drawerRef = useRef<HTMLDivElement>(null);
   const drawerContentRef = useRef<HTMLDivElement>(null);
   const { prependItem } = useGlobalFeedContext();
+  const { moderators } = useCommunityModeratorsCollection({ communityId: community?.communityId });
+  const notification = useNotifications();
+  const { info } = useConfirmContext();
+  const { onBack, prevPage } = useNavigation();
 
   const drawerHeight = useResizeObserver({ ref: drawerContentRef });
 
@@ -113,38 +120,83 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   const [videoThumbnail, setVideoThumbnail] = useState<
     { file: File; videoUrl: string; thumbnail: string | undefined }[]
   >([]);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const mentionRef = useRef<HTMLDivElement | null>(null);
 
-  const useMutateCreatePost = () =>
-    useMutation({
-      mutationFn: async (params: Parameters<typeof PostRepository.createPost>[0]) => {
-        return PostRepository.createPost(params);
-      },
-      onSuccess: (response) => {
-        AmityPostComposerPageBehavior?.goToSocialHomePage?.();
-        prependItem(response.data);
-      },
-      onError: (error) => {
-        console.error('Failed to create post', error);
-      },
-    });
+  async function createPost(createPostParams: Parameters<typeof PostRepository.createPost>[0]) {
+    try {
+      setIsCreating(true);
 
-  const { mutateAsync: mutateCreatePostAsync, isPending, isError } = useMutateCreatePost();
+      const postData = await PostRepository.createPost(createPostParams);
 
-  const onSubmit = () => {
-    const attachmentsImage = postImages.map((file) => ({
-      type: 'image',
-      fileId: file.fileId,
-    }));
-    const attachmentsVideo = postVideos.map((file) => ({
-      type: 'video',
-      fileId: file.fileId,
-    }));
+      const post = postData.data;
 
-    const attachments = [...attachmentsImage, ...attachmentsVideo];
+      setPostImages([]);
+      setPostVideos([]);
+      setIncomingImages([]);
+      setIncomingVideos([]);
 
-    mutateCreatePostAsync({
+      const isModerator =
+        (moderators || []).find((moderator) => moderator.userId === post.postedUserId) != null;
+
+      //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
+      if (
+        ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
+          .needApprovalOnPostCreation ||
+          community?.postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED) &&
+        !isModerator
+      ) {
+        info({
+          pageId,
+          content:
+            'Your post has been submitted to pending list. It will be review by community moderator.',
+          okText: 'OK',
+        });
+      } else {
+        prependItem(postData.data);
+      }
+    } catch (error: unknown) {
+      setIsError(true);
+      if (error instanceof Error) {
+        if (error.message === ERROR_RESPONSE.CONTAIN_BLOCKED_WORD) {
+          notification.error({
+            content: 'Text contain blocked word.',
+          });
+        }
+      }
+    } finally {
+      setIsCreating(false);
+      prevPage?.type == PageTypes.SelectPostTargetPage
+        ? AmityPostComposerPageBehavior?.goToSocialHomePage?.()
+        : onBack();
+    }
+  }
+
+  async function onCreatePost() {
+    const data: { text?: string } = {};
+    const attachments = [];
+
+    if (postImages.length) {
+      attachments.push(...postImages.map((i) => ({ fileId: i.fileId, type: FileType.IMAGE })));
+    }
+
+    if (postVideos.length) {
+      attachments.push(...postVideos.map((i) => ({ fileId: i.fileId, type: FileType.VIDEO })));
+    }
+
+    if (data.text?.length && data.text.length > MAXIMUM_POST_CHARACTERS) {
+      info({
+        pageId,
+        title: 'Unable to post',
+        content: 'You have reached maximum 50,000 characters in a post.',
+        okText: 'Done',
+      });
+      return;
+    }
+
+    const createPostParams: Parameters<typeof PostRepository.createPost>[0] = {
       targetId: targetId,
       targetType: targetType,
       data: { text: textValue.text },
@@ -152,7 +204,13 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       metadata: { mentioned: textValue.mentioned },
       mentionees: textValue.mentionees,
       attachments: attachments,
-    });
+    };
+
+    return createPost(createPostParams);
+  }
+
+  const onSubmit = () => {
+    onCreatePost();
   };
 
   const onChange = (val: { mentioned: Mentioned[]; mentionees: Mentionees; text: string }) => {
@@ -371,26 +429,6 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
               <Drawer.Portal container={drawerRef.current}>
                 <Drawer.Content className={styles.drawer__content}>
                   <div
-                    data-item-position={snap === HEIGHT_MEDIA_ATTACHMENT_MENU}
-                    className={styles.createPost__notiWrap}
-                  >
-                    {isPending && (
-                      <Notification
-                        content="Posting..."
-                        icon={<Spinner />}
-                        className={styles.createPost__status}
-                      />
-                    )}
-                    {isError && (
-                      <Notification
-                        content="Failed to create post"
-                        icon={<ExclamationCircle className={styles.createPost_infoIcon} />}
-                        className={styles.createPost__status}
-                        duration={3000}
-                      />
-                    )}
-                  </div>
-                  <div
                     ref={drawerContentRef}
                     className={styles.drawerContentContainer}
                     data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
@@ -420,7 +458,30 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
             </Drawer.Root>,
             drawerRef.current,
           )
-        : null}
+        : null}{' '}
+      {isCreating && (
+        <Notification
+          content="Posting..."
+          icon={<Spinner />}
+          className={styles.createPost__status}
+          isShowAttributes={
+            isShowDetailMediaAttachmentMenu
+              ? snap == HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2
+                ? '2'
+                : '3'
+              : '1'
+          }
+        />
+      )}
+      {isError && (
+        <Notification
+          content="Failed to create post"
+          icon={<ExclamationCircle className={styles.createPost_infoIcon} />}
+          className={styles.createPost__status}
+          data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
+          duration={3000}
+        />
+      )}
     </div>
   );
 }

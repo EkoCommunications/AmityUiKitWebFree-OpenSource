@@ -18,3 +18,4 @@ export * from './TopNavigation';
 export * from './CommunityHeader';
 export * from './CommunityFeed';
 export * from './CommunityPinnedPost';
+export * from './PendingPostContent';

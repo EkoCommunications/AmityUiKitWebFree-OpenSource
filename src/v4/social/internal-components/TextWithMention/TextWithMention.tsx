@@ -118,9 +118,9 @@ export const TextWithMention = ({
         className={styles.textWithMention__fullContent}
         data-hidden={isHidden}
       >
-        {editorState.root.children.map((paragraph) => {
+        {editorState.root.children.map((paragraph, index) => {
           return (
-            <p className={styles.textWithMention__paragraph}>
+            <p key={index} className={styles.textWithMention__paragraph}>
               {paragraph.children.length > 0 ? (
                 <Typography.Body
                   renderer={({ typoClassName }) => {

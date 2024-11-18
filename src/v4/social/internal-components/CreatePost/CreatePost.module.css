@@ -16,7 +16,7 @@
 .createPost__status {
   width: calc(100% - 2rem);
   position: absolute;
-  bottom: 0;
+  bottom: 15rem;
   left: 1rem;
   display: flex;
   justify-content: start;
@@ -30,20 +30,22 @@
   color: var(--asc-color-background-default);
 }
 
+.createPost__status[data-show-detail-media-attachment='1'] {
+  bottom: 6rem;
+}
+
+.createPost__status[data-show-detail-media-attachment='2'] {
+  bottom: 12rem;
+}
+
+.createPost__status[data-show-detail-media-attachment='3'] {
+  bottom: 15rem;
+}
+
 .createPost_infoIcon {
   width: 1.5rem;
   height: 1.5rem;
   fill: var(--asc-color-background-default);
-}
-
-.createPost__notiWrap {
-  position: relative;
-  bottom: 6rem;
-}
-
-.createPost__notiWrap[data-item-position='false'] {
-  position: relative;
-  bottom: 11rem;
 }
 
 .createPost__formMediaAttachment {
@@ -92,7 +94,7 @@
 }
 
 .drawerContentContainer[data-show-detail-media-attachment='false'] {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 2rem;
   bottom: -0.4rem;
   margin-top: 0.75rem;
 }
@@ -100,8 +102,7 @@
 .drawerContentContainer[data-show-detail-media-attachment='true'] {
   bottom: -0.9rem;
   margin-top: -1rem;
-  padding-bottom: 2rem;
-  padding-top: 0.75rem;
+  padding: 0.75rem 1rem 2rem;
 }
 
 .mentionTextInput_item::-webkit-scrollbar {

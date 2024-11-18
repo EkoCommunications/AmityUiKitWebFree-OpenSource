@@ -1,0 +1,13 @@
+.postAcceptButton__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--asc-color-primary-default);
+  padding: 0.62rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.postAcceptButton__text {
+  color: var(--asc-color-white);
+}

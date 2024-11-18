@@ -14,7 +14,7 @@ const CreatePostButtonSvg = (props: React.SVGProps<SVGSVGElement>) => (
 
 interface CreatePostButtonProps {
   pageId?: string;
-  componentId: string;
+  componentId?: string;
   defaultClassName?: string;
   onClick?: () => void;
 }

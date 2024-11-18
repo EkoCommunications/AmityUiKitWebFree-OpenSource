@@ -47,7 +47,7 @@ export const CommunityDescription: React.FC<CommunityDescriptionProps> = ({
         ref={descriptionRef}
         className={`${styles.description} ${isExpanded ? styles.expanded : ''}`}
       >
-        <Typography.Body>
+        <Typography.Body className={styles.communityDescription__text}>
           {isExpanded ? description : truncatedText}{' '}
           {showToggle && !isExpanded && (
             <Button onPress={expandText} className={styles.toggleButton}>

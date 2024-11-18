@@ -1,9 +1,10 @@
 .icon__container {
   display: flex;
-  padding: var(--asc-spacing-m1) var(--asc-spacing-s2);
+  padding-right: 1rem;
   align-items: center;
   gap: var(--asc-spacing-s1);
   align-self: stretch;
+  fill: var(--asc-color-white);
 }
 
 .icon {
@@ -30,12 +31,13 @@
   justify-content: flex-start;
   align-items: center;
   color: var(--asc-color-white);
-  border-radius: var(--asc-border-radius-md);
+  border-radius: 0.5rem;
   margin-bottom: var(--asc-spacing-m1);
   animation-duration: 0.3s;
   animation-name: appear;
   pointer-events: auto;
   background-color: var(--asc-color-secondary-default);
+  padding: 1rem;
   box-shadow: var(--asc-box-shadow-02);
 }
 
@@ -58,6 +60,5 @@
 
   .notificationContainer {
     width: 100%;
-    margin-bottom: var(--asc-spacing-none);
   }
 }

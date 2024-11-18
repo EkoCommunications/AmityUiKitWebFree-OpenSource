@@ -53,6 +53,7 @@
 
 .flagIcon {
   height: 1rem;
+  fill: var(--asc-color-alert-default);
 }
 
 .timestamp {

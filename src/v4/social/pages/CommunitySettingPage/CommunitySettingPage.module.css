@@ -1,0 +1,30 @@
+.communitySettingPage__container {
+  padding: 0 1rem;
+}
+
+.communitySettingPage__basicInfoWrap {
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+}
+
+.communitySettingPage__communityTitleWrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.communitySettingPage__comunityTitle {
+  color: var(--asc-color-base-default);
+}
+
+.communitySettingPage__basicInfo {
+  padding: 1.5rem 0 0.25rem;
+}
+
+.communitySettingPage__communityPermissionWrap {
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+}
+
+.communitySettingPage__comunityPermissions {
+  padding: 1.5rem 0 0.5rem;
+}

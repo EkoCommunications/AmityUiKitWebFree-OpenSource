@@ -88,6 +88,7 @@ export function VideoButton({
       <input
         type="file"
         accept="video/*"
+        capture="environment"
         onChange={onVideoChange}
         multiple
         id="video-upload"

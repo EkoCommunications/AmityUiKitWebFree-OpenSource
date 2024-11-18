@@ -1,0 +1,304 @@
+.editCommunity {
+  color: var(--asc-color-base-default);
+}
+
+.editCommunity__topBar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.12rem 0.75rem;
+}
+
+.editCommunity__title {
+  color: var(--asc-color-base-default) !important;
+}
+
+.editCommunity__form {
+  padding: 0.5rem 1rem 0;
+}
+
+.editCommunity__coverImageButton {
+  position: relative;
+  width: 100%;
+  height: 11.75rem;
+}
+
+.editCommunity__coverImageButton[data-no-image='true'] {
+  background:
+    linear-gradient(0deg, rgb(0 0 0 / 50%) 0%, rgb(0 0 0 / 50%)) 100%,
+    var(--asc-color-primary-shade3);
+}
+
+.editCommunity__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(0deg, rgb(0 0 0 / 40%) 0%, rgb(0 0 0 / 40%) 100%);
+}
+
+.editCommunity__cameraIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 1.75rem;
+  fill: var(--asc-color-white);
+  opacity: 0.8;
+}
+
+.editCommunity__cameraInput {
+  display: none;
+}
+
+.editCommunity__label {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  gap: 0.5rem;
+}
+
+.editCommunity__charactersCount {
+  color: var(--asc-color-base-shade1);
+  font-size: 0.8125rem;
+}
+
+.editCommunity__input {
+  width: 100%;
+  margin-top: 0.25rem;
+  color: var(--asc-color-base-default);
+  padding-bottom: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  letter-spacing: -0.015rem;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+}
+
+.editCommunity__textarea {
+  width: 100%;
+  margin-top: 0.25rem;
+  color: var(--asc-color-base-default);
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  letter-spacing: -0.015rem;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+}
+
+.editCommunity__input::placeholder + .editCommunity__textarea::placeholder {
+  color: var(--asc-color-base-shade3);
+}
+
+.editCommunity__optionalText {
+  color: var(--asc-color-base-shade3);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  margin-left: 0.25rem;
+}
+
+.editCommunity__category {
+  width: 100%;
+}
+
+.editCommunity__categoryButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.editCommunity__categoryIcon {
+  width: 1.5rem;
+  height: 1.25rem;
+  fill: var(--asc-color-base-shade2);
+}
+
+.editCommunity__selectedCategory {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.25rem;
+  color: var(--asc-color-base-default);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  letter-spacing: -0.015rem;
+}
+
+.editCommunity__privacyChoicesWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.editCommunity__privacyTitle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editCommunity__radio {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.editCommunity__customRadio {
+  display: inline-block;
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--asc-color-base-shade3);
+  background-color: var(--asc-color-white);
+  transition: background 0.3s;
+  padding: 0.25rem;
+}
+
+.editCommunity__hiddenRadio {
+  display: none; /* Hides the default radio button */
+}
+
+/* Create the checked indicator */
+.editCommunity__radio:checked + .editCommunity__customRadio::after {
+  content: '';
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--asc-color-white);
+  border: 1px solid var(--asc-color-primary-default);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease-in-out;
+}
+
+.editCommunity__hiddenRadio:checked + .editCommunity__customRadio {
+  border-color: var(--asc-color-primary-default);
+  background-color: var(--asc-color-primary-default);
+}
+
+.editCommunity__hiddenRadio:checked + .editCommunity__customRadio::after {
+  opacity: 1;
+}
+
+.editCommunity__description {
+  display: flex;
+}
+
+.editCommunity__memberWrap {
+  border-top: 1px solid var(--asc-color-base-shade4);
+}
+
+.editCommunity__createButton {
+  position: sticky;
+  bottom: 0;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--asc-color-base-shade4);
+  background-color: var(--asc-color-background-default);
+}
+
+.editCommunity__categories {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+  padding-bottom: 1rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.editCommunity__categoriesWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.editCommunity__selectedCategoryWrap {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 0.25rem 0.25rem;
+  gap: 0.5rem;
+}
+
+.editCommunity__selectedCategories {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--asc-color-base-shade4);
+  gap: 0.5rem;
+}
+
+.editCommunity__selectedCategoryName {
+  color: var(--asc-color-base-default);
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14.5rem;
+}
+
+.editCommunity__selectedCategoryTagAvatarDefault {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+}
+
+.editCommunity__removeCategory {
+  fill: var(--asc-color-base-shade1);
+}
+
+.editCommunity__selectedUserWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.editCommunity__selectedUser {
+  display: block;
+  text-align: center;
+}
+
+.editCommunity__selectedUserAvatar {
+  position: relative;
+}
+
+.editCommunity__selectedUserAvatarImage {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+}
+
+.editCommunity__removeUserButton {
+  position: absolute;
+  right: 0.3rem;
+  top: 0;
+}
+
+.editCommunity__removeUser {
+  border-radius: 50%;
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: var(--asc-color-background-transparent-black);
+}
+
+.editCommunity__selectedUserDisplayName {
+  display: inline-block;
+  justify-self: center;
+  align-items: center;
+  width: 4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.25rem;
+}

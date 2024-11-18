@@ -5,12 +5,15 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button } from '~/v4/core/natives/Button';
 import { Feed as FeedIcon } from '~/v4/icons/Feed';
 import { Pin as PinIcon } from '~/v4/icons/Pin';
+import { Image as ImageIcon } from '~/v4/icons/Image';
+import { Video as VideoIcon } from '~/v4/icons/Video';
+import { CommunityTab } from '~/v4/core/providers/CommunityTabProvider';
 
 interface CommunityTabsProps {
   pageId: string;
   componentId?: string;
-  activeTab: 'community_feed' | 'community_pin';
-  onTabChange: (tab: 'community_feed' | 'community_pin') => void;
+  activeTab: CommunityTab;
+  onTabChange: (tab: CommunityTab) => void;
 }
 
 export const CommunityProfileTab: React.FC<CommunityTabsProps> = ({
@@ -41,7 +44,7 @@ export const CommunityProfileTab: React.FC<CommunityTabsProps> = ({
         onPress={() => onTabChange('community_feed')}
         className={styles.communityTabs__tab}
       >
-        <FeedIcon />
+        <FeedIcon className={styles.communityTabs__icon} />
       </Button>
       <Button
         data-qa-anchor={`${accessibilityId}_pin`}
@@ -49,24 +52,24 @@ export const CommunityProfileTab: React.FC<CommunityTabsProps> = ({
         onPress={() => onTabChange('community_pin')}
         className={styles.communityTabs__tab}
       >
-        <PinIcon />
-      </Button>
-      {/* <Button
-        data-qa-anchor={`${accessibilityId}_photo`}
-        data-is-active={activeTab === 'community_pin'}
-        onPress={() => onTabChange('community_pin')}
-        className={styles.communityTabs__tab}
-      >
-        <PinIcon />
+        <PinIcon className={styles.communityTabs__pinIcon} />
       </Button>
       <Button
-        data-qa-anchor={`${accessibilityId}_video`}
-        data-is-active={activeTab === 'community_pin'}
-        onPress={() => onTabChange('community_pin')}
+        data-qa-anchor={`${accessibilityId}_image_feed`}
+        data-is-active={activeTab === 'community_image_feed'}
+        onPress={() => onTabChange('community_image_feed')}
         className={styles.communityTabs__tab}
       >
-        <PinIcon />
-      </Button> */}
+        <ImageIcon className={styles.communityTabs__icon} />
+      </Button>
+      <Button
+        data-qa-anchor={`${accessibilityId}_video_feed`}
+        data-is-active={activeTab === 'community_video_feed'}
+        onPress={() => onTabChange('community_video_feed')}
+        className={styles.communityTabs__tab}
+      >
+        <VideoIcon className={styles.communityTabs__icon} />
+      </Button>
     </div>
   );
 };

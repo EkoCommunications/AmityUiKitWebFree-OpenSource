@@ -2,4 +2,6 @@
   all: unset;
   fill: var(--asc-color-white);
   cursor: pointer;
+  width: 2rem;
+  height: 2rem;
 }

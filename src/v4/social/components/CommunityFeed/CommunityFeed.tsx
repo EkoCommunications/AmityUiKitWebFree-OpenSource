@@ -131,6 +131,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
         {filteredPosts &&
           filteredPosts.map((post) => (
             <Button
+              key={post.postId}
               className={styles.communityFeed__postContent}
               onPress={() =>
                 AmityCommunityProfilePageBehavior?.goToPostDetailPage?.({
@@ -190,6 +191,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
         announcementPosts.map(({ post }: Amity.Post) => {
           return (
             <Button
+              key={post.postId}
               onPress={() => {
                 AmityCommunityProfilePageBehavior?.goToPostDetailPage?.({
                   postId: post.postId,

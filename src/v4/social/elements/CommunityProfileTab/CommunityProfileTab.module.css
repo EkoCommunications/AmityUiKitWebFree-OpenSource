@@ -1,9 +1,12 @@
 .communityTabs__container {
-  background-color: var(--asc-color-base-background);
+  background-color: var(--asc-color-background-default);
   border-radius: 8px;
   display: flex;
   align-items: center;
   width: 100%;
+  z-index: 1;
+  position: sticky;
+  top: 6.375rem;
 }
 
 .communityTabs__tab {
@@ -14,13 +17,26 @@
   width: 100%;
   height: 1rem;
   align-items: center;
+  background-color: var(--asc-color-background-default);
 
   --asc-icon-color: var(--asc-color-base-shade3);
 
   color: var(--asc-icon-color);
+  fill: var(--asc-icon-color);
+}
+
+.communityTabs__icon {
+  width: 1.5rem;
+  height: 1.25rem;
+}
+
+.communityTabs__pinIcon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .communityTabs__tab[data-is-active='true'] {
+  background-color: var(--asc-color-background-default);
   border-bottom: 2px solid var(--asc-color-primary-default);
 
   --asc-icon-color: var(--asc-color-base-default);

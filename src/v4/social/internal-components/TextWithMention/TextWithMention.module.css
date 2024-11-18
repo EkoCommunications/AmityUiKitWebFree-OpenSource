@@ -65,5 +65,5 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: inherit;
+  background-color: var(--asc-color-white);
 }

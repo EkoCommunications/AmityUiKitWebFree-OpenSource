@@ -3,6 +3,10 @@ import { AmityStoryMediaType } from '~/v4/social/pages/DraftsPage/DraftsPage';
 import { Mode } from '~/v4/social/pages/PostComposerPage/PostComposerPage';
 import { NavigationContext as NavigationContextV3 } from '~/social/providers/NavigationProvider';
 import { AmityPostCategory } from '~/v4/social/components/PostContent/PostContent';
+import {
+  AmityCommunitySetupPageMode,
+  MemberCommunitySetup,
+} from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
 
 export enum PageTypes {
   Explore = 'explore',
@@ -16,6 +20,7 @@ export enum PageTypes {
   SocialHomePage = 'SocialHomePage',
   PostDetailPage = 'PostDetailPage',
   CommunityProfilePage = 'CommunityProfilePage',
+  CommunitySetupPage = 'CommunitySetupPage',
   UserProfilePage = 'UserProfilePage',
   SocialGlobalSearchPage = 'SocialGlobalSearchPage',
   SelectPostTargetPage = 'SelectPostTargetPage',
@@ -26,6 +31,13 @@ export enum PageTypes {
   AllCategoriesPage = 'AllCategoriesPage',
   CommunitiesByCategoryPage = 'CommunitiesByCategoryPage',
   CommunityCreatePage = 'CommunityCreatePage',
+  CommunityAddCategoryPage = 'CommunityAddCategoryPage',
+  CommunityAddMemberPage = 'CommunityAddMemberPage',
+  CommunitySettingPage = 'CommunitySettingPage',
+  CommunityPostPermissionPage = 'CommunityPostPermissionPage',
+  CommunityStorySettingPage = 'CommunityStorySettingPage',
+  PendingPostsPage = 'PendingPostsPage',
+  CommunityMembershipPage = 'CommunityMembershipPage',
 }
 
 type Page =
@@ -117,11 +129,63 @@ type Page =
       };
     }
   | {
+      type: PageTypes.CommunitySetupPage;
+      context: {
+        mode: AmityCommunitySetupPageMode;
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.CommunityAddCategoryPage;
+      context: {
+        categories?: Amity.Category[];
+      };
+    }
+  | {
+      type: PageTypes.CommunityAddMemberPage;
+      context: {
+        members?: MemberCommunitySetup[];
+        communityId?: string;
+        onAddedAction?: (userId: string[]) => void;
+      };
+    }
+  | {
       type: PageTypes.CommunityCreatePage;
+    }
+  | {
+      type: PageTypes.CommunitySettingPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.CommunityPostPermissionPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.CommunityStorySettingPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.PendingPostsPage;
+      context: {
+        communityId: string;
+      };
+    }
+  | {
+      type: PageTypes.CommunityMembershipPage;
+      context: {
+        community: Amity.Community;
+      };
     };
 
 type ContextValue = {
   page: Page;
+  prevPage?: Page;
   onChangePage: (type: string) => void;
   onClickCategory: (categoryId: string) => void;
   onClickCommunity: (communityId: string) => void;
@@ -179,6 +243,24 @@ type ContextValue = {
   goToSocialHomePage: () => void;
   goToAllCategoriesPage: () => void;
   goToCommunitiesByCategoryPage: (context: { categoryId: string }) => void;
+  goToCreateCommunityPage?: (context: { mode: AmityCommunitySetupPageMode }) => void;
+
+  goToAddCategoryPage?: (context: { categories?: Amity.Category[] }) => void;
+  goToAddMemberPage?: (context: {
+    members?: MemberCommunitySetup[];
+    communityId?: string;
+    onAddedAction?: (userId: string[]) => void;
+  }) => void;
+  goToCommunitySettingPage?: (community: Amity.Community) => void;
+  goToEditCommunityPage?: (context: {
+    mode: AmityCommunitySetupPageMode;
+    community: Amity.Community;
+  }) => void;
+  goToMembershipPage?: (community: Amity.Community) => void;
+  goToPostPermissionPage?: (community: Amity.Community) => void;
+  goToStorySettingPage?: (community: Amity.Community) => void;
+  goToPendingPostPage?: (communityId: string) => void;
+
   //V3 functions
   onClickStory: (
     storyId: string,
@@ -221,6 +303,16 @@ let defaultValue: ContextValue = {
   goToMyCommunitiesSearchPage: () => {},
   goToAllCategoriesPage: () => {},
   goToCommunitiesByCategoryPage: (context: { categoryId: string }) => {},
+  goToCreateCommunityPage: () => {},
+  goToAddCategoryPage: () => {},
+  goToAddMemberPage: () => {},
+  goToCommunitySettingPage: (community: Amity.Community) => {},
+  goToEditCommunityPage: () => {},
+  goToMembershipPage: (community: Amity.Community) => {},
+  goToPostPermissionPage: (community: Amity.Community) => {},
+  goToStorySettingPage: (community: Amity.Community) => {},
+  goToPendingPostPage: (communityId: string) => {},
+
   setNavigationBlocker: () => {},
   onBack: () => {},
   //V3 functions
@@ -270,6 +362,12 @@ if (process.env.NODE_ENV !== 'production') {
     goToAllCategoriesPage: () => console.log('NavigationContext goToAllCategoriesPage()'),
     goToCommunitiesByCategoryPage: (context) =>
       console.log(`NavigationContext goToCommunitiesByCategoryPage(${context})`),
+    goToCreateCommunityPage: () => console.log('NavigationContext goToCreateCommunityPage()'),
+    goToEditCommunityPage: () => console.log('NavigationContext goToEditCommunityPage()'),
+    goToAddCategoryPage: () => console.log('NavigationContext goToAddCategoryPage()'),
+    goToAddMemberPage: () => console.log('NavigationContext goToAddMemberPage()'),
+    goToCommunitySettingPage: (community) =>
+      console.log(`NavigationContext goToCommunitySettingPage(${community})`),
 
     //V3 functions
     onClickStory: (storyId, storyType, targetIds) =>
@@ -316,6 +414,12 @@ interface NavigationProviderProps {
   ) => void;
   goToAllCategoriesPage?: () => void;
   goToCommunitiesByCategoryPage?: (context: { categoryId: string }) => void;
+  goToCreateCommunityPage?: (context: { mode: AmityCommunitySetupPageMode }) => void;
+  goToEditCommunityPage?: (context: {
+    mode: AmityCommunitySetupPageMode;
+    community: Amity.Community;
+  }) => void;
+
   onCommunityCreated?: (communityId: string) => void;
   goToCommunityCreatePage?: () => void;
   onEditCommunity?: (communityId: string, options?: { tab?: string }) => void;
@@ -347,6 +451,7 @@ export default function NavigationProvider({
     { type: PageTypes.SocialHomePage, context: { communityId: undefined } },
   ]);
   const currentPage = useMemo(() => pages[pages.length - 1], [pages]);
+  const prevPage = useMemo(() => pages[pages.length - 2], [pages]);
   const [navigationBlocker, setNavigationBlocker] = useState<
     | {
         title: ReactNode;
@@ -409,7 +514,7 @@ export default function NavigationProvider({
   const handleCommunityCreated = useCallback(
     (communityId) => {
       const next = {
-        type: PageTypes.CommunityFeed,
+        type: PageTypes.CommunityProfilePage,
         communityId,
         isNewCommunity: true,
       };
@@ -668,6 +773,32 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToCreateCommunityPage = useCallback(() => {
+    const next = {
+      type: PageTypes.CommunitySetupPage,
+      context: {
+        mode: AmityCommunitySetupPageMode.CREATE,
+      },
+    };
+
+    pushPage(next);
+  }, [onChangePage, pushPage]);
+
+  const goToEditCommunityPage = useCallback(
+    ({ mode, community }) => {
+      const next = {
+        type: PageTypes.CommunitySetupPage,
+        context: {
+          mode,
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   const goToMyCommunitiesSearchPage = useCallback(() => {
     const next = {
       type: PageTypes.MyCommunitiesSearchPage,
@@ -698,6 +829,36 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToAddCategoryPage = useCallback(
+    ({ categories }) => {
+      const next = {
+        type: PageTypes.CommunityAddCategoryPage,
+        context: {
+          categories,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToAddMemberPage = useCallback(
+    ({ member, communityId, onAddedAction }) => {
+      const next = {
+        type: PageTypes.CommunityAddMemberPage,
+        context: {
+          member,
+          communityId,
+          onAddedAction,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   const handleClickStory = useCallback(
     (targetId, storyType, targetIds) => {
       const next = {
@@ -716,10 +877,81 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToCommunitySettingPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunitySettingPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToPostPermissionPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunityPostPermissionPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToStorySettingPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunityStorySettingPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToPendingPostPage = useCallback(
+    (communityId) => {
+      const next = {
+        type: PageTypes.PendingPostsPage,
+        context: {
+          communityId,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToMembershipPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunityMembershipPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   return (
     <NavigationContext.Provider
       value={{
         page: currentPage,
+        prevPage,
         onChangePage: handleChangePage,
         onClickCategory: handleClickCategory,
         onClickCommunity: handleClickCommunity,
@@ -744,6 +976,15 @@ export default function NavigationProvider({
         goToAllCategoriesPage,
         goToCommunitiesByCategoryPage,
         goToCommunityCreatePage,
+        goToCreateCommunityPage,
+        goToEditCommunityPage,
+        goToAddCategoryPage,
+        goToAddMemberPage,
+        goToCommunitySettingPage,
+        goToPostPermissionPage,
+        goToStorySettingPage,
+        goToPendingPostPage,
+        goToMembershipPage,
         setNavigationBlocker,
         onClickStory: handleClickStory,
       }}

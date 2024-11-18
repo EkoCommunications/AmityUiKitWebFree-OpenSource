@@ -19,7 +19,7 @@ const CreateStoryButtonSvg = (props: React.SVGProps<SVGSVGElement>) => (
 
 interface CreateStoryButtonProps {
   pageId?: string;
-  componentId: string;
+  componentId?: string;
   defaultClassName?: string;
   onClick?: () => void;
 }

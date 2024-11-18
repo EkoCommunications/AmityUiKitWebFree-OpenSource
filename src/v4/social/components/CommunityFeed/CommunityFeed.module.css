@@ -26,7 +26,7 @@
 }
 
 .communityFeed__postContent {
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
   background-color: var(--asc-color-base-shade4);
 }
 
@@ -44,6 +44,7 @@
   background-color: var(--asc-color-background-default);
   padding: 1rem;
   box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 10%);
+  margin-bottom: 0.5rem;
 }
 
 .communityFeed__postSkeletonHeader {

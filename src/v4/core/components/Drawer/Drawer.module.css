@@ -11,6 +11,7 @@
   border-top-left-radius: 0.625rem;
   border-top-right-radius: 0.625rem;
   margin-top: 6rem;
+  z-index: 5;
 }
 
 .drawer__content:focus {
@@ -35,7 +36,8 @@
 }
 
 .drawer__overlay {
-  background-color: color(from var(--asc-color-background-default) srgb r g b / 50%);
+  background-color: color(from var(--asc-color-base-inverse) srgb r g b / 50%);
   inset: 0;
   position: fixed;
+  z-index: 5;
 }

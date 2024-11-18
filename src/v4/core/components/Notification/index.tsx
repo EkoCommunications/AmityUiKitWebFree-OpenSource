@@ -8,9 +8,16 @@ interface NotificationProps {
   content: ReactNode;
   icon?: ReactNode;
   duration?: number;
+  isShowAttributes?: string | boolean;
 }
 
-export const Notification = ({ className, content, icon, duration }: NotificationProps) => {
+export const Notification = ({
+  className,
+  content,
+  icon,
+  duration,
+  isShowAttributes,
+}: NotificationProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   if (duration) {
@@ -23,7 +30,10 @@ export const Notification = ({ className, content, icon, duration }: Notificatio
 
   return (
     isVisible && (
-      <div className={clsx(styles.notificationContainer, className)}>
+      <div
+        data-show-detail-media-attachment={isShowAttributes}
+        className={clsx(styles.notificationContainer, className)}
+      >
         <div className={clsx(styles.icon__container)}>{icon}</div> {content}
       </div>
     )

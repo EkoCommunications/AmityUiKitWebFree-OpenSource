@@ -1,0 +1,9 @@
+.emptyContent {
+  text-align: center;
+  padding: 5rem 0.5rem;
+}
+
+.emptyContent__text {
+  margin-top: 0.5rem;
+  color: var(--asc-color-base-shade3);
+}

@@ -1,6 +1,7 @@
 .emptyPinnedPost__container {
   margin: 5rem auto 3rem;
   text-align: center;
+  min-height: 20rem;
 }
 
 .emptyPinnedPost__text {

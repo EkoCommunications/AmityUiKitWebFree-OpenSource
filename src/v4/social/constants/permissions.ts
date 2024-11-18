@@ -36,4 +36,5 @@ export enum Permissions {
   DeleteCommunityCategoryPermission = 'DELETE_COMMUNITY_CATEGORY',
   ManageStoryPermission = 'MANAGE_COMMUNITY_STORY',
   CreatePivillegedPostPermission = 'CREATE_PRIVILEGED_POST',
+  ReviewCommunityPost = 'REVIEW_COMMUNITY_POST',
 }

@@ -46,6 +46,10 @@ export function SocialHomePage() {
     setIsShowCreatePostMenu((prev) => !prev);
   };
 
+  const handleClickCreateCommunity = () => {
+    //
+  };
+
   const handleScroll = (event: React.UIEvent<HTMLDivElement, UIEvent>) => {
     if (activeTab !== HomePageTab.Newsfeed) return;
     if (initialLoad.current) return;

@@ -1,27 +1,58 @@
 .communityCover__container {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio for mobile */
+  padding-top: 56.25%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  overflow: hidden;
+  background-image: var(--background-image);
+}
+
+.communityCover__container[data-cover-scroll='true'] {
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  padding-top: 6.375rem;
+  transition: transform 0.2s ease-out;
+  transform: translateY(0);
+}
+
+.communityCover__container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--background-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(25px);
+  backdrop-filter: blur(1px);
+  z-index: -1;
 }
 
 @media (width >= 768px) {
   .communityCover__container {
-    padding-top: 33.33%; /* 3:1 Aspect Ratio for desktop */
-    max-height: 11.75rem; /* Limit the maximum height on larger screens */
+    padding-top: 33.33%;
+    max-height: 11.75rem;
   }
 }
 
 .communityCover__topBar {
   position: absolute;
-  top: 3rem;
+  top: 2rem;
   left: 1rem;
   right: 1rem;
   display: flex;
   justify-content: space-between;
+}
+
+.communityCover__topBarLeft {
+  display: flex;
+  align-items: center;
+}
+
+.communityCover__communityName {
+  margin: 0 0.25rem 0 0.75rem;
 }
 
 .communityCover__backButton {

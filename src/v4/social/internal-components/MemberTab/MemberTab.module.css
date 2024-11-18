@@ -1,0 +1,28 @@
+.memberTabs__container {
+  background-color: var(--asc-color-base-background);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.75rem 1rem;
+}
+
+.memberTabs__tab {
+  display: flex;
+  justify-content: center;
+  height: 1rem;
+  align-items: center;
+  padding-bottom: 0.75rem;
+
+  --asc-icon-color: var(--asc-color-base-shade3);
+
+  color: var(--asc-icon-color);
+}
+
+.memberTabs__tab[data-is-active='true'] {
+  border-bottom: 2px solid var(--asc-color-primary-default);
+
+  --asc-icon-color: var(--asc-color-base-default);
+
+  color: var(--asc-color-primary-default);
+}

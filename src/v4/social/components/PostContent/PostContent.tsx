@@ -168,7 +168,7 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
   );
 };
 
-const ChildrenPostContent = ({
+export const ChildrenPostContent = ({
   pageId,
   componentId,
   post,

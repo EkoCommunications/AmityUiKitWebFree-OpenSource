@@ -106,11 +106,12 @@ export function CameraButton({
         id="upload"
         accept={
           isVisibleImage && isVisibleVideo
-            ? 'image/*,video/*'
+            ? 'image/png,image/jpg,video/*'
             : isVisibleImage
-              ? 'image/*'
+              ? 'image/png,image/jpg'
               : 'video/*'
         }
+        capture="environment"
         className={styles.cameraButton_input}
       />
     </Button>

@@ -33,6 +33,7 @@
   animation-duration: 0.3s;
   animation-name: appear;
   margin-top: 0 !important;
+  z-index: 10;
 }
 
 .modalWindow {

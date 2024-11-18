@@ -1,8 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
 
+export type CommunityTab =
+  | 'community_feed'
+  | 'community_pin'
+  | 'community_image_feed'
+  | 'community_video_feed';
+
 type CommunityTabContextType = {
-  activeTab: 'community_feed' | 'community_pin';
-  setActiveTab: (tab: 'community_feed' | 'community_pin') => void;
+  activeTab: CommunityTab;
+  setActiveTab: (tab: CommunityTab) => void;
 };
 
 const CommunityTabContext = createContext<CommunityTabContextType>({

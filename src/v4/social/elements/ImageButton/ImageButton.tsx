@@ -4,8 +4,7 @@ import { Typography } from '~/v4/core/components';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './ImageButton.module.css';
 import clsx from 'clsx';
-import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { Button } from '~/v4/core/natives/Button';
+import { FileTrigger, Button } from 'react-aria-components';
 
 interface ImageButtonProps {
   pageId: string;
@@ -13,6 +12,7 @@ interface ImageButtonProps {
   imgIconClassName?: string;
   defaultIconClassName?: string;
   onImageFileChange?: (files: File[]) => void;
+  isSingleUpload?: boolean;
 }
 
 const ImageButtonSvg = (props: React.SVGProps<SVGSVGElement>) => {
@@ -50,6 +50,7 @@ export function ImageButton({
   imgIconClassName,
   defaultIconClassName,
   onImageFileChange,
+  isSingleUpload = false,
 }: ImageButtonProps) {
   const elementId = 'image_button';
   const { themeStyles, isExcluded, config, accessibilityId, uiReference, defaultConfig } =
@@ -57,42 +58,34 @@ export function ImageButton({
 
   if (isExcluded) return null;
 
-  const triggerFileInput = () => {
-    const fileInput = document.getElementById('image-upload') as HTMLInputElement;
-    fileInput.click();
-  };
-
-  const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onImageFileChange?.(e.target.files ? [...e.target.files] : []);
+  const onChangeImage = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const fileArray = Array.from(files);
+    onImageFileChange?.(fileArray);
   };
 
   return (
-    <Button
-      type="button"
-      style={themeStyles}
-      data-qa-anchor={accessibilityId}
-      className={styles.imageButton}
-      onPress={triggerFileInput}
+    <FileTrigger
+      onSelect={(files) => onChangeImage(files)}
+      allowsMultiple={!isSingleUpload}
+      acceptedFileTypes={['image/png', 'image/jpg', 'image/jpeg']}
     >
-      <IconComponent
-        defaultIcon={() => (
-          <ImageButtonSvg className={clsx(styles.imageButton__icon, defaultIconClassName)} />
-        )}
-        imgIcon={() => <img src={config.icon} alt={uiReference} className={imgIconClassName} />}
-        defaultIconName={defaultConfig.icon}
-        configIconName={config.icon}
-      />
-      {config.text && <Typography.BodyBold>{config.text}</Typography.BodyBold>}
-      <input
-        type="file"
-        onChange={onChangeImage}
-        multiple
-        id="image-upload"
-        accept="image/*"
-        className={styles.imageButton_input}
-      />
-    </Button>
+      <Button
+        type="button"
+        style={themeStyles}
+        data-qa-anchor={accessibilityId}
+        className={styles.imageButton}
+      >
+        <IconComponent
+          defaultIcon={() => (
+            <ImageButtonSvg className={clsx(styles.imageButton__icon, defaultIconClassName)} />
+          )}
+          imgIcon={() => <img src={config.icon} alt={uiReference} className={imgIconClassName} />}
+          defaultIconName={defaultConfig.icon}
+          configIconName={config.icon}
+        />
+        {config.text && <Typography.BodyBold>{config.text}</Typography.BodyBold>}
+      </Button>
+    </FileTrigger>
   );
 }

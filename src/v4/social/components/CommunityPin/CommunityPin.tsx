@@ -102,39 +102,41 @@ export const CommunityPin = ({ pageId = '*', communityId }: CommunityPinProps) =
     const pinnedPostsFilter =
       announcementPosts.length > 0 ? pinnedPostsWithFilterOutAnnouncePost : pinnedPosts;
 
-    return isLoading ? (
-      <CommunityFeedPostContentSkeleton />
-    ) : (
-      pinnedPostsFilter.map(({ post }: Amity.Post) => {
-        return (
-          <Button
-            onPress={() => {
-              AmityCommunityProfilePageBehavior?.goToPostDetailPage?.({
-                postId: post.postId,
-                hideTarget: true,
-                category: AmityPostCategory.PIN,
-              });
-            }}
-            className={styles.communityPin__feed}
-          >
-            <PostContent
-              key={post.postId}
-              post={post}
-              category={AmityPostCategory.PIN}
-              style={AmityPostContentComponentStyle.FEED}
-              hideTarget
-              onClick={() =>
-                AmityCommunityProfilePageBehavior?.goToPostDetailPage?.({
-                  postId: post.postId,
-                  hideTarget: true,
-                  category: AmityPostCategory.PIN,
-                })
-              }
-              onPostDeleted={() => refresh()}
-            />
-          </Button>
-        );
-      })
+    return (
+      <>
+        {!isLoading &&
+          pinnedPostsFilter.map(({ post }: Amity.Post) => {
+            return (
+              <Button
+                onPress={() => {
+                  AmityCommunityProfilePageBehavior?.goToPostDetailPage?.({
+                    postId: post.postId,
+                    hideTarget: true,
+                    category: AmityPostCategory.PIN,
+                  });
+                }}
+                className={styles.communityPin__feed}
+              >
+                <PostContent
+                  key={post.postId}
+                  post={post}
+                  category={AmityPostCategory.PIN}
+                  style={AmityPostContentComponentStyle.FEED}
+                  hideTarget
+                  onClick={() =>
+                    AmityCommunityProfilePageBehavior?.goToPostDetailPage?.({
+                      postId: post.postId,
+                      hideTarget: true,
+                      category: AmityPostCategory.PIN,
+                    })
+                  }
+                  onPostDeleted={() => refresh()}
+                />
+              </Button>
+            );
+          })}
+        {isLoading && <CommunityFeedPostContentSkeleton />}
+      </>
     );
   };
 

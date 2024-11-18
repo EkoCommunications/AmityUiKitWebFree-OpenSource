@@ -74,6 +74,7 @@ export const renderer: CustomRenderer = ({
     },
     shouldCall: !!community?.communityId,
   });
+
   const member = members?.find((member) => member.userId === client?.userId);
   const isMember = member != null;
 

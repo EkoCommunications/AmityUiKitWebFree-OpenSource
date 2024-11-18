@@ -534,6 +534,27 @@ export const defaultConfig: DefaultConfig = {
       image: 'value',
     },
     'community_profile_page/post_content/*': {},
+    'community_profile_page/*/create_post_button': {
+      text: 'Post',
+    },
+    'community_profile_page/*/create_story_button': {
+      text: 'Story',
+    },
+    'pending_posts_page/*/*': {},
+    'pending_posts_page/*/back_button': {
+      image: 'value',
+    },
+    'pending_posts_page/*/title': {
+      text: 'Pending posts ',
+    },
+    'pending_posts_page/pending_post_content/*': {},
+    'pending_posts_page/pending_post_content/timestamp': {},
+    'pending_posts_page/pending_post_content/post_accept_button': {
+      text: 'Accept',
+    },
+    'pending_posts_page/pending_post_content/post_decline_button': {
+      text: 'Decline',
+    },
     'social_home_page/explore_community_categories/*': {},
     'social_home_page/recommended_communities/*': {},
     'social_home_page/*/explore_empty_image': {
@@ -576,6 +597,104 @@ export const defaultConfig: DefaultConfig = {
     'communities_by_category_page/*/community_empty_title': {
       text: 'No community yet',
     },
+    'community_setup_page/*/*': {},
+    'community_setup_page/*/close_button': {
+      image: 'value',
+    },
+    'community_setup_page/*/title': {
+      text: 'Create community',
+    },
+    'community_setup_page/*/community_edit_title': {
+      text: 'Edit community',
+    },
+    'community_setup_page/*/community_name_title': {
+      text: 'Community name',
+    },
+    'community_setup_page/*/community_about_title': {
+      text: 'About',
+    },
+    'community_setup_page/*/community_category_title': {
+      text: 'Categories',
+    },
+    'community_setup_page/*/community_privacy_title': {
+      text: 'Privacy',
+    },
+    'community_setup_page/*/community_privacy_private_icon': {
+      image: 'value',
+    },
+    'community_setup_page/*/community_privacy_private_title': {
+      text: 'Private',
+    },
+    'community_setup_page/*/community_privacy_private_description': {
+      text: 'Only members invited by the moderators can join, view, and search the posts in this community.',
+    },
+    'community_setup_page/*/community_privacy_public_icon': {
+      image: 'value',
+    },
+    'community_setup_page/*/community_privacy_public_title': {
+      text: 'Public',
+    },
+    'community_setup_page/*/community_privacy_public_description': {
+      text: 'Anyone can join, view, and search the posts in this community.',
+    },
+    'community_setup_page/*/community_add_member_title': {
+      text: 'Member',
+    },
+    'community_setup_page/*/community_add_member_button': {
+      text: 'Add',
+      image: 'value',
+    },
+    'community_setup_page/*/community_create_button': {
+      text: 'Create community',
+      image: 'value',
+    },
+    'community_setup_page/*/community_edit_button': {
+      text: 'Save',
+      image: 'value',
+    },
+    'community_setup_page/*/image_button': {
+      text: 'Photo',
+      image: 'value',
+    },
+    'community_setup_page/*/camera_button': {
+      text: 'Camera',
+      image: 'value',
+    },
+    'community_add_category_page/*/*': {},
+    'community_add_member_page/*/*': {},
+    'community_membership_page/*/*': {},
+    'community_setting_page/*/*': {},
+
+    'community_setting_page/*/edit_profile': {
+      text: 'Edit profile',
+    },
+    'community_setting_page/*/members': {
+      text: 'Members',
+    },
+    'community_setting_page/*/notifications': {
+      text: 'Notifications',
+    },
+    'community_setting_page/*/post_permission': {
+      text: 'Post permission',
+    },
+    'community_setting_page/*/story_setting': {
+      text: 'Story comments',
+    },
+    'community_setting_page/*/leave_community': {
+      text: 'Leave community',
+    },
+    'community_setting_page/*/close_community': {
+      text: 'Close community',
+    },
+    'community_setting_page/*/close_community_description': {
+      text: 'Closing this community will remove the community  page and all its content and comments.',
+    },
+    'community_post_permission_page/*/*': {},
+    'community_story_setting_page/*/*': {},
+    'community_notification_page/*/*': {},
+    'community_posts_notification_page/*/*': {},
+    'community_comments_notification_page/*/*': {},
+    'community_stories_notification_page/*/*': {},
   },
 };
 

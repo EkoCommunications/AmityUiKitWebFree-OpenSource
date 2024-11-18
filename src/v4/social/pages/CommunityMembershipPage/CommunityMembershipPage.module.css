@@ -1,0 +1,24 @@
+.communityMembershipPage__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.communityMembershipPage__topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.communityMembershipPage__title {
+  color: var(--asc-color-base-default);
+}
+
+.communityMembershipPage__plusIcon {
+  fill: var(--asc-color-base-default);
+  width: 1.5rem;
+  height: 1.5rem;
+}

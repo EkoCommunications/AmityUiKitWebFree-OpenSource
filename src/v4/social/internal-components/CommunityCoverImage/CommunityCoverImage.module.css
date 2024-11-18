@@ -1,0 +1,12 @@
+.communityCoverImage__image {
+  width: 100%;
+  max-height: 11.75rem;
+  object-fit: cover;
+}
+
+.communityCoverImage__spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -1,0 +1,54 @@
+.pendingPostsPage__container {
+  position: relative;
+  height: 100%;
+}
+
+.pendingPostsPage__topBar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--asc-color-background-default);
+}
+
+.pendingPostsPage__titleWrap {
+  display: flex;
+  align-items: center;
+  color: var(--asc-color-base-default);
+}
+
+.pendingPostsPage__title {
+  color: var(--asc-color-base-default);
+  margin-right: 0.25rem;
+}
+
+.pendingPostsPage__descWrap {
+  background-color: var(--asc-color-background-shade1);
+  padding: 0.75rem 1rem;
+}
+
+.pendingPostsPage__desc {
+  color: var(--asc-color-base-shade1);
+}
+
+.pendingPostsPage__noPendingPost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--asc-color-background-default);
+}
+
+.pendingPostsPage__fireworkIcon {
+  fill: var(--asc-color-secondary-shade4);
+  width: 3.75rem;
+  height: 3.75rem;
+}
+
+.pendingPostsPage__noPendingPostText {
+  color: var(--asc-color-base-shade3);
+}
