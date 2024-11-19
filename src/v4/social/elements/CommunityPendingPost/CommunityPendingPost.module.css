@@ -1,6 +1,6 @@
 .communityPendingPost__container {
-  background-color: var(--asc-color-base-shade1);
-  border-radius: 0.25rem;
+  background-color: var(--asc-color-background-shade1);
+  border-radius: 0.5rem;
   padding: 1rem;
   width: 100%;
 }

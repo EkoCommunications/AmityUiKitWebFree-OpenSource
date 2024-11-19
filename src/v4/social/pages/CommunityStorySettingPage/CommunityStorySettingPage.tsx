@@ -48,14 +48,16 @@ export const CommunityStorySettingPage = ({ community }: CommunityStorySettingPa
         <Typography.Title className={styles.communityStorySettingPage__comunityTitle}>
           Story comments
         </Typography.Title>
-        <div />
+        <div className={styles.communityStorySettingPage__emptyDiv} />
       </div>
       <div className={styles.communityStorySettingPage__wrapLabel}>
         <Label>
-          <Typography.Title>Allow comments on community stories</Typography.Title>
-          <Typography.Body className={styles.communityStorySettingPage__description}>
+          <Typography.BodyBold className={styles.communityStorySettingPage__labelText}>
+            Allow comments on community stories
+          </Typography.BodyBold>
+          <Typography.Caption className={styles.communityStorySettingPage__description}>
             Turn on to receive comments on stories in this community.
-          </Typography.Body>
+          </Typography.Caption>
         </Label>
         <Switch value={isSelected ?? true} onChange={handleToggleChange} data-qa-anchor={pageId} />
       </div>

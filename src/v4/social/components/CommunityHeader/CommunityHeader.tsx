@@ -70,7 +70,7 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
         }}
       />
       <div className={styles.content}>
-        <div className={styles.name}>
+        <div className={styles.communityProfile__name}>
           {!community.isPublic && <Lock className={styles.communityProfile__privateIcon} />}
           <CommunityName pageId={pageId} componentId={componentId} name={community.displayName} />
           {community.isOfficial && <CommunityVerifyBadge />}

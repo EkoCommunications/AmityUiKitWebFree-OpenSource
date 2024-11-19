@@ -13,8 +13,8 @@
   top: 0;
   z-index: 1;
   padding-top: 6.375rem;
-  transition: transform 0.2s ease-out;
-  transform: translateY(0);
+  transition: transform 0.3s ease-in;
+  transform: translateY(-5%);
 }
 
 .communityCover__container::before {

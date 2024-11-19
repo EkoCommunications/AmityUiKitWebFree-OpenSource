@@ -10,6 +10,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .okButton {
@@ -22,6 +23,7 @@
   background: var(--asc-color-alert-default);
   border: none;
   cursor: pointer;
+  width: 100%;
 }
 
 .cancelButton {
@@ -34,6 +36,7 @@
   border: 1px solid var(--asc-color-secondary-shade3);
   background: var(--asc-color-white);
   cursor: pointer;
+  width: 100%;
 }
 
 .cancelButton:hover {

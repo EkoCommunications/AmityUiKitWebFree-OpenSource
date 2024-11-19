@@ -45,7 +45,7 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
           <Typography.Title>{`(${pendingPostsCount})`}</Typography.Title>
         </div>
 
-        <div />
+        <div className={styles.pendingPostsPage__emptyDiv} />
       </div>
       {isLoading &&
         Array.from({ length: 3 }).map((_, index) => (

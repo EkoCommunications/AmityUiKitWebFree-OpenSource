@@ -45,18 +45,20 @@ const Modal = ({
         ref={modalRef}
         tabIndex={0}
       >
-        {onCancel && (
-          <Close
-            data-qa-anchor={`${pageId}/${componentId}/modal_close_icon`}
-            className={styles.closeIcon}
-            onClick={onCancel}
-          />
-        )}
-        {title && (
-          <div data-qa-anchor={`${pageId}/${componentId}/modal_title`} className={styles.title}>
-            {title}
-          </div>
-        )}
+        <div className={styles.topbar}>
+          {title && (
+            <div data-qa-anchor={`${pageId}/${componentId}/modal_title`} className={styles.title}>
+              {title}
+            </div>
+          )}
+          {onCancel && (
+            <Close
+              data-qa-anchor={`${pageId}/${componentId}/modal_close_icon`}
+              className={styles.closeIcon}
+              onClick={onCancel}
+            />
+          )}
+        </div>
 
         <div
           data-qa-anchor={`${pageId}/${componentId}/modal_content`}

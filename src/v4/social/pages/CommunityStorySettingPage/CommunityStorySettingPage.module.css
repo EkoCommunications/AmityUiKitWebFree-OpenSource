@@ -3,6 +3,10 @@
   padding: 0 1rem;
 }
 
+.communityStorySettingPage__emptyDiv {
+  width: 1.5rem;
+}
+
 .communityStorySettingPage__communityTitleWrap {
   display: flex;
   justify-content: space-between;
@@ -17,10 +21,12 @@
 .communityStorySettingPage__wrapLabel {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 0.75rem;
   padding: 0.75rem 0;
   gap: 0.5rem;
+}
+
+.communityStorySettingPage__labelText {
+  display: block;
 }
 
 .communityStorySettingPage__description {

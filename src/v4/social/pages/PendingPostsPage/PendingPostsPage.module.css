@@ -17,6 +17,10 @@
   color: var(--asc-color-base-default);
 }
 
+.pendingPostsPage__emptyDiv {
+  width: 1.5rem;
+}
+
 .pendingPostsPage__title {
   color: var(--asc-color-base-default);
   margin-right: 0.25rem;

@@ -48,15 +48,15 @@
   flex-direction: column;
   padding: 1rem 1rem 0;
   align-items: flex-start;
-  gap: 0.5rem;
   overflow: hidden;
 }
 
-.name {
+.communityProfile__name {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--asc-color-base-default);
+  padding-bottom: 0.75rem;
 }
 
 .description {
@@ -66,13 +66,14 @@
 }
 
 .communityProfile__communityInfo__container {
+  padding: 0.25rem 0;
   display: flex;
   gap: var(--asc-spacing-s1);
 }
 
 .divider {
   width: 1px;
-  background-color: var(--asc-color-base-shade3);
+  background-color: var(--asc-color-base-shade4);
   margin-left: var(--asc-spacing-s1);
   margin-right: var(--asc-spacing-s1);
 }
@@ -135,6 +136,7 @@
 }
 
 .communityProfile__communityCategories {
+  padding: 0.5rem 0;
   overflow-x: scroll;
   width: 100%;
   scrollbar-width: none;
