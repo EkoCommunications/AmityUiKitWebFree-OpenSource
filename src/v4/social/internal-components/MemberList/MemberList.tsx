@@ -37,7 +37,7 @@ export const MemberList = ({ pageId = '*', community }: MemberListProps) => {
     pageId,
     componentId,
   });
-  const { onEditCommunity } = useNavigation();
+  const { onClickUser } = useNavigation();
 
   const { currentUserId } = useSDK();
   const [memberSearch, setMemberSearch] = useState('');
@@ -121,7 +121,7 @@ export const MemberList = ({ pageId = '*', community }: MemberListProps) => {
           roles={roles}
           community={community}
           currentUserId={currentUserId}
-          onClick={() => onEditCommunity(community.communityId, 'MEMBERS')}
+          onClick={() => onClickUser(user?.userId as string)}
         />
       ))}
       {(isLoading && memberSearch.length == 0) || (isSearchLoading && memberSearch.length > 0)

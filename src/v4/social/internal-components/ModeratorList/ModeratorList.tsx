@@ -19,7 +19,7 @@ export const ModeratorList = ({ pageId = '*', community }: ModeratorListProps) =
     componentId,
   });
 
-  const { onEditCommunity } = useNavigation();
+  const { onClickUser } = useNavigation();
   const { currentUserId } = useSDK();
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
 
@@ -52,7 +52,7 @@ export const ModeratorList = ({ pageId = '*', community }: ModeratorListProps) =
             community={community}
             currentUserId={currentUserId}
             roles={roles}
-            onClick={() => onEditCommunity(community.communityId, 'MEMBERS')}
+            onClick={() => onClickUser(user?.userId as string)}
             isModeratorTab
           />
         ))}
