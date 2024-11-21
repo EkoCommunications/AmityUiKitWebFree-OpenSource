@@ -55,7 +55,9 @@ export const MessageContainer = styled.div`
   }
 `;
 
-export const AdditionalInfo = styled.div<{ showTime?: boolean }>`
+export const AdditionalInfo = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'showTime',
+})<{ showTime?: boolean }>`
   display: flex;
   align-items: center;
 

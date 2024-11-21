@@ -13,7 +13,9 @@ export const SearchIcon = styled(Search).attrs({ width: 16, height: 16 })`
   fill: ${({ theme }) => theme.palette.base.shade2};
 `;
 
-export const SocialSearchContainer = styled.div<{ sticky?: boolean }>`
+export const SocialSearchContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'sticky',
+})<{ sticky?: boolean }>`
   position: relative;
 
   ${({ sticky }) =>

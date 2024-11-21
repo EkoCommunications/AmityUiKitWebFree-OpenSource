@@ -58,6 +58,7 @@ export const Thumbnail = ({
 
   return (
     <LivestreamThumbnail
+      key={stream.streamId}
       duration={mp4Recording?.duration}
       fileId={file?.fileId}
       overlayElements={

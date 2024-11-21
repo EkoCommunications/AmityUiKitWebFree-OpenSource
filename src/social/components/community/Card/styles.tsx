@@ -12,7 +12,9 @@ export const Container = styled.div`
   overflow: hidden;
 `;
 
-export const Cover = styled.div<{ backgroundImage?: string }>`
+export const Cover = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'backgroundImage',
+})<{ backgroundImage?: string }>`
   padding-top: 74.46%;
   position: relative;
 
