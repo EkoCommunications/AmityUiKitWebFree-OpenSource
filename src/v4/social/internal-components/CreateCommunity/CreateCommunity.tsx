@@ -38,6 +38,7 @@ import Community from '~/v4/icons/Community';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
 import { Clear } from '~/v4/icons/Clear';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import { Category } from '~/v4/icons/Category';
 
 type CreateCommunityProps = {
   mode: AmityCommunitySetupPageMode;
@@ -346,7 +347,7 @@ export function CreateCommunity({ mode }: CreateCommunityProps) {
                       <Avatar
                         avatarUrl={category.avatar?.fileUrl}
                         defaultImage={
-                          <Community
+                          <Category
                             className={styles.createCommunity__selectedCategoryTagAvatarDefault}
                           />
                         }

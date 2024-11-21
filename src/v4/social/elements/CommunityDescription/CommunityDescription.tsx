@@ -41,6 +41,7 @@ export const CommunityDescription: React.FC<CommunityDescriptionProps> = ({
 
   const expandText = () => setIsExpanded(true);
 
+  if (description.length === 0) return null;
   return (
     <div data-qa-anchor={accessibilityId} style={themeStyles} className={styles.descriptionWrapper}>
       <div

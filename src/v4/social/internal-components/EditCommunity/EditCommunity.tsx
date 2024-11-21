@@ -35,6 +35,7 @@ import { CommunityEditButton } from '~/v4/social/elements/CommunityEditButton/Co
 import useCategoriesByIds from '~/v4/social/hooks/useCategoriesByIds';
 import { CommunityRepository } from '@amityco/ts-sdk';
 import { useNotifications } from '~/v4/core/providers/NotificationProvider';
+import { Category } from '~/v4/icons/Category';
 
 type EditCommunityProps = {
   mode: AmityCommunitySetupPageMode;
@@ -323,7 +324,7 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
                         imgClassName={styles.editCommunity__selectedCategoryTagAvatarDefault}
                         containerClassName={styles.editCommunity__selectedCategoryTagAvatarDefault}
                         defaultImage={
-                          <Community
+                          <Category
                             className={styles.editCommunity__selectedCategoryTagAvatarDefault}
                           />
                         }

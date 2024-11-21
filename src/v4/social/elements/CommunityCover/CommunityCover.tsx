@@ -5,6 +5,7 @@ import { BackButton } from '~/v4/social/elements/BackButton';
 import { CommunityProfileMenuButton } from '~/v4/social/elements/CommunityProfileMenuButton';
 import { Typography } from '~/v4/core/components';
 import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge';
+import Lock from '~/v4/icons/Lock';
 
 interface CommunityCoverProps {
   pageId?: string;
@@ -53,6 +54,7 @@ export const CommunityCover: React.FC<CommunityCoverProps> = ({
           <BackButton defaultClassName={styles.communityCover__backButton} onPress={onBack} />
           {isSticky && community && (
             <>
+              {!community.isPublic && <Lock className={styles.communityCover__privateIcon} />}
               <Typography.Title className={styles.communityCover__communityName}>
                 {community?.displayName}
               </Typography.Title>
