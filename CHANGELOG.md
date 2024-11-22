@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 4.0.0-beta.18 (2024-11-22)
+
+
+### Bug Fixes
+
+* ASC-27000 - error adId handle undefined ([#736](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/736)) ([5847670](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/5847670246571ba994d707e32fc88edea408c15f))
+
 ## 4.0.0-beta.17 (2024-10-25)
 
 
