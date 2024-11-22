@@ -34,7 +34,9 @@ export const ButtonActionItem = styled(SecondaryButton)`
   width: 100%;
 `;
 
-export const AnchorActionItem = styled.a<{ active?: boolean }>`
+export const AnchorActionItem = styled.a.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active?: boolean }>`
   cursor: pointer;
   border-radius: 4px;
   ${actionItemContainerStyles}

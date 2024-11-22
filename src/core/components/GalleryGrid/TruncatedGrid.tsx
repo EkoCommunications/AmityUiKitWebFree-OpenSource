@@ -34,7 +34,9 @@ import Square from '~/core/components/Square';
   => ((100% / 3) / .75)
 */
 
-const Gallery = styled.div<{ count?: number; grid?: boolean }>`
+const Gallery = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'grid',
+})<{ count?: number; grid?: boolean }>`
   display: grid;
   width: 100%;
 
