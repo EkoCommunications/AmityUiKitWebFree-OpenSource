@@ -18,7 +18,8 @@ class SeenRecencyCache {
     return JSON.parse(window.localStorage.getItem(this.#persistentCacheKey) || '{}');
   }
 
-  getSeenRecencyByAdId(adId: string): number {
+  getSeenRecencyByAdId(adId?: string): number | undefined {
+    if (!adId) return;
     return this.#getSeenRecencyCache()[adId];
   }
 
@@ -82,7 +83,7 @@ export class AdEngine {
     }
   }
 
-  getLastSeen(adId: string) {
+  getLastSeen(adId?: string) {
     return SeenRecencyCache.instance.getSeenRecencyByAdId(adId);
   }
 
