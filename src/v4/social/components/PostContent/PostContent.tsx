@@ -57,9 +57,6 @@ export enum AmityPostCategory {
   PIN_AND_ANNOUNCEMENT = 'pin_and_announcement',
 }
 
-
-
-
 interface PostTitleProps {
   post: Amity.Post;
   pageId?: string;

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.11.2 (2024-11-22)
+
+
+### Bug Fixes
+
+* lint error ([8dfea91](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/8dfea918096e59128389064ce471e0e55e75ad49))
+
 ### 3.10.1 (2024-09-12)
 
 
