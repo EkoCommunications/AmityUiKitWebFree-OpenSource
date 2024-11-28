@@ -264,10 +264,7 @@ const PostCreatorBar = ({
   const backgroundImage = target.targetType === 'community' ? CommunityImage : UserImage;
 
   const CurrentTargetAvatar = (
-    <Avatar
-      avatar={targetUser?.avatarCustomUrl || avatarFileUrl || undefined}
-      backgroundImage={backgroundImage}
-    />
+    <Avatar avatar={user?.avatar?.fileUrl || undefined} backgroundImage={backgroundImage} />
   );
   const isDisabled =
     (!text && postImages.length === 0 && postVideos.length === 0 && postFiles.length === 0) ||

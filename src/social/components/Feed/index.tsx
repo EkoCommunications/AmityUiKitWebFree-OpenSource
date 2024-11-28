@@ -1,7 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import DefaultPostRenderer from '~/social/components/post/Post/DefaultPostRenderer';
 
-import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import PostCreator from '~/social/components/post/Creator';
 import Post from '~/social/components/post/Post';
 
@@ -140,6 +139,8 @@ const MyFeed = ({
     membership: 'member',
   });
 
+  const { prependItem } = useFeed();
+
   const loadMoreCommunitiesCB = useCallback(() => {
     loadMoreCommunities?.();
   }, [loadMoreCommunities]);
@@ -158,7 +159,7 @@ const MyFeed = ({
         enablePostTargetPicker={false}
         hasMoreCommunities={hasMoreCommunities}
         loadMoreCommunities={loadMoreCommunitiesCB}
-        onCreateSuccess={onPostCreated}
+        onCreateSuccess={(newPost) => onPostCreated || prependItem(newPost)}
       />
       <FeedScrollContainer
         className={className}
@@ -239,6 +240,8 @@ const CommunityFeed = ({
     feedType,
   });
 
+  const { prependItem } = useFeed();
+
   function renderLoadingSkeleton() {
     return new Array(3).fill(3).map((_, index) => <DefaultPostRenderer key={index} loading />);
   }
@@ -251,7 +254,7 @@ const CommunityFeed = ({
           targetType={targetType}
           targetId={targetId}
           enablePostTargetPicker={false}
-          onCreateSuccess={onPostCreated}
+          onCreateSuccess={(newPost) => onPostCreated || prependItem(newPost)}
         />
       ) : null}
       <FeedScrollContainer
@@ -339,6 +342,8 @@ const BaseFeed = ({
     membership: 'member',
   });
 
+  const { prependItem } = useFeed();
+
   function renderLoadingSkeleton() {
     return new Array(3).fill(3).map((_, index) => <DefaultPostRenderer key={index} loading />);
   }
@@ -354,7 +359,7 @@ const BaseFeed = ({
           enablePostTargetPicker={false}
           hasMoreCommunities={hasMoreCommunities}
           loadMoreCommunities={loadMoreCommunities}
-          onCreateSuccess={onPostCreated}
+          onCreateSuccess={(newPost) => onPostCreated || prependItem(newPost)}
         />
       )}
       <FeedScrollContainer

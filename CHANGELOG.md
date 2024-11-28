@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.11.3 (2024-11-28)
+
+
+### Bug Fixes
+
+* ASC-27000 - prepend post on feed ([#743](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/743)) ([56af0ae](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/56af0ae3ead6b7b8e8a2c217e976b15ae79e54a0))
+
 ### 3.11.2 (2024-11-22)
 
 
