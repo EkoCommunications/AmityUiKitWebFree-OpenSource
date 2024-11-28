@@ -2,23 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.11.3 (2024-11-28)
+
+
+### Bug Fixes
+
+* ASC-27000 - prepend post on feed ([#743](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/743)) ([56af0ae](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/56af0ae3ead6b7b8e8a2c217e976b15ae79e54a0))
+
 ### 3.11.2 (2024-11-22)
+
+
+### Bug Fixes
+
+* lint error ([8dfea91](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/8dfea918096e59128389064ce471e0e55e75ad49))
+
+### 3.10.1 (2024-09-12)
+
+
+### Bug Fixes
+
+* skeleton style ([#646](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/646)) ([8ebc957](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/8ebc9574189116ee2d70af2ee58fce97f81fabd5))
 
 ## 3.11.0 (2024-10-25)
 
-### 3.10.3 (2024-10-18)
+### 3.10.2 (2024-10-18)
 
-### 3.10.2 (2024-09-12)
+### 3.10.1 (2024-09-12)
 
-### Bug Fixes
-
-- skeleton style ([#646](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web-OpenSource/issues/646)) ([644f00f](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web-OpenSource/commit/644f00f03997b53aa304c80084d6c069f51c3808))
-
-### 3.10.1 (2024-09-10)
 
 ### Bug Fixes
 
-- change provider export path ([4c4b0a2](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web-OpenSource/commit/4c4b0a2c371c979880fd29ed04d9b97496dc125e))
+* skeleton style ([#646](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/646)) ([8ebc957](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/8ebc9574189116ee2d70af2ee58fce97f81fabd5))
 
 ## 3.10.0 (2024-09-02)
 
@@ -26,7 +40,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## 3.8.0 (2024-07-12)
 
+### Bug Fixes
+
+* pnpm install in pipeline ([4d48319](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/4d48319dbc3dfe41899495ef5181fed35035c3bf))
+
 ## 3.7.0 (2024-06-24)
+
+### Bug Fixes
+
+- remove expose v4 component ([dbf1665](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/dbf1665b9bb1aac7f717814b3df901f4c6caa6b4))
 
 ## 3.6.0 (2024-06-07)
 
