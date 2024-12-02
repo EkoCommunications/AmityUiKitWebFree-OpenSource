@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 3.11.4 (2024-12-02)
 
+### 3.11.4 (2024-12-02)
+
 
 ### Bug Fixes
 
