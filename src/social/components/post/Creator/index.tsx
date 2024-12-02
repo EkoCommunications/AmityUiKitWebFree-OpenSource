@@ -361,7 +361,6 @@ const PostCreatorBar = ({
                   setPostImages(uploaded);
                   setIncomingImages(uploading);
                 }}
-                onError={setError}
               />
               <VideosUploaded
                 files={incomingVideos}
@@ -372,7 +371,6 @@ const PostCreatorBar = ({
                   setPostVideos(uploaded);
                   setIncomingVideos(uploading);
                 }}
-                onError={setError}
               />
               <FilesUploaded
                 files={incomingFiles}
@@ -383,7 +381,6 @@ const PostCreatorBar = ({
                   setPostFiles(uploaded);
                   setIncomingFiles(uploading);
                 }}
-                onError={setError}
               />
             </UploadsContainer>
           }
