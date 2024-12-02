@@ -170,7 +170,10 @@ const FileLoader: React.FC<FileLoaderProps> = ({
         accept={mimeType}
         multiple={multiple}
         disabled={disabled}
-        onChange={onLoad}
+        onChange={(e) => {
+          e.target.value && onLoad(e);
+          e.target.value = '';
+        }}
         onClick={onClick}
       />
       {children}
