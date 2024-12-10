@@ -133,8 +133,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@amityco/ts-sdk':
-        specifier: 6.32.0
-        version: 6.32.0
+        specifier: 6.32.3-b2bd351.0
+        version: 6.32.3-b2bd351.0
       '@eslint/js':
         specifier: ^9.4.0
         version: 9.7.0
@@ -315,8 +315,8 @@ packages:
   '@adobe/css-tools@4.3.3':
     resolution: {integrity: sha512-rE0Pygv0sEZ4vBWHlAgJLGDU7Pm8xoO6p3wsEceb7GYAjScrOHpEo8KK/eVkAcnSM+slAEtXjA2JpdjLp4fJQQ==}
 
-  '@amityco/ts-sdk@6.32.0':
-    resolution: {integrity: sha512-7CB8ofBWNS9wrRkt3ddnNQD0qSKz9A1WW1EnVLGORgJJtDyhkrHK2Qy9pgCpcUzA3YzbjYD9d+fxXI66fSBJIQ==}
+  '@amityco/ts-sdk@6.32.3-b2bd351.0':
+    resolution: {integrity: sha512-bbESdJ9ZQG77W/pvzNyMbKnBxGIRHI5Qld+6xGbcH8sK45cg4kyBx9moW2aoaX7GixwZuJxEWgwojqLDdfsXfQ==}
     engines: {node: '>=12', npm: '>=6'}
 
   '@ampproject/remapping@2.3.0':
@@ -6405,8 +6405,8 @@ packages:
       framer-motion: '>=6'
       react: '>=16'
 
-  react-native-uuid@2.0.2:
-    resolution: {integrity: sha512-5ypj/hV58P+6VREdjkW0EudSibsH3WdqDERoHKnD9syFWjF+NfRWWrJb2sa3LIwI5zpzMvUiabs+DX40WHpEMw==}
+  react-native-uuid@2.0.3:
+    resolution: {integrity: sha512-f/YfIS2f5UB+gut7t/9BKGSCYbRA9/74A5R1MDp+FLYsuS+OSWoiM/D8Jko6OJB6Jcu3v6ONuddvZKHdIGpeiw==}
     engines: {node: '>=10.0.0', npm: '>=6.0.0'}
 
   react-refresh@0.14.2:
@@ -7725,7 +7725,7 @@ snapshots:
 
   '@adobe/css-tools@4.3.3': {}
 
-  '@amityco/ts-sdk@6.32.0':
+  '@amityco/ts-sdk@6.32.3-b2bd351.0':
     dependencies:
       agentkeepalive: 4.5.0
       axios: 1.7.7(debug@4.3.6)
@@ -7735,7 +7735,7 @@ snapshots:
       mitt: 3.0.1
       mqtt: 4.3.8
       object-hash: 3.0.0
-      react-native-uuid: 2.0.2
+      react-native-uuid: 2.0.3
       socket.io-client: 2.2.0
     transitivePeerDependencies:
       - bufferutil
@@ -15356,7 +15356,7 @@ snapshots:
       framer-motion: 11.2.10(@emotion/is-prop-valid@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
 
-  react-native-uuid@2.0.2: {}
+  react-native-uuid@2.0.3: {}
 
   react-refresh@0.14.2: {}
 

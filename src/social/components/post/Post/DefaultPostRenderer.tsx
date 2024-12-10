@@ -81,7 +81,6 @@ const OptionMenu = ({
       community,
       post,
       childrenPosts,
-      userId: currentUserId || undefined,
     });
 
   const pollPost = childrenPosts.find((childPost) => childPost.dataType === 'poll');
@@ -220,7 +219,6 @@ const DefaultPostRenderer = (props: DefaultPostRendererProps) => {
     community,
     post,
     childrenPosts,
-    userId: currentUserId || undefined,
   });
 
   const onApprove = async () => {
