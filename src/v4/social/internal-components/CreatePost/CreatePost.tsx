@@ -447,81 +447,84 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
           style={{ '--asc-mention-bottom': `${drawerHeight ?? 0}px` } as React.CSSProperties}
         />
       </form>
-      <div className={styles.createPost__attachmentDrawer}>
-        <div ref={drawerRef}></div>
-        {drawerRef.current
-          ? ReactDOM.createPortal(
-              <Drawer.Root
-                modal={false}
-                open={isShowBottomMenu}
-                activeSnapPoint={snap}
-                snapPoints={[
-                  HEIGHT_MEDIA_ATTACHMENT_MENU,
-                  HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_1,
-                  HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2,
-                  HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_3,
-                ]}
-                setActiveSnapPoint={(newSnapPoint) => {
-                  typeof newSnapPoint === 'string' && handleSnapChange(newSnapPoint);
-                }}
-              >
-                <Drawer.Portal container={drawerRef.current}>
-                  <Drawer.Content className={styles.createPost__attachmentDrawer__content}>
-                    <div
-                      ref={drawerContentRef}
-                      className={styles.createPost__attachmentDrawer__contentContainer}
-                      data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
-                    >
-                      {isShowDetailMediaAttachmentMenu ? (
-                        <DetailedMediaAttachment
-                          pageId={pageId}
-                          isVisibleImage={isVisibleImage}
-                          isVisibleVideo={isVisibleVideo}
-                          isVisibleCamera={isVisibleCamera}
-                          onImageFileChange={handleImageFileChange}
-                          onVideoFileChange={handleVideoFileChange}
-                        />
-                      ) : (
-                        <MediaAttachment
-                          pageId={pageId}
-                          isVisibleImage={isVisibleImage}
-                          isVisibleVideo={isVisibleVideo}
-                          isVisibleCamera={isVisibleCamera}
-                          onImageFileChange={handleImageFileChange}
-                          onVideoFileChange={handleVideoFileChange}
-                        />
-                      )}
-                    </div>
-                  </Drawer.Content>
-                </Drawer.Portal>
-              </Drawer.Root>,
-              drawerRef.current,
-            )
-          : null}
-        {isCreating && (
-          <Notification
-            content="Posting..."
-            icon={<Spinner />}
-            className={styles.createPost__notification}
-            isShowAttributes={
-              isShowDetailMediaAttachmentMenu
-                ? snap == HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2
-                  ? '2'
-                  : '3'
-                : '1'
-            }
-          />
-        )}
-        {isError && (
-          <Notification
-            content="Failed to create post"
-            icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
-            className={styles.createPost__notification}
-            data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
-            duration={3000}
-          />
-        )}
-      </div>
+      {!isDesktop && (
+        <div className={styles.createPost__attachmentDrawer}>
+          <div ref={drawerRef}></div>
+          {drawerRef.current
+            ? ReactDOM.createPortal(
+                <Drawer.Root
+                  noBodyStyles
+                  modal={false}
+                  open={isShowBottomMenu}
+                  activeSnapPoint={snap}
+                  snapPoints={[
+                    HEIGHT_MEDIA_ATTACHMENT_MENU,
+                    HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_1,
+                    HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2,
+                    HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_3,
+                  ]}
+                  setActiveSnapPoint={(newSnapPoint) => {
+                    typeof newSnapPoint === 'string' && handleSnapChange(newSnapPoint);
+                  }}
+                >
+                  <Drawer.Portal container={drawerRef.current}>
+                    <Drawer.Content className={styles.createPost__attachmentDrawer__content}>
+                      <div
+                        ref={drawerContentRef}
+                        className={styles.createPost__attachmentDrawer__contentContainer}
+                        data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
+                      >
+                        {isShowDetailMediaAttachmentMenu ? (
+                          <DetailedMediaAttachment
+                            pageId={pageId}
+                            isVisibleImage={isVisibleImage}
+                            isVisibleVideo={isVisibleVideo}
+                            isVisibleCamera={isVisibleCamera}
+                            onImageFileChange={handleImageFileChange}
+                            onVideoFileChange={handleVideoFileChange}
+                          />
+                        ) : (
+                          <MediaAttachment
+                            pageId={pageId}
+                            isVisibleImage={isVisibleImage}
+                            isVisibleVideo={isVisibleVideo}
+                            isVisibleCamera={isVisibleCamera}
+                            onImageFileChange={handleImageFileChange}
+                            onVideoFileChange={handleVideoFileChange}
+                          />
+                        )}
+                      </div>
+                    </Drawer.Content>
+                  </Drawer.Portal>
+                </Drawer.Root>,
+                drawerRef.current,
+              )
+            : null}
+          {isCreating && (
+            <Notification
+              content="Posting..."
+              icon={<Spinner />}
+              className={styles.createPost__notification}
+              isShowAttributes={
+                isShowDetailMediaAttachmentMenu
+                  ? snap == HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2
+                    ? '2'
+                    : '3'
+                  : '1'
+              }
+            />
+          )}
+          {isError && (
+            <Notification
+              content="Failed to create post"
+              icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
+              className={styles.createPost__notification}
+              data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
+              duration={3000}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }
