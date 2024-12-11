@@ -56,14 +56,13 @@ export const CommunityMemberItem = ({
   const isGlobalBanned = user?.isGlobalBan;
   const isCurrentUser = currentUserId === user?.userId;
 
-  const onReportUser = () => {
+  const onReportUser = async () => {
     removeDrawerData();
     try {
-      toggleFlagUser();
+      await toggleFlagUser();
+      notification.success({ content: isFlaggedByMe ? 'User unreported.' : 'User reported.' });
     } catch (err) {
       notification.error({ content: 'Failed to report member. Please try again.' });
-    } finally {
-      notification.success({ content: isFlaggedByMe ? 'User unreported.' : 'User reported.' });
     }
   };
 
@@ -74,32 +73,32 @@ export const CommunityMemberItem = ({
       setTimeout(() => {
         refresh?.();
       }, 2000); // TODO: to remove refresh function after SDK has been fixed.
+      notification.success({ content: 'Successfully promoted to moderator!' });
     } catch (err) {
       notification.error({ content: 'Failed to promote member. Please try again.' });
-    } finally {
-      notification.success({ content: 'Successfully promoted to moderator!' });
     }
   };
 
   const onDismissModeratorClick = async () => {
     removeDrawerData();
     try {
-      removeRolesFromUsers([COMMUNITY_MODERATOR, CHANNEL_MODERATOR], [user?.userId as string]);
+      await removeRolesFromUsers(
+        [COMMUNITY_MODERATOR, CHANNEL_MODERATOR],
+        [user?.userId as string],
+      );
+      notification.success({ content: 'Successfully demoted to member!' });
     } catch (err) {
       notification.error({ content: 'Failed to demote member. Please try again.' });
-    } finally {
-      notification.success({ content: 'Successfully demoted to member!' });
     }
   };
 
-  const onRemoveFromCommunityClick = () => {
+  const onRemoveFromCommunityClick = async () => {
     removeDrawerData();
     try {
-      user?.userId && removeMembers([user.userId]);
+      user?.userId && (await removeMembers([user.userId]));
+      notification.success({ content: 'Member removed from this community.' });
     } catch (err) {
       notification.error({ content: 'Failed to remove member. Please try again.' });
-    } finally {
-      notification.success({ content: 'Member removed from this community.' });
     }
   };
 

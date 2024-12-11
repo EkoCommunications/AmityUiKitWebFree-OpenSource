@@ -51,10 +51,9 @@ export const CommunityMembershipPage = ({ community }: CommunityMembershipPagePr
 
     try {
       await CommunityRepository.Membership.addMembers(community.communityId, userIds);
+      notification.success({ content: 'Successfully added members to this community!' });
     } catch (err) {
       notification.error({ content: 'Failed to add members to this community. Please try again.' });
-    } finally {
-      notification.success({ content: 'Successfully added members to this community!' });
     }
   };
 
