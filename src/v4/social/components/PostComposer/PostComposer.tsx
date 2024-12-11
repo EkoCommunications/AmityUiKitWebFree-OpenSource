@@ -68,12 +68,23 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
     if (pageId === 'community_profile_page') {
       return (
         <FileTrigger onSelect={onSelectFile}>
-          <StoryButton pageId={pageId} componentId={componentId} />
+          <StoryButton
+            pageId={pageId}
+            componentId={componentId}
+            defaultIconClassName={styles.postComposer__button}
+          />
         </FileTrigger>
       );
     }
 
-    return <StoryButton pageId={pageId} componentId={componentId} onPress={onClickStory} />;
+    return (
+      <StoryButton
+        pageId={pageId}
+        componentId={componentId}
+        defaultIconClassName={styles.postComposer__button}
+        onPress={onClickStory}
+      />
+    );
   };
 
   return (
@@ -84,8 +95,18 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
       <Button className={styles.postComposer__input} onPress={clickPost}>
         What's going on?
       </Button>
-      <ImageButton onPress={clickPost} pageId={pageId} componentId={componentId} />
-      <VideoButton onPress={clickPost} pageId={pageId} componentId={componentId} />
+      <ImageButton
+        onPress={clickPost}
+        pageId={pageId}
+        componentId={componentId}
+        defaultIconClassName={styles.postComposer__button}
+      />
+      <VideoButton
+        onPress={clickPost}
+        pageId={pageId}
+        componentId={componentId}
+        defaultIconClassName={styles.postComposer__button}
+      />
       {/* {renderStoryButton()} */}
     </div>
   );

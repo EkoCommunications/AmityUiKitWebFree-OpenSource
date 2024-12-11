@@ -41,6 +41,10 @@
   display: none;
 }
 
+.postComposer__button {
+  background-color: var(--asc-color-background-shade1);
+}
+
 @media (width >= 48em) {
   .postComposer {
     display: flex;

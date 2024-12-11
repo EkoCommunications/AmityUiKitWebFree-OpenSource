@@ -5,6 +5,7 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './StoryButton.module.css';
 import { SheetIcon } from '~/v4/core/components/SheetIcon';
 import StoryIcon from '~/v4/icons/Story';
+import clsx from 'clsx';
 
 type StoryButtonProps = {
   pageId: string;
@@ -12,13 +13,13 @@ type StoryButtonProps = {
   componentId?: string;
   imgIconClassName?: string;
   defaultIconClassName?: string;
-  onVideoFileChange?: (files: File[]) => void;
 };
 
 export function StoryButton({
   onPress,
   pageId = '*',
   componentId = '*',
+  defaultIconClassName,
   imgIconClassName,
 }: StoryButtonProps) {
   const elementId = 'story_button';
@@ -36,7 +37,7 @@ export function StoryButton({
         configIconName={config.icon}
         defaultIconName={defaultConfig.icon}
         imgIcon={() => <img src={config.icon} alt={uiReference} className={imgIconClassName} />}
-        defaultIcon={() => <SheetIcon icon={<StoryIcon />} />}
+        defaultIcon={() => <SheetIcon className={defaultIconClassName} icon={<StoryIcon />} />}
       />
     </Button>
   );
