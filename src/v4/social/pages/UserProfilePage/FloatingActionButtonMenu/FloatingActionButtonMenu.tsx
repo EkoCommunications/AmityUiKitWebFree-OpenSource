@@ -5,13 +5,18 @@ import { Button } from '~/v4/core/natives/Button';
 import { CreatePost } from '~/v4/icons/CreatePost';
 import { CreateStory } from '~/v4/icons/CreateStory';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { Mode } from '~/v4/social/pages/PostComposerPage/PostComposerPage';
 
 type FloatingActionButtonMenuProps = {
   onPressMenu?: () => void;
+  userId: string;
 };
 
-export const FloatingActionButtonMenu: FC<FloatingActionButtonMenuProps> = ({ onPressMenu }) => {
-  const { goToSelectPostTargetPage, goToStoryTargetSelectionPage } = useNavigation();
+export const FloatingActionButtonMenu: FC<FloatingActionButtonMenuProps> = ({
+  userId,
+  onPressMenu,
+}) => {
+  const { goToPostComposerPage } = useNavigation();
 
   const menus: {
     id: string;
@@ -23,7 +28,8 @@ export const FloatingActionButtonMenu: FC<FloatingActionButtonMenuProps> = ({ on
       id: 'post',
       label: 'Post',
       icon: <CreatePost className={styles.floatingActionButtonMenu__icon} />,
-      onPress: goToSelectPostTargetPage,
+      onPress: () =>
+        goToPostComposerPage({ mode: Mode.CREATE, targetId: userId, targetType: 'user' }),
     },
     // {
     //   id: 'story',

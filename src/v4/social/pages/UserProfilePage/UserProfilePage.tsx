@@ -160,7 +160,9 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
           icon={Plus}
           onPress={() =>
             setDrawerData({
-              content: <FloatingActionButtonMenu onPressMenu={() => removeDrawerData()} />,
+              content: (
+                <FloatingActionButtonMenu userId={userId} onPressMenu={() => removeDrawerData()} />
+              ),
             })
           }
           className={styles.userProfilePage__floatingButton}
