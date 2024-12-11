@@ -140,45 +140,47 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
       ) : (
         <CommunityProfileSkeleton />
       )}
-      <div className={styles.communityProfilePage__poseComposer}>
-        <PostComposer
-          pageId={pageId}
-          onSelectFile={handleFileSelect}
-          onClickPost={() => {
-            openPopup({
-              pageId,
-              view: 'desktop',
-              isDismissable: false,
-              onClose: ({ close }) => {
-                confirm({
-                  onOk: close,
-                  type: 'confirm',
-                  okText: 'Discard',
-                  cancelText: 'Keep editing',
-                  title: 'Discard this post?',
-                  pageId: 'post_composer_page',
-                  content: 'The post will be permanently deleted. It cannot be undone.',
-                });
-              },
-              header: (
-                <CommunityDisplayName
-                  pageId="post_composer_page"
-                  community={community as Amity.Community}
-                  className={styles.selectPostTargetPage__displayName}
-                />
-              ),
-              children: (
-                <PostComposerPage
-                  mode={Mode.CREATE}
-                  targetType="community"
-                  community={community as Amity.Community}
-                  targetId={community?.communityId as string}
-                />
-              ),
-            });
-          }}
-        />
-      </div>
+      {(activeTab === 'community_feed' || activeTab === 'community_pin') && (
+        <div className={styles.communityProfilePage__poseComposer}>
+          <PostComposer
+            pageId={pageId}
+            onSelectFile={handleFileSelect}
+            onClickPost={() => {
+              openPopup({
+                pageId,
+                view: 'desktop',
+                isDismissable: false,
+                onClose: ({ close }) => {
+                  confirm({
+                    onOk: close,
+                    type: 'confirm',
+                    okText: 'Discard',
+                    cancelText: 'Keep editing',
+                    title: 'Discard this post?',
+                    pageId: 'post_composer_page',
+                    content: 'The post will be permanently deleted. It cannot be undone.',
+                  });
+                },
+                header: (
+                  <CommunityDisplayName
+                    pageId="post_composer_page"
+                    community={community as Amity.Community}
+                    className={styles.selectPostTargetPage__displayName}
+                  />
+                ),
+                children: (
+                  <PostComposerPage
+                    mode={Mode.CREATE}
+                    targetType="community"
+                    community={community as Amity.Community}
+                    targetId={community?.communityId as string}
+                  />
+                ),
+              });
+            }}
+          />
+        </div>
+      )}
       <div key={refreshKey}>{renderTabContent()}</div>
       <div className={styles.communityProfilePage__createPostButton}>
         <CommunityCreatePostButton
