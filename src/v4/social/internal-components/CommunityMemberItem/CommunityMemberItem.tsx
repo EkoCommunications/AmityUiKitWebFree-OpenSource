@@ -45,7 +45,7 @@ export const CommunityMemberItem = ({
 }: CommunityMemberItemProps) => {
   const notification = useNotifications();
   const { setDrawerData, removeDrawerData } = useDrawer();
-  const { isFlaggedByMe, toggleFlagUser } = useUserFlaggedByMe(currentUserId as string);
+  const { isFlaggedByMe, toggleFlagUser } = useUserFlaggedByMe(user?.userId as string);
   const { hasModeratorPermissions, assignRolesToUsers, removeRolesFromUsers, removeMembers } =
     useModerator({
       community,

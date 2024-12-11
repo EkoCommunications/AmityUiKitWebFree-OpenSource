@@ -55,11 +55,12 @@ export const Popover = ({
         <$Popover
           {...props}
           isOpen={isOpen}
+          placement="bottom right"
           triggerRef={popoverRef}
           onOpenChange={setIsOpen}
           className={clsx(styles.popover, className)}
         >
-          <Dialog className={styles.dialog}>
+          <Dialog className={styles.dialog} aria-label="popover-dialog">
             {typeof children === 'function' ? children({ closePopover }) : children}
           </Dialog>
         </$Popover>
