@@ -23,9 +23,13 @@ import { useGlobalFeedContext } from '~/v4/social/providers/GlobalFeedProvider';
 import { arraysContainSameElements } from '~/v4/social/utils/arraysContainSameElements';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { Mentioned, Mentionees } from '~/v4/helpers/utils';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 export function EditPost({ post }: AmityPostComposerEditOptions) {
   const pageId = 'post_composer_page';
+  const { isDesktop } = useResponsive();
+  const { closePopup } = usePopupContext();
   const { themeStyles } = useAmityPage({
     pageId,
   });
@@ -60,7 +64,7 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
         return await PostRepository.editPost(post.postId, params);
       },
       onSuccess: (response) => {
-        onBack();
+        isDesktop ? closePopup() : onBack();
         updateItem(response.data);
       },
       onError: (error) => {
@@ -146,52 +150,65 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
 
   return (
     <div className={styles.editPost} style={themeStyles}>
-      <form onSubmit={handleSubmit(onSave)} className={styles.editPost__formMediaAttachment}>
+      <form onSubmit={handleSubmit(onSave)} className={styles.editPost__form}>
         <div className={styles.editPost__topBar}>
           <CloseButton pageId={pageId} onPress={onClickClose} />
           <EditPostTitle pageId={pageId} />
           <EditPostButton
+            variant="text"
             pageId={pageId}
-            type="submit"
-            onPress={() => handleSubmit(onSave)}
             isDisabled={
               (post.data.text == textValue.text && !isImageChanged && !isVideoChanged) ||
               !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0)
             }
           />
         </div>
-        <PostTextField
-          pageId={pageId}
-          communityId={post.targetType === 'community' ? post.targetId : undefined}
-          onChange={onChange}
-          mentionContainer={mentionRef.current}
-          dataValue={{
-            data: { text: post.data.text },
-            metadata: {
-              mentioned: post.metadata?.mentioned || [],
-            },
-            mentionees: post.mentionees,
-          }}
-        />
-
-        <Thumbnail pageId={pageId} postMedia={postImages} onRemove={handleRemoveThumbnailImage} />
-        <Thumbnail postMedia={postVideos} onRemove={handleRemoveThumbnailVideo} />
-
-        <div ref={mentionRef} className={styles.mentionTextInput_item} />
-        <div className={styles.editPost__notiWrap}>
+        <div className={styles.editPost__formContent}>
+          <PostTextField
+            pageId={pageId}
+            onChange={onChange}
+            className={styles.editPost__input}
+            placeholderClassName={styles.editPost__placeholder}
+            mentionContainer={isDesktop ? null : mentionRef.current}
+            mentionContainerClassName={styles.editPost__mentionContainer}
+            communityId={post.targetType === 'community' ? post.targetId : undefined}
+            dataValue={{
+              mentionees: post.mentionees,
+              data: { text: post.data.text },
+              metadata: { mentioned: post.metadata?.mentioned || [] },
+            }}
+          />
+          <Thumbnail pageId={pageId} postMedia={postImages} onRemove={handleRemoveThumbnailImage} />
+          <Thumbnail postMedia={postVideos} onRemove={handleRemoveThumbnailVideo} />
+        </div>
+        <div className={styles.editPost__ctaWrapper}>
+          <EditPostButton
+            variant="fill"
+            pageId={pageId}
+            className={styles.editPost__cta}
+            onPress={() => handleSubmit(onSave)}
+            isDisabled={
+              (post.data.text == textValue.text && !isImageChanged && !isVideoChanged) ||
+              !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0) ||
+              isPending
+            }
+          />
+        </div>
+        <div ref={mentionRef} className={styles.editPost__mention} />
+        <div className={styles.editPost__notificationContainer}>
           {isPending && (
             <Notification
-              content="Posting..."
               icon={<Spinner />}
-              className={styles.editPost__status}
+              content="Posting..."
+              className={styles.editPost__notification}
             />
           )}
           {isError && (
             <Notification
-              content="Failed to edit post"
-              icon={<ExclamationCircle className={styles.editPost_infoIcon} />}
-              className={styles.editPost__status}
               duration={3000}
+              content="Failed to edit post"
+              className={styles.editPost__notification}
+              icon={<ExclamationCircle className={styles.editPost__notificationIcon} />}
             />
           )}
         </div>

@@ -21,11 +21,11 @@ export const CommunityPrivacyPrivateDescription = ({
 
   if (isExcluded) return null;
   return (
-    <Typography.Body
-      className={styles.communityPrivacyPrivateDescription__text}
+    <Typography.Caption
       data-qa-anchor={accessibilityId}
+      className={styles.communityPrivacyPrivateDescription__text}
     >
       {config.text}
-    </Typography.Body>
+    </Typography.Caption>
   );
 };

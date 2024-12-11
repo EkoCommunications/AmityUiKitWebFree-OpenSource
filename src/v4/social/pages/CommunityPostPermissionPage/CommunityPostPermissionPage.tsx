@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import styles from './CommunityPostPermissionPage.module.css';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { BackButton } from '~/v4/social/elements/BackButton';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { Typography } from '~/v4/core/components';
-import { Button } from '~/v4/core/natives/Button/Button';
-import { Input, Label } from 'react-aria-components';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { CommunityRepository } from '@amityco/ts-sdk';
 import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 import { CommunityPostSettings } from '@amityco/ts-sdk';
+import { RadioGroup } from '~/v4/core/components/AriaRadioGroup';
+import { Button } from '~/v4/core/components/AriaButton';
+import styles from './CommunityPostPermissionPage.module.css';
 
 type CommunityPostPermissionPageProps = {
   community: Amity.Community;
 };
 
 //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
+
 export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissionPageProps) => {
   const pageId = 'community_post_permission_page';
-  const { themeStyles, accessibilityId } = useAmityPage({
-    pageId,
-  });
 
-  const { onBack, onClickCommunity } = useNavigation();
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
+  const { onBack, onClickCommunity } = useNavigation();
+  const { themeStyles, accessibilityId } = useAmityPage({ pageId });
 
   const defaultPostSetting = community.postSetting
     ? community.postSetting
@@ -55,13 +54,9 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
     try {
       await CommunityRepository.updateCommunity(community?.communityId, payload);
     } catch (error) {
-      notification.error({
-        content: 'Failed to update community profile!',
-      });
+      notification.error({ content: 'Failed to update community profile!' });
     } finally {
-      notification.success({
-        content: 'Successfully updated community profile!',
-      });
+      notification.success({ content: 'Successfully updated community profile!' });
       onClickCommunity(community?.communityId);
     }
   };
@@ -71,9 +66,7 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
       confirm({
         title: 'Discard changes',
         content: 'Are you sure you want to discard changes?',
-        onOk: () => {
-          onBack();
-        },
+        onOk: () => onBack(),
       });
     } else {
       onBack();
@@ -90,65 +83,61 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
     >
       <div className={styles.communityPostPermissionPage__communityTitleWrap}>
         <BackButton onPress={confirmPageChange} />
-        <Typography.Title className={styles.communityPostPermissionPage__comunityTitle}>
+        <Typography.Title className={styles.communityPostPermissionPage__communityTitle}>
           Post permissions
         </Typography.Title>
         <Button
-          className={styles.communityPostPermissionPage__save}
-          onPress={handleSubmitPermission}
+          size="medium"
+          variant="text"
+          color="primary"
           isDisabled={disabled}
+          onPress={handleSubmitPermission}
+          className={styles.communityPostPermissionPage__mobileCta}
         >
           Save
         </Button>
       </div>
-      <div className={styles.communityPostPermissionPage__label}>
-        <Typography.BodyBold>Who can post on this community</Typography.BodyBold>
-        <br />
-        <Typography.Body className={styles.communityPostPermissionPage__desc}>
-          You can control who can create posts in your community.
-        </Typography.Body>
+      <div className={styles.communityPostPermissionPage__communityContentWrap}>
+        <div className={styles.communityPostPermissionPage__label}>
+          <Typography.BodyBold>Who can post on this community</Typography.BodyBold>
+          <br />
+          <Typography.Body className={styles.communityPostPermissionPage__desc}>
+            You can control who can create posts in your community.
+          </Typography.Body>
+        </div>
+        <RadioGroup
+          value={postSetting}
+          className={styles.communityPostPermissionPage__radioGroup}
+          radioProps={{ className: styles.communityPostPermissionPage__choice }}
+          onChange={(value) => setPostSetting(value as ValueOf<typeof CommunityPostSettings>)}
+          radios={[
+            {
+              value: CommunityPostSettings.ANYONE_CAN_POST,
+              label: <Typography.Body>Everyone can post</Typography.Body>,
+            },
+            {
+              value: CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED,
+              label: <Typography.Body>Admin review post</Typography.Body>,
+            },
+            {
+              value: CommunityPostSettings.ONLY_ADMIN_CAN_POST,
+              label: <Typography.Body>Only admins can post</Typography.Body>,
+            },
+          ]}
+        />
+        <div className={styles.communityPostPermissionPage__desktopCtaWrapper}>
+          <Button
+            size="medium"
+            variant="fill"
+            color="primary"
+            isDisabled={disabled}
+            onPress={handleSubmitPermission}
+            className={styles.communityPostPermissionPage__desktopCta}
+          >
+            Save
+          </Button>
+        </div>
       </div>
-
-      <Label htmlFor="everyoneCanPost" className={styles.communityPostPermissionPage__choiceWrap}>
-        <Typography.Body>Everyone can post</Typography.Body>
-        <Input
-          id="everyoneCanPost"
-          className={`${styles.communityPostPermissionPage__radio} ${styles.communityPostPermissionPage__hiddenRadio}`}
-          type="radio"
-          name="postPermission"
-          checked={postSetting === CommunityPostSettings.ANYONE_CAN_POST}
-          onChange={() => setPostSetting(CommunityPostSettings.ANYONE_CAN_POST)}
-        />
-        <span className={styles.communityPostPermissionPage__customRadio} />
-      </Label>
-
-      <Label htmlFor="adminReviewPost" className={styles.communityPostPermissionPage__choiceWrap}>
-        <Typography.Body>Admin review post</Typography.Body>
-
-        <Input
-          id="adminReviewPost"
-          className={`${styles.communityPostPermissionPage__radio} ${styles.communityPostPermissionPage__hiddenRadio}`}
-          type="radio"
-          name="postPermission"
-          checked={postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED}
-          onChange={() => setPostSetting(CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED)}
-        />
-        <span className={styles.communityPostPermissionPage__customRadio} />
-      </Label>
-
-      <Label htmlFor="onlyAdminCanPost" className={styles.communityPostPermissionPage__choiceWrap}>
-        <Typography.Body>Only admins can post</Typography.Body>
-
-        <Input
-          id="onlyAdminCanPost"
-          className={`${styles.communityPostPermissionPage__radio} ${styles.communityPostPermissionPage__hiddenRadio}`}
-          type="radio"
-          name="postPermission"
-          checked={postSetting === CommunityPostSettings.ONLY_ADMIN_CAN_POST}
-          onChange={() => setPostSetting(CommunityPostSettings.ONLY_ADMIN_CAN_POST)}
-        />
-        <span className={styles.communityPostPermissionPage__customRadio} />
-      </Label>
     </div>
   );
 };

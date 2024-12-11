@@ -8,9 +8,7 @@ import { usePaginator } from '~/v4/core/hooks/usePaginator';
 import { CommentAd } from '~/v4/social/internal-components/CommentAd/CommentAd';
 import { CommentSkeleton } from '~/v4/social/components/Comment/CommentSkeleton';
 import styles from './CommentList.module.css';
-import useCommunityStoriesSubscription from '~/v4/social/hooks/useCommunityStoriesSubscription';
 import { Typography } from '~/v4/core/components';
-import usePostSubscription from '~/v4/core/hooks/subscriptions/usePostSubscription';
 
 type CommentListProps = {
   referenceId: string;
@@ -71,19 +69,6 @@ export const CommentList = ({
         loadMore();
       }
     },
-  });
-
-  usePostSubscription({
-    postId: referenceId,
-    level: SubscriptionLevels.COMMENT,
-    shouldSubscribe: referenceType === 'post',
-  });
-
-  useCommunityStoriesSubscription({
-    targetId: referenceId,
-    // TODO: fix type it's actually have the same type but different name
-    targetType: referenceType as Amity.StoryTargetType,
-    shouldSubscribe: referenceType === 'story' && !!referenceId,
   });
 
   if (!isLoading && items.length === 0) {

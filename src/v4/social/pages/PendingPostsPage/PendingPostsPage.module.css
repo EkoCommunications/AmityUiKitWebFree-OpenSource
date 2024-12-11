@@ -1,6 +1,6 @@
 .pendingPostsPage__container {
   position: relative;
-  height: 100%;
+  padding-bottom: 1rem;
 }
 
 .pendingPostsPage__topBar {
@@ -19,6 +19,7 @@
 
 .pendingPostsPage__emptyDiv {
   width: 1.5rem;
+  height: 1.5rem;
 }
 
 .pendingPostsPage__title {
@@ -36,14 +37,12 @@
 }
 
 .pendingPostsPage__noPendingPost {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100vh - 10rem);
   background-color: var(--asc-color-background-default);
 }
 
@@ -55,4 +54,58 @@
 
 .pendingPostsPage__noPendingPostText {
   color: var(--asc-color-base-shade3);
+}
+
+.pendingPostsPage__pendingPostSkeletons {
+  display: grid;
+  margin-top: 0;
+  background-color: var(--asc-color-base-shade4);
+}
+
+.pendingPostsPage__list {
+  gap: 0.5rem;
+  display: grid;
+  background-color: var(--asc-color-base-shade4);
+}
+
+@media (width >= 48em) {
+  .pendingPostsPage__container {
+    height: auto;
+  }
+
+  .pendingPostsPage__topBar {
+    border-radius: 0.5rem 0.5rem 0 0;
+    border: 1px solid var(--asc-color-base-shade4);
+    background-color: var(--asc-color-background-default);
+  }
+
+  .pendingPostsPage__topBar[data-review='false'] {
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pendingPostsPage__descWrap {
+    margin-bottom: 0.75rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+    border-width: 0 1px 1px;
+  }
+
+  .pendingPostsPage__pendingPostSkeletons {
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    background-color: transparent;
+  }
+
+  .pendingPostsPage__list {
+    gap: 0.75rem;
+    background-color: transparent;
+  }
+
+  .pendingPostsPage__noPendingPost {
+    height: auto;
+    padding: 3.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+  }
 }

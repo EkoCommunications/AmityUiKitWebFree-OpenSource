@@ -1,14 +1,12 @@
-import React from 'react';
-import styles from './PostPermission.module.css';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { Button } from '~/v4/core/natives/Button/Button';
-import { IconComponent } from '~/v4/core/IconComponent';
-
 import clsx from 'clsx';
-import { Typography } from '~/v4/core/components/Typography';
-import AngleRight from '~/v4/icons/AngleRight';
-import CheckCircle from '~/v4/icons/CheckCircle';
+import React from 'react';
 import { CheckTag } from '~/v4/icons/CheckTag';
+import ChevronRight from '~/v4/icons/ChevronRight';
+import { useAmityElement } from '~/v4/core/hooks/uikit';
+import { IconComponent } from '~/v4/core/IconComponent';
+import { Button } from '~/v4/core/natives/Button/Button';
+import { Typography } from '~/v4/core/components/Typography';
+import styles from './PostPermission.module.css';
 
 type PostPermissionProps = {
   pageId?: string;
@@ -49,9 +47,7 @@ export const PostPermission = ({
         />
         {config.text && <Typography.Body>{config.text}</Typography.Body>}
       </div>
-      <div>
-        <AngleRight className={styles.postPermission__angleRight} />
-      </div>
+      <ChevronRight className={styles.postPermission__angleRight} />
     </Button>
   );
 };

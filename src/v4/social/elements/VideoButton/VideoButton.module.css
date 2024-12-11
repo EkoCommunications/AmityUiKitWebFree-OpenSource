@@ -18,3 +18,22 @@
 .videoButton__input {
   display: none;
 }
+
+.videoButton__label {
+  display: initial;
+}
+
+@media (width >= 48em) {
+  .videoButton {
+    padding: 0;
+  }
+
+  .videoButton__label {
+    display: none;
+  }
+
+  .videoButton[data-focus-visible] {
+    border-radius: 100%;
+    outline: 1px solid var(--asc-color-primary-default);
+  }
+}

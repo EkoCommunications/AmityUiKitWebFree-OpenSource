@@ -10,3 +10,9 @@
 .closeCommunityDescription__text {
   color: var(--asc-color-base-shade1);
 }
+
+@media only screen and (width >= 48em) {
+  .closeCommunityDescription__container {
+    border-bottom: none;
+  }
+}

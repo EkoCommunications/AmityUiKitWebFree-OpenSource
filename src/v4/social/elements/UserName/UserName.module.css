@@ -1,0 +1,6 @@
+.userName_displayName {
+  min-height: 3.5rem;
+  color: var(--asc-color-base-default);
+  display: flex;
+  align-items: center;
+}

@@ -4,6 +4,7 @@ import { CloseIcon, ExclamationCircle } from '~/icons';
 import { Spinner } from '~/v4/social/internal-components/Spinner';
 import useFileUpload from '~/v4/social/hooks/useFileUpload';
 import { FileRepository } from '@amityco/ts-sdk';
+import { Button } from '~/v4/core/natives/Button';
 
 interface ImageThumbnailProps {
   pageId?: string;
@@ -68,13 +69,14 @@ export function ImageThumbnail({
                   src={FileRepository.fileUrlWithSize((file as Amity.File)?.fileUrl, 'medium')}
                   alt={(file as Amity.File).attributes?.name}
                 />
-                <button
+                <Button
                   data-qa-anchor={`${pageId}/${componentId}/remove_thumbnail`}
                   type="reset"
-                  onClick={() => removeFile(file)}
+                  className={styles.closeButton}
+                  onPress={() => removeFile(file)}
                 >
                   <CloseIcon className={styles.closeIcon} />
-                </button>
+                </Button>
               </>
             )}
           </div>

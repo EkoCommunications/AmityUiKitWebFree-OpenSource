@@ -6,7 +6,7 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { NotificationsContainer } from '~/core/components/Notification';
 import { ConfirmComponent } from '~/core/components/Confirm';
 import { NotificationsContainer as NotificationsContainerV4 } from '~/v4/core/components/Notification';
-import { ConfirmComponent as ConfirmComponentV4 } from '~/v4/core/components/ConfirmModal';
+import { ConfirmModal as ConfirmComponentV4 } from '~/v4/core/components/ConfirmModal';
 import ConfigProvider from '~/social/providers/ConfigProvider';
 import Localization from './Localization';
 import buildGlobalTheme from './theme';

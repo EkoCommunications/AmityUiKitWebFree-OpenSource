@@ -1,61 +1,36 @@
+import clsx from 'clsx';
 import React from 'react';
-import { IconComponent } from '~/v4/core/IconComponent';
+import { VideoIcon } from '~/v4/icons/Video';
+import { Button } from '~/v4/core/natives/Button';
 import { Typography } from '~/v4/core/components';
+import { IconComponent } from '~/v4/core/IconComponent';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './VideoButton.module.css';
-import clsx from 'clsx';
-import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { Button } from '~/v4/core/natives/Button';
 
-interface VideoButtonProps {
+// todo: test again
+
+type VideoButtonProps = {
   pageId: string;
+  onPress?: () => void;
   componentId?: string;
   imgIconClassName?: string;
   defaultIconClassName?: string;
   onVideoFileChange?: (files: File[]) => void;
-}
-
-const VideoButtonSvg = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      {...props}
-    >
-      <path
-        d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-        stroke={props.stroke}
-        strokeWidth="1.3"
-        strokeMiterlimit="10"
-      />
-      <path
-        d="M16 12L10 8V16L16 12Z"
-        stroke={props.stroke}
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
 };
 
 export function VideoButton({
+  onPress,
   pageId = '*',
   componentId = '*',
   imgIconClassName,
-  defaultIconClassName,
   onVideoFileChange,
+  defaultIconClassName,
 }: VideoButtonProps) {
   const elementId = 'video_button';
   const { themeStyles, isExcluded, config, accessibilityId, uiReference, defaultConfig } =
     useAmityElement({ pageId, componentId, elementId });
 
   if (isExcluded) return null;
-
-  const { confirm } = useConfirmContext();
 
   const triggerFileInput = () => {
     const fileInput = document.getElementById('video-upload') as HTMLInputElement;
@@ -71,29 +46,34 @@ export function VideoButton({
   return (
     <Button
       style={themeStyles}
-      data-qa-anchor={accessibilityId}
       className={styles.videoButton}
-      onPress={triggerFileInput}
+      data-qa-anchor={accessibilityId}
+      onPress={onPress ? onPress : triggerFileInput}
     >
       <IconComponent
-        defaultIcon={() => (
-          <VideoButtonSvg className={clsx(styles.videoButton__icon, defaultIconClassName)} />
-        )}
-        imgIcon={() => <img src={config.icon} alt={uiReference} className={imgIconClassName} />}
-        defaultIconName={defaultConfig.icon}
         configIconName={config.icon}
+        defaultIconName={defaultConfig.icon}
+        imgIcon={() => <img src={config.icon} alt={uiReference} className={imgIconClassName} />}
+        defaultIcon={() => (
+          <VideoIcon className={clsx(styles.videoButton__icon, defaultIconClassName)} />
+        )}
       />
-      {config.text && <Typography.BodyBold>{config.text}</Typography.BodyBold>}
-
-      <input
-        type="file"
-        accept="video/*"
-        capture="environment"
-        onChange={onVideoChange}
-        multiple
-        id="video-upload"
-        className={styles.videoButton__input}
-      />
+      {config.text && (
+        <Typography.BodyBold className={styles.videoButton__label}>
+          {config.text}
+        </Typography.BodyBold>
+      )}
+      {!onPress && (
+        <input
+          multiple
+          type="file"
+          accept="video/*"
+          id="video-upload"
+          capture="environment"
+          onChange={onVideoChange}
+          className={styles.videoButton__input}
+        />
+      )}
     </Button>
   );
 }

@@ -33,16 +33,12 @@ export const UserListSkeleton = () => {
 
 export const MemberList = ({ pageId = '*', community }: MemberListProps) => {
   const componentId = 'member_list';
-  const { accessibilityId, themeStyles } = useAmityComponent({
-    pageId,
-    componentId,
-  });
-  const { onClickUser } = useNavigation();
 
   const { currentUserId } = useSDK();
+  const { onClickUser } = useNavigation();
   const [memberSearch, setMemberSearch] = useState('');
+  const { accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
-
   const { members, hasMore, isLoading, loadMore, refresh } = useCommunityMembersCollection({
     queryParams: {
       communityId: community?.communityId as string,
@@ -68,15 +64,11 @@ export const MemberList = ({ pageId = '*', community }: MemberListProps) => {
   };
 
   useIntersectionObserver({
-    onIntersect: () => {
-      if (memberSearch.length === 0 && hasMore && isLoading === false) {
-        loadMore();
-      }
-      if (memberSearch.length > 0 && hasMoreSearch && isSearchLoading === false) {
-        loadMoreSearch();
-      }
-    },
     node: intersectionNode,
+    onIntersect: () => {
+      if (memberSearch.length === 0 && hasMore && !isLoading) loadMore();
+      if (memberSearch.length > 0 && hasMoreSearch && !isSearchLoading) loadMoreSearch();
+    },
   });
 
   useEffect(() => {
@@ -84,41 +76,41 @@ export const MemberList = ({ pageId = '*', community }: MemberListProps) => {
   }, []);
 
   return (
-    <div style={themeStyles} data-qa-anchor={accessibilityId}>
+    <div style={themeStyles} data-qa-anchor={accessibilityId} className={styles.memberList}>
       <div className={styles.memberList__searchWrap}>
         <Search
-          data-search-value={memberSearch.length > 0}
           className={styles.memberList__searchIcon}
+          data-search-value={memberSearch.length > 0}
         />
         <Input
-          data-qa-anchor={`${accessibilityId}_search_input`}
-          className={styles.memberList__searchInput}
           type="text"
-          placeholder="Search user"
           value={memberSearch}
+          placeholder="Search member"
           onChange={(e) => handleSearchUser(e)}
+          className={styles.memberList__searchInput}
+          data-qa-anchor={`${accessibilityId}_search_input`}
         />
         <Button
-          data-qa-anchor={`${accessibilityId}_add_member_button`}
           aria-label="Close"
-          data-search-value={memberSearch.length > 0}
           onPress={() => setMemberSearch('')}
+          data-search-value={memberSearch.length > 0}
           className={styles.memberList__clearSearchButton}
+          data-qa-anchor={`${accessibilityId}_add_member_button`}
         >
           <Clear className={styles.memberList__clearSearch} />
         </Button>
       </div>
-
       {(memberSearch.length > 0 && !isSearchLoading
         ? memberSearchResults
-        : memberSearch.length == 0 && !isLoading
+        : memberSearch.length == 0
           ? members
           : []
       ).map(({ user, roles }) => (
         <CommunityMemberItem
-          pageId={pageId}
           user={user}
           roles={roles}
+          pageId={pageId}
+          refresh={refresh}
           community={community}
           currentUserId={currentUserId}
           onClick={() => onClickUser(user?.userId as string)}

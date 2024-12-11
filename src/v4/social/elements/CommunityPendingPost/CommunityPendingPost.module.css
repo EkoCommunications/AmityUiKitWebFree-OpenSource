@@ -1,7 +1,7 @@
 .communityPendingPost__container {
   background-color: var(--asc-color-background-shade1);
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.75rem;
   width: 100%;
 }
 
@@ -37,6 +37,6 @@
 }
 
 .communityPendingPost__subtext {
-  color: var(--asc-color-base-shade1);
+  color: var(--asc-color-base-shade2);
   margin: 0;
 }

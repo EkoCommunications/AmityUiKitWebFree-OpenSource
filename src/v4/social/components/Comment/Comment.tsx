@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Typography, BottomSheet } from '~/v4/core/components';
 import { ModeratorBadge } from '~/v4/social/elements/ModeratorBadge';
 import { Timestamp } from '~/v4/social/elements/Timestamp';
@@ -18,23 +18,13 @@ import clsx from 'clsx';
 import { CommentInput } from '~/v4/social/components/CommentComposer/CommentInput';
 import { CommentOptions } from '~/v4/social/components/CommentOptions/CommentOptions';
 import { CreateCommentParams } from '~/v4/social/components/CommentComposer/CommentComposer';
-import useCommentSubscription from '~/v4/core/hooks/subscriptions/useCommentSubscription';
 import { TextWithMention } from '~/v4/social/internal-components/TextWithMention/TextWithMention';
 import millify from 'millify';
 import useCommunityPostPermission from '~/v4/social/hooks/useCommunityPostPermission';
-
-const EllipsisH = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    width="16"
-    height="4"
-    viewBox="0 0 16 4"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path d="M9.6875 2.25C9.6875 3.19922 8.91406 3.9375 8 3.9375C7.05078 3.9375 6.3125 3.19922 6.3125 2.25C6.3125 1.33594 7.05078 0.5625 8 0.5625C8.91406 0.5625 9.6875 1.33594 9.6875 2.25ZM13.9062 0.5625C14.8203 0.5625 15.5938 1.33594 15.5938 2.25C15.5938 3.19922 14.8203 3.9375 13.9062 3.9375C12.957 3.9375 12.2188 3.19922 12.2188 2.25C12.2188 1.33594 12.957 0.5625 13.9062 0.5625ZM2.09375 0.5625C3.00781 0.5625 3.78125 1.33594 3.78125 2.25C3.78125 3.19922 3.00781 3.9375 2.09375 3.9375C1.14453 3.9375 0.40625 3.19922 0.40625 2.25C0.40625 1.33594 1.14453 0.5625 2.09375 0.5625Z" />
-  </svg>
-);
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
 
 const Like = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -88,13 +78,13 @@ export const Comment = ({
     componentId,
   });
 
+  const { isDesktop } = useResponsive();
   const { confirm } = useConfirmContext();
-
+  const mentionRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [hasClickLoadMore, setHasClickLoadMore] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [commentData, setCommentData] = useState<CreateCommentParams>();
-  const mentionRef = useRef<HTMLDivElement>(null);
 
   const [isShowMore, setIsShowMore] = useState(false);
 
@@ -102,6 +92,10 @@ export const Comment = ({
     community,
     userId: comment.creator?.userId,
   });
+
+  const isBrandUser = comment.creator?.isBrand ?? false;
+
+  const { onClickUser } = useNavigation();
 
   const toggleBottomSheet = () => setBottomSheetOpen((prev) => !prev);
 
@@ -152,10 +146,6 @@ export const Comment = ({
     setIsEditing(false);
   }, [commentData]);
 
-  useCommentSubscription({
-    commentId: comment.commentId,
-  });
-
   return (
     <div style={themeStyles} data-qa-anchor={accessibilityId}>
       {comment.isDeleted ? (
@@ -192,7 +182,7 @@ export const Comment = ({
                   });
                 }}
                 maxLines={5}
-                mentionContainer={mentionRef?.current}
+                mentionContainerClassName={styles.postComment__mentionContainer}
               />
             </div>
             <div className={styles.postComment__edit__buttonWrap}>
@@ -221,15 +211,23 @@ export const Comment = ({
         <div className={styles.postComment}>
           <UserAvatar pageId={pageId} componentId={componentId} userId={comment.userId} />
           <div className={styles.postComment__details}>
-            <div className={styles.postComment__content}>
-              <Typography.BodyBold
-                data-qa-anchor={`${pageId}/${componentId}/username`}
-                className={styles.postComment__content__username}
-              >
-                {comment.creator?.displayName}
-              </Typography.BodyBold>
+            <div
+              className={styles.postComment__content}
+              onClick={() => onClickUser(comment.creator?.userId ?? '')}
+            >
+              <div className={styles.postComment__userInfo}>
+                <Typography.BodyBold
+                  data-qa-anchor={`${pageId}/${componentId}/username`}
+                  className={styles.postComment__content__username}
+                >
+                  {comment.creator?.displayName}
+                </Typography.BodyBold>
+                {isBrandUser && <BrandBadge className={styles.postComment__brandBadge} />}
+              </div>
 
-              {isModeratorUser && <ModeratorBadge pageId={pageId} componentId={componentId} />}
+              {isModeratorUser && !isBrandUser && (
+                <ModeratorBadge pageId={pageId} componentId={componentId} />
+              )}
 
               <TextWithMention
                 pageId={pageId}
@@ -269,11 +267,30 @@ export const Comment = ({
                       Reply
                     </Typography.CaptionBold>
                   </div>
-
-                  <EllipsisH
-                    className={styles.postComment__secondRow__actionButton}
-                    onClick={() => setBottomSheetOpen(true)}
-                  />
+                  <Popover
+                    trigger={{
+                      onClick: () => setBottomSheetOpen(true),
+                      className: styles.postComment__secondRow__actionButton,
+                      iconClassName: styles.postComment__secondRow__actionButton__icon,
+                    }}
+                  >
+                    {({ closePopover }) => (
+                      <CommentOptions
+                        pageId={pageId}
+                        componentId={componentId}
+                        comment={comment}
+                        handleEditComment={() => {
+                          closePopover();
+                          handleEditComment();
+                        }}
+                        handleDeleteComment={() => {
+                          closePopover();
+                          handleDeleteComment();
+                        }}
+                        onCloseBottomSheet={toggleBottomSheet}
+                      />
+                    )}
+                  </Popover>
                 </div>
               )}
               {comment.reactionsCount > 0 && (
@@ -310,21 +327,23 @@ export const Comment = ({
           </div>
         </div>
       )}
-      <BottomSheet
-        onClose={toggleBottomSheet}
-        isOpen={bottomSheetOpen}
-        mountPoint={document.getElementById('asc-uikit-post-comment') as HTMLElement}
-        detent="content-height"
-      >
-        <CommentOptions
-          pageId={pageId}
-          componentId={componentId}
-          comment={comment}
-          handleEditComment={handleEditComment}
-          handleDeleteComment={handleDeleteComment}
-          onCloseBottomSheet={toggleBottomSheet}
-        />
-      </BottomSheet>
+      {!isDesktop && (
+        <BottomSheet
+          onClose={toggleBottomSheet}
+          isOpen={bottomSheetOpen}
+          mountPoint={document.getElementById('asc-uikit-post-comment') as HTMLElement}
+          detent="content-height"
+        >
+          <CommentOptions
+            pageId={pageId}
+            componentId={componentId}
+            comment={comment}
+            handleEditComment={handleEditComment}
+            handleDeleteComment={handleDeleteComment}
+            onCloseBottomSheet={toggleBottomSheet}
+          />
+        </BottomSheet>
+      )}
     </div>
   );
 };

@@ -228,23 +228,21 @@
 }
 
 .communityAddCategoryPage__button {
-  background-color: var(--asc-color-primary-default);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8125rem;
-  line-height: 1.125rem;
-  padding: 0.62rem 1rem;
-  transition: background-color 0.2s;
-  color: var(--asc-color-white);
-  gap: 0.5rem;
-  border-radius: 0.5rem;
   width: 100%;
 }
 
-.communityAddCategoryPage__button:disabled {
-  background-color: var(--asc-color-primary-shade2);
-  cursor: not-allowed;
-  color: var(--asc-color-white);
+@media only screen and (width >= 48em) {
+  .communityAddCategoryPage__container {
+    display: block;
+    height: 18.5rem;
+    width: 32.625rem;
+  }
+
+  .communityAddCategoryPage__topMenuSticky {
+    display: none;
+  }
+
+  .communityAddCategoryPage__addCategoryButton {
+    display: none;
+  }
 }

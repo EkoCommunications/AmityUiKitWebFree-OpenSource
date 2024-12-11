@@ -49,6 +49,8 @@
   padding: 1rem 1rem 0;
   align-items: flex-start;
   overflow: hidden;
+  background: var(--asc-color-background-default);
+  border-bottom: 1px solid var(--asc-color-base-shade4);
 }
 
 .communityProfile__name {
@@ -106,12 +108,6 @@
 
 .communityProfile__joinButton {
   width: 100%;
-  background-color: var(--asc-color-primary-default);
-  color: var(--asc-color-secondary-default);
-  padding: 0.625rem 1rem 0.625rem 0.75rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  text-align: center;
 }
 
 .communityProfile__pendingPost__container {
@@ -145,4 +141,16 @@
 
 .communityProfile__communityCategories::-webkit-scrollbar {
   display: none;
+}
+
+@media (width >= 48em) {
+  .content {
+    border-bottom: none;
+    border-left: 1px solid var(--asc-color-base-shade4);
+    border-right: 1px solid var(--asc-color-base-shade4);
+  }
+
+  .communityProfile__communityCategories {
+    overflow: hidden;
+  }
 }

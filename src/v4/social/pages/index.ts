@@ -8,6 +8,8 @@ export { MyCommunitiesSearchPage } from './MyCommunitiesSearchPage';
 export { SocialGlobalSearchPage } from './SocialGlobalSearchPage';
 export { PostDetailPage } from './PostDetailPage';
 export { CommunityProfilePage } from './CommunityProfilePage';
+export { UserProfilePage } from './UserProfilePage';
+export { EditUserProfilePage } from './EditUserProfilePage';
 export {
   CommunitySetupPage,
   // MemberCommunitySetup,

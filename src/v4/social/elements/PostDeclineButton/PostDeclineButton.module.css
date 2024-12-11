@@ -1,11 +1,4 @@
 .postDeclineButton__button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--asc-color-background-default);
-  padding: 0.62rem 1rem;
-  border: 1px solid var(--asc-color-base-shade3);
-  border-radius: 0.5rem;
   width: 100%;
 }
 

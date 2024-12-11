@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import styles from './EditCommunity.module.css';
 import { AmityCommunitySetupPageMode } from '~/v4/social/pages/CommunitySetupPage';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
-import { CloseButton } from '~/v4/social/elements';
+import { BackButton, CloseButton } from '~/v4/social/elements';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { CommunityNameTitle } from '~/v4/social/elements/CommunityNameTitle';
 import { Button } from '~/v4/core/natives/Button';
@@ -11,7 +10,6 @@ import { Camera } from '~/v4/icons/Camera';
 import { Avatar, Typography } from '~/v4/core/components';
 import { CommunityAboutTitle } from '~/v4/social/elements/CommunityAboutTitle';
 import { CommunityCategoryTitle } from '~/v4/social/elements/CommunityCategoryTitle';
-import AngleRight from '~/v4/icons/AngleRight';
 import { CommunityPrivacyTitle } from '~/v4/social/elements/CommunityPrivacyTitle';
 import { CommunityPrivacyPrivateIcon } from '~/v4/social/elements/CommunityPrivacyPrivateIcon/';
 import { CommunityPrivacyPrivateTitle } from '~/v4/social/elements/CommunityPrivacyPrivateTitle/';
@@ -25,10 +23,9 @@ import { CameraButton } from '~/v4/social/elements/CameraButton';
 import { isMobile } from '~/v4/social/utils/isMobile';
 import { CommunityCoverImage } from '~/v4/social/internal-components/CommunityCoverImage';
 import { EditFormValues, useEditCommunity } from '~/v4/social/hooks/useCreateCommunity';
-import { Input, Label, TextArea, TextField } from 'react-aria-components';
+import { FileTrigger, Input, Label, TextArea, TextField } from 'react-aria-components';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import { useCommunitySetupContext } from '~/v4/social/providers/CommunitySetupProvider';
-import Community from '~/v4/icons/Community';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { CommunityEditTitle } from '~/v4/social/elements/CommunityEditTitle';
 import { CommunityEditButton } from '~/v4/social/elements/CommunityEditButton/CommunityEditButton';
@@ -36,66 +33,55 @@ import useCategoriesByIds from '~/v4/social/hooks/useCategoriesByIds';
 import { CommunityRepository } from '@amityco/ts-sdk';
 import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 import { Category } from '~/v4/icons/Category';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { ChevronTop } from '~/v4/icons/ChevronTop';
+import { ChevronDown } from '~/v4/icons/ChevronDown';
+import ChevronRight from '~/v4/icons/ChevronRight';
+import { CommunityAddCategoryPage } from '~/v4/social/pages';
+import styles from './EditCommunity.module.css';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import { RadioGroup } from '~/v4/core/components/AriaRadioGroup';
 
 type EditCommunityProps = {
-  mode: AmityCommunitySetupPageMode;
   community: Amity.Community;
+  mode: AmityCommunitySetupPageMode;
 };
 
 export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
+  const MAX_LENGTH_DESC = 180;
+  const MAX_LENGTH_COMMUNITY_NAME = 30;
   const pageId = 'community_setup_page';
 
-  const { themeStyles } = useAmityPage({
-    pageId,
-  });
-
-  const MAX_LENGTH_COMMUNITY_NAME = 30;
-  const MAX_LENGTH_DESC = 180;
-
-  const { onBack, goToCommunityProfilePage } = useNavigation();
+  const { isDesktop } = useResponsive();
+  const notification = useNotifications();
+  const { confirm } = useConfirmContext();
+  const { themeStyles } = useAmityPage({ pageId });
   const { setDrawerData, removeDrawerData } = useDrawer();
-  const [incomingImage, setIncomingImage] = useState<File[]>([]);
-  const [coverImage, setCoverImage] = useState<Amity.File[]>([]);
-  const [uploadLoading, setUploadLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
+  const { onBack, goToCommunityProfilePage } = useNavigation();
+  const { AmityCommunitySetupPageBehavior } = usePageBehavior();
   const communityCategories = useCategoriesByIds(community.categoryIds);
-
   const { register, handleSubmit, setError, watch, formState, setValue, getValues, control } =
     useEditCommunity(community as Amity.Community);
 
-  const notification = useNotifications();
+  const [submitting, setSubmitting] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [incomingImage, setIncomingImage] = useState<File[]>([]);
+  const [coverImage, setCoverImage] = useState<Amity.File[]>([]);
+
+  const {
+    about,
+    isPublic,
+    setAbout,
+    categories,
+    setIsPublic,
+    setCategories,
+    communityName,
+    setCoverImages,
+    setCommunityName,
+  } = useCommunitySetupContext();
 
   const displayName = watch('displayName');
   const description = watch('description');
-
-  const { confirm } = useConfirmContext();
-
-  const { AmityCommunitySetupPageBehavior } = usePageBehavior();
-
-  const handleCoverPhotoChange = (file: File[]) => {
-    removeDrawerData();
-    if (file.length > 0) {
-      setIncomingImage(file);
-    }
-  };
-
-  const {
-    communityName,
-    setCommunityName,
-    about,
-    setAbout,
-    categories,
-    setCategories,
-    setIsPublic,
-    isPublic,
-    coverImages,
-    setCoverImages,
-  } = useCommunitySetupContext();
-
-  const handlePrivacyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPublic(event.target.value === 'true');
-  };
 
   // to update provider value
   useEffect(() => {
@@ -113,16 +99,12 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
     }
   }, [displayName, description, communityCategories, coverImage]);
 
-  const disabled =
-    submitting ||
-    uploadLoading ||
-    !communityName ||
-    (communityName === community?.displayName &&
-      about === community?.description &&
-      coverImage.length === 0 &&
-      categories.length === communityCategories.length &&
-      categories.sort().every((value, index) => value === communityCategories.sort()[index]) &&
-      community.isPublic === isPublic);
+  const handleCoverPhotoChange = (file: File[]) => {
+    removeDrawerData();
+    if (file.length > 0) setIncomingImage(file);
+  };
+
+  const handlePrivacyChange = (value: string) => setIsPublic(value === 'true');
 
   const handleRemoveCategory = (categoryId: string) => {
     setCategories(categories.filter((c) => c.categoryId !== categoryId));
@@ -205,36 +187,89 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
     }
   };
 
+  const disabled =
+    submitting ||
+    uploadLoading ||
+    !communityName ||
+    (communityName === community?.displayName &&
+      about === community?.description &&
+      coverImage.length === 0 &&
+      categories.length === communityCategories.length &&
+      categories.sort().every((value, index) => value === communityCategories.sort()[index]) &&
+      community.isPublic === isPublic);
+
   return (
     <div style={themeStyles} className={styles.editCommunity}>
       <div className={styles.editCommunity__topBar}>
-        <CloseButton onPress={handleClosePage} />
-        <CommunityEditTitle pageId={pageId} />
-        <div />
+        {isDesktop ? (
+          <BackButton pageId={pageId} onPress={handleClosePage} />
+        ) : (
+          <CloseButton onPress={handleClosePage} />
+        )}
+        <CommunityEditTitle pageId={pageId} className={styles.editCommunity__title} />
+        <div className={styles.editCommunity__emptySpace} />
       </div>
-      <form onSubmit={handleSubmit(validateAndSubmit)}>
-        <div className={styles.editCommunity__coverImageWrap}>
+      <form onSubmit={handleSubmit(validateAndSubmit)} className={styles.editCommunity__form}>
+        {isDesktop ? (
+          <FileTrigger
+            allowsMultiple={false}
+            acceptedFileTypes={['image/png', 'image/jpg', 'image/jpeg']}
+            onSelect={(files) => {
+              if (!files || files.length === 0) return;
+              const fileArray = Array.from(files);
+              handleCoverPhotoChange(fileArray);
+            }}
+          >
+            <Button
+              type="button"
+              value="avatarFileId"
+              aria-label="Upload cover image"
+              className={styles.editCommunity__coverImageButton}
+              data-no-image={coverImage.length == 0 || community?.avatarFileId}
+            >
+              <CommunityCoverImage
+                files={incomingImage}
+                uploadedFiles={coverImage}
+                uploadLoading={uploadLoading}
+                onLoadingChange={setUploadLoading}
+                avatarFileId={community?.avatarFileId}
+                onChange={({ uploaded, uploading }) => {
+                  setCoverImage(uploaded);
+                  setIncomingImage(uploading);
+                }}
+              />
+              {coverImage.length > 0 ||
+                (community?.avatarFileId && <div className={styles.editCommunity__overlay} />)}
+              {!uploadLoading && (
+                <IconComponent
+                  imgIcon={() => <Camera className={styles.editCommunity__cameraIcon} />}
+                  defaultIcon={() => <Camera className={styles.editCommunity__cameraIcon} />}
+                />
+              )}
+            </Button>
+          </FileTrigger>
+        ) : (
           <Button
-            data-no-image={coverImage.length == 0 || community?.avatarFileId}
-            value="avatarFileId"
             type="button"
+            value="avatarFileId"
             className={styles.editCommunity__coverImageButton}
+            data-no-image={coverImage.length == 0 || community?.avatarFileId}
             onPress={() =>
               setDrawerData({
                 content: (
                   <>
                     {isMobile() && (
                       <CameraButton
-                        pageId={pageId}
-                        onImageFileChange={handleCoverPhotoChange}
-                        isVisibleVideo={false}
                         isVisibleImage
+                        pageId={pageId}
+                        isVisibleVideo={false}
+                        onImageFileChange={handleCoverPhotoChange}
                       />
                     )}
                     <ImageButton
+                      isSingleUpload
                       pageId={pageId}
                       onImageFileChange={handleCoverPhotoChange}
-                      isSingleUpload
                     />
                   </>
                 ),
@@ -242,29 +277,27 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
             }
           >
             <CommunityCoverImage
-              avatarFileId={community?.avatarFileId}
               files={incomingImage}
               uploadedFiles={coverImage}
+              uploadLoading={uploadLoading}
+              onLoadingChange={setUploadLoading}
+              avatarFileId={community?.avatarFileId}
               onChange={({ uploaded, uploading }) => {
                 setCoverImage(uploaded);
                 setIncomingImage(uploading);
               }}
-              uploadLoading={uploadLoading}
-              onLoadingChange={setUploadLoading}
-              className={styles.editCommunity__coverImage}
             />
             {coverImage.length > 0 ||
               (community?.avatarFileId && <div className={styles.editCommunity__overlay} />)}
             {!uploadLoading && (
               <IconComponent
-                defaultIcon={() => <Camera className={styles.editCommunity__cameraIcon} />}
                 imgIcon={() => <Camera className={styles.editCommunity__cameraIcon} />}
+                defaultIcon={() => <Camera className={styles.editCommunity__cameraIcon} />}
               />
             )}
           </Button>
-        </div>
-
-        <div className={styles.editCommunity__form}>
+        )}
+        <div className={styles.editCommunity__formContent}>
           <TextField>
             <Label className={styles.editCommunity__label}>
               <CommunityNameTitle pageId={pageId} />
@@ -273,18 +306,18 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
               </Typography.Body>
             </Label>
             <Input
-              aria-label="displayName"
+              required
               type="text"
+              aria-label="displayName"
               placeholder="Name your community"
-              className={styles.editCommunity__input}
               value={displayName ?? communityName}
               maxLength={MAX_LENGTH_COMMUNITY_NAME}
-              required
+              className={styles.editCommunity__input}
               {...register('displayName')}
             />
           </TextField>
         </div>
-        <div className={styles.editCommunity__form}>
+        <div className={styles.editCommunity__formContent}>
           <TextField>
             <Label className={styles.editCommunity__label}>
               <div className={styles.editCommunity__description}>
@@ -298,124 +331,126 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
               </Typography.Body>
             </Label>
             <TextArea
-              placeholder="Enter description "
-              className={styles.editCommunity__textarea}
               value={description}
               maxLength={MAX_LENGTH_DESC}
+              placeholder="Enter description"
+              className={styles.editCommunity__textarea}
               {...register('description')}
             />
           </TextField>
         </div>
-        <div className={styles.editCommunity__form}>
+        <div className={styles.editCommunity__formContent}>
           <label className={styles.editCommunity__label}>
             <CommunityCategoryTitle pageId={pageId} />
           </label>
-          {categories.length > 0 ? (
-            <div className={styles.editCommunity__categories}>
-              <div className={styles.editCommunity__categoriesWrap}>
-                {categories.map((category) => (
-                  <div
-                    key={category.categoryId}
-                    className={styles.editCommunity__selectedCategories}
-                  >
-                    <div className={styles.editCommunity__selectedCategoryTagAvatar}>
-                      <Avatar
-                        avatarUrl={category.avatar?.fileUrl}
-                        imgClassName={styles.editCommunity__selectedCategoryTagAvatarDefault}
-                        containerClassName={styles.editCommunity__selectedCategoryTagAvatarDefault}
-                        defaultImage={
-                          <Category
-                            className={styles.editCommunity__selectedCategoryTagAvatarDefault}
+          <Popover
+            trigger={({ isDesktop, isOpen, openPopover }) => {
+              const arrowIcon = isDesktop ? (
+                isOpen ? (
+                  <ChevronTop className={styles.editCommunity__categoryIcon} />
+                ) : (
+                  <ChevronDown className={styles.editCommunity__categoryIcon} />
+                )
+              ) : (
+                <ChevronRight className={styles.editCommunity__categoryIcon} />
+              );
+              return categories.length > 0 ? (
+                <div className={styles.editCommunity__categories}>
+                  <div className={styles.editCommunity__categoriesWrap}>
+                    {categories.map((category) => (
+                      <div
+                        key={category.categoryId}
+                        className={styles.editCommunity__selectedCategories}
+                      >
+                        <div className={styles.editCommunity__selectedCategoryTagAvatar}>
+                          <Avatar
+                            avatarUrl={category.avatar?.fileUrl}
+                            imgClassName={styles.editCommunity__selectedCategoryTagAvatarDefault}
+                            containerClassName={
+                              styles.editCommunity__selectedCategoryTagAvatarDefault
+                            }
+                            defaultImage={
+                              <Category
+                                className={styles.editCommunity__selectedCategoryTagAvatarDefault}
+                              />
+                            }
                           />
-                        }
-                      />
-                    </div>
-
-                    <Typography.Body className={styles.editCommunity__selectedCategoryName}>
-                      {category.name}
-                    </Typography.Body>
-                    <CloseButton
-                      pageId={pageId}
-                      onPress={() => handleRemoveCategory(category.categoryId)}
-                      defaultClassName={styles.editCommunity__removeCategory}
-                    />
+                        </div>
+                        <Typography.Body className={styles.editCommunity__selectedCategoryName}>
+                          {category.name}
+                        </Typography.Body>
+                        <CloseButton
+                          pageId={pageId}
+                          defaultClassName={styles.editCommunity__removeCategory}
+                          onPress={() => handleRemoveCategory(category.categoryId)}
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <Button
-                onPress={() => {
-                  AmityCommunitySetupPageBehavior?.goToAddCategoryPage?.({ categories });
-                }}
-              >
-                <IconComponent
-                  defaultIcon={() => <AngleRight className={styles.editCommunity__categoryIcon} />}
-                  imgIcon={() => <AngleRight className={styles.editCommunity__categoryIcon} />}
-                />
-              </Button>
-            </div>
-          ) : (
-            <Button
-              className={styles.editCommunity__category}
-              onPress={() => {
-                AmityCommunitySetupPageBehavior?.goToAddCategoryPage?.({ categories });
-              }}
-            >
-              <Typography.Body className={styles.editCommunity__selectedCategory}>
-                Select category
-                <IconComponent
-                  defaultIcon={() => <AngleRight className={styles.editCommunity__categoryIcon} />}
-                  imgIcon={() => <AngleRight className={styles.editCommunity__categoryIcon} />}
-                />
-              </Typography.Body>
-            </Button>
-          )}
+                  <Button
+                    onPress={() => {
+                      isDesktop
+                        ? openPopover()
+                        : AmityCommunitySetupPageBehavior?.goToAddCategoryPage?.({ categories });
+                    }}
+                  >
+                    <IconComponent defaultIcon={() => arrowIcon} imgIcon={() => arrowIcon} />
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  className={styles.editCommunity__category}
+                  onPress={() => {
+                    isDesktop
+                      ? openPopover()
+                      : AmityCommunitySetupPageBehavior?.goToAddCategoryPage?.({ categories });
+                  }}
+                >
+                  <Typography.Body className={styles.editCommunity__selectedCategory}>
+                    Select category
+                    <IconComponent defaultIcon={() => arrowIcon} imgIcon={() => arrowIcon} />
+                  </Typography.Body>
+                </Button>
+              );
+            }}
+          >
+            <CommunityAddCategoryPage />
+          </Popover>
         </div>
-        <div className={styles.editCommunity__form}>
-          <CommunityPrivacyTitle pageId={pageId} />
-
-          <label htmlFor="community-public" className={styles.editCommunity__label}>
-            <div className={styles.editCommunity__privacyTitle}>
-              <CommunityPrivacyPublicIcon pageId={pageId} />
-              <div>
-                <CommunityPrivacyPublicTitle pageId={pageId} />
-                <CommunityPrivacyPublicDescription pageId={pageId} />
-              </div>
-            </div>
-            <div>
-              <Input
-                id="community-public"
-                className={`${styles.editCommunity__radio} ${styles.editCommunity__hiddenRadio}`}
-                type="radio"
-                name="privacy"
-                checked={isPublic === true}
-                onChange={handlePrivacyChange}
-                value="true"
-              />
-              <span className={styles.editCommunity__customRadio}></span>
-            </div>
-          </label>
-          <label htmlFor="community-private" className={styles.editCommunity__label}>
-            <div className={styles.editCommunity__privacyTitle}>
-              <CommunityPrivacyPrivateIcon pageId={pageId} />
-              <div>
-                <CommunityPrivacyPrivateTitle pageId={pageId} />
-                <CommunityPrivacyPrivateDescription pageId={pageId} />
-              </div>
-            </div>
-            <div>
-              <Input
-                id="community-private"
-                className={`${styles.editCommunity__radio} ${styles.editCommunity__hiddenRadio}`}
-                type="radio"
-                name="privacy"
-                checked={isPublic === false}
-                onChange={handlePrivacyChange}
-                value="false"
-              />
-              <span className={styles.editCommunity__customRadio} />
-            </div>
-          </label>
-        </div>
+        <RadioGroup
+          onChange={handlePrivacyChange}
+          value={isPublic ? 'true' : 'false'}
+          labelClassName={styles.editCommunity__label}
+          className={styles.editCommunity__formContent}
+          label={<CommunityPrivacyTitle pageId={pageId} />}
+          radioProps={{ className: styles.editCommunity__formRadio }}
+          radios={[
+            {
+              value: 'true',
+              label: (
+                <div className={styles.editCommunity__privacy}>
+                  <CommunityPrivacyPublicIcon pageId={pageId} />
+                  <div>
+                    <CommunityPrivacyPublicTitle pageId={pageId} />
+                    <CommunityPrivacyPublicDescription pageId={pageId} />
+                  </div>
+                </div>
+              ),
+            },
+            {
+              value: 'false',
+              label: (
+                <div className={styles.editCommunity__privacy}>
+                  <CommunityPrivacyPrivateIcon pageId={pageId} />
+                  <div>
+                    <CommunityPrivacyPrivateTitle pageId={pageId} />
+                    <CommunityPrivacyPrivateDescription pageId={pageId} />
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
         <div className={styles.editCommunity__createButton}>
           <CommunityEditButton pageId={pageId} isDisabled={disabled} />
         </div>

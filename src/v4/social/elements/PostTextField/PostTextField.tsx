@@ -12,7 +12,6 @@ import {
   MentionNode,
 } from '~/v4/social/internal-components/Lexical/nodes/MentionNode';
 import { MentionPlugin } from '~/v4/social/internal-components/Lexical/plugins/MentionPlugin';
-import styles from './PostTextField.module.css';
 import { Mentioned, Mentionees } from '~/v4/helpers/utils';
 import { LinkPlugin } from '~/v4/social/internal-components/Lexical/plugins/LinkPlugin';
 import { AutoLinkPlugin } from '~/v4/social/internal-components/Lexical/plugins/AutoLinkPlugin';
@@ -30,13 +29,18 @@ import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import { MentionItem } from '~/v4/social/internal-components/Lexical/MentionItem';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
+import clsx from 'clsx';
+import styles from './PostTextField.module.css';
 
 interface PostTextFieldProps {
   pageId?: string;
+  className?: string;
   componentId?: string;
   communityId?: string | null;
   attachmentAmount?: number;
-  mentionContainer: HTMLElement | null;
+  placeholderClassName?: string;
+  mentionContainer?: HTMLElement | null;
+  mentionContainerClassName?: string;
   dataValue: {
     data: { text: string };
     metadata?: {
@@ -131,11 +135,14 @@ const nodes = [AutoLinkNode, LinkNode, MentionNode] as Array<Klass<LexicalNode>>
 
 export const PostTextField = ({
   onChange,
-  communityId,
-  mentionContainer,
   dataValue,
+  className,
+  communityId,
   pageId = '*',
+  mentionContainer,
   componentId = '*',
+  placeholderClassName,
+  mentionContainerClassName,
 }: PostTextFieldProps) => {
   const elementId = 'post_text_field';
   const [intersectionNode, setIntersectionNode] = useState<HTMLElement | null>(null);
@@ -165,83 +172,88 @@ export const PostTextField = ({
   });
 
   return (
-    <>
-      <LexicalComposer
-        initialConfig={{
-          ...editorConfig,
-          ...(dataValue?.data.text
-            ? { editorState: JSON.stringify(textToEditorState(dataValue)) }
-            : {}),
-        }}
-      >
-        <div className={styles.editorContainer} data-qa-anchor={accessibilityId}>
-          <RichTextPlugin
-            contentEditable={<ContentEditable />}
-            placeholder={<div className={styles.editorPlaceholder}>What’s going on...</div>}
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <OnChangePlugin
-            onChange={(_, editor) => {
-              onChange(editorToText(editor));
-            }}
-          />
-          <HistoryPlugin />
-          <AutoFocusPlugin />
-          <LinkPlugin />
-          <AutoLinkPlugin />
-          <MentionPlugin<MentionData, MentionNode<MentionData>>
-            suggestions={suggestions}
-            getSuggestionId={(suggestion) => suggestion.userId}
-            onQueryChange={onQueryChange}
-            $createNode={(data) =>
-              $createMentionNode({
-                text: `@${data?.displayName || ''}`,
-                data,
-              })
-            }
-            menuRenderFn={(
-              _,
-              { options, selectedIndex, setHighlightedIndex, selectOptionAndCleanUp },
-            ) => {
-              if (!mentionContainer || options.length === 0) {
-                return null;
-              }
-              return ReactDOM.createPortal(
-                <>
-                  {options.map((option, i: number) => {
-                    return (
-                      <MentionItem
-                        pageId={pageId}
-                        componentId={componentId}
-                        isSelected={selectedIndex === i}
-                        onClick={() => {
-                          setHighlightedIndex(i);
-                          selectOptionAndCleanUp(option);
-                        }}
-                        onMouseEnter={() => {
-                          setHighlightedIndex(i);
-                        }}
-                        key={option.key}
-                        option={{
-                          ...option,
-                          setRefElement: (element) => {
-                            if (i === options.length - 1) {
-                              setIntersectionNode(element);
-                            }
-                            option.setRefElement(element);
-                          },
-                        }}
-                      />
-                    );
-                  })}
-                </>,
-                mentionContainer,
+    <LexicalComposer
+      initialConfig={{
+        ...editorConfig,
+        ...(dataValue?.data.text
+          ? { editorState: JSON.stringify(textToEditorState(dataValue)) }
+          : {}),
+      }}
+    >
+      <div className={clsx(styles.editorContainer, className)} data-qa-anchor={accessibilityId}>
+        <RichTextPlugin
+          contentEditable={<ContentEditable />}
+          placeholder={
+            <div className={clsx(styles.editorPlaceholder, placeholderClassName)}>
+              What's going on...
+            </div>
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <OnChangePlugin
+          onChange={(_, editor) => {
+            onChange(editorToText(editor));
+          }}
+        />
+        <HistoryPlugin />
+        <AutoFocusPlugin />
+        <LinkPlugin />
+        <AutoLinkPlugin />
+        <MentionPlugin<MentionData, MentionNode<MentionData>>
+          suggestions={suggestions}
+          onQueryChange={onQueryChange}
+          commandPriority={COMMAND_PRIORITY_HIGH}
+          getSuggestionId={(suggestion) => suggestion.userId}
+          $createNode={(data) =>
+            $createMentionNode({
+              text: `@${data?.displayName || ''}`,
+              data,
+            })
+          }
+          menuRenderFn={(
+            menuRenderRef,
+            { options, selectedIndex, setHighlightedIndex, selectOptionAndCleanUp },
+          ) => {
+            if (options.length === 0) return null;
+
+            const optionList = options.map((option, i: number) => {
+              return (
+                <MentionItem
+                  pageId={pageId}
+                  componentId={componentId}
+                  isSelected={selectedIndex === i}
+                  onClick={() => {
+                    setHighlightedIndex(i);
+                    selectOptionAndCleanUp(option);
+                  }}
+                  onMouseEnter={() => {
+                    setHighlightedIndex(i);
+                  }}
+                  key={option.key}
+                  option={{
+                    ...option,
+                    setRefElement: (element) => {
+                      if (i === options.length - 1) {
+                        setIntersectionNode(element);
+                      }
+                      option.setRefElement(element);
+                    },
+                  }}
+                />
               );
-            }}
-            commandPriority={COMMAND_PRIORITY_HIGH}
-          />
-        </div>
-      </LexicalComposer>
-    </>
+            });
+
+            if (mentionContainer) return ReactDOM.createPortal(optionList, mentionContainer);
+
+            return menuRenderRef?.current
+              ? ReactDOM.createPortal(
+                  <div className={mentionContainerClassName}>{optionList}</div>,
+                  menuRenderRef.current,
+                )
+              : null;
+          }}
+        />
+      </div>
+    </LexicalComposer>
   );
 };

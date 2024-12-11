@@ -2,9 +2,7 @@ import { CommentRepository, ReactionRepository } from '@amityco/ts-sdk';
 import clsx from 'clsx';
 import millify from 'millify';
 import React, { useCallback, useState } from 'react';
-import EllipsisH from '~/icons/EllipsisH';
 import { BottomSheet, Typography } from '~/v4/core/components';
-import useCommentSubscription from '~/v4/core/hooks/subscriptions/useCommentSubscription';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { Mentionees } from '~/v4/helpers/utils';
@@ -22,6 +20,9 @@ import { CreateCommentParams } from '~/v4/social/components/CommentComposer/Comm
 import { CommentInput } from '~/v4/social/components/CommentComposer/CommentInput';
 import styles from './ReplyComment.module.css';
 import useCommunityPostPermission from '~/v4/social/hooks/useCommunityPostPermission';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
 
 type ReplyCommentProps = {
   pageId?: string;
@@ -32,6 +33,7 @@ type ReplyCommentProps = {
 const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProps) => {
   const componentId = 'post_comment';
   const { confirm } = useConfirmContext();
+  const { isDesktop } = useResponsive();
   const { accessibilityId, config, defaultConfig, isExcluded, uiReference, themeStyles } =
     useAmityComponent({
       pageId,
@@ -48,6 +50,8 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
   });
 
   const isLiked = (comment.myReactions || []).some((reaction) => reaction === 'like');
+
+  const isBrandUser = comment.creator?.isBrand ?? false;
 
   const toggleBottomSheet = () => setBottomSheetOpen((prev) => !prev);
 
@@ -91,10 +95,6 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
 
     setIsEditing(false);
   }, [commentData]);
-
-  useCommentSubscription({
-    commentId: comment.commentId,
-  });
 
   if (isExcluded) return null;
 
@@ -167,9 +167,15 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
           <UserAvatar pageId={pageId} componentId={componentId} userId={comment.userId} />
           <div className={styles.postReplyComment__details}>
             <div className={styles.postReplyComment__content}>
-              <Typography.BodyBold className={styles.postReplyComment__content__username}>
-                {comment.creator?.displayName}
-              </Typography.BodyBold>
+              <div className={styles.postReplyComment__userInfo}>
+                <Typography.BodyBold
+                  data-qa-anchor={`${pageId}/${componentId}/username`}
+                  className={styles.postReplyComment__content__username}
+                >
+                  {comment.creator?.displayName}
+                </Typography.BodyBold>
+                {isBrandUser && <BrandBadge className={styles.postReplyComment__brandBadge} />}
+              </div>
               {isModeratorUser && <ModeratorBadge pageId={pageId} componentId={componentId} />}
               <TextWithMention
                 pageId={pageId}
@@ -200,11 +206,32 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
                     {isLiked ? 'Liked' : 'Like'}
                   </Typography.CaptionBold>
                 </div>
-                <EllipsisH
-                  data-qa-anchor={`${pageId}/${componentId}/reply_comment_options`}
-                  className={styles.postReplyComment__secondRow__actionButton}
-                  onClick={() => setBottomSheetOpen(true)}
-                />
+                <Popover
+                  trigger={{
+                    pageId,
+                    componentId,
+                    onClick: () => setBottomSheetOpen(true),
+                    className: styles.postReplyComment__secondRow__actionButton,
+                    iconClassName: styles.postReplyComment__secondRow__actionButton__icon,
+                  }}
+                >
+                  {({ closePopover }) => (
+                    <CommentOptions
+                      pageId={pageId}
+                      componentId={componentId}
+                      comment={comment}
+                      onCloseBottomSheet={toggleBottomSheet}
+                      handleEditComment={() => {
+                        closePopover();
+                        handleEditComment();
+                      }}
+                      handleDeleteComment={() => {
+                        closePopover();
+                        handleDeleteComment();
+                      }}
+                    />
+                  )}
+                </Popover>
               </div>
               {comment.reactionsCount > 0 && (
                 <div className={styles.postReplyComment__secondRow__rightPane}>
@@ -216,21 +243,23 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
           </div>
         </div>
       )}
-      <BottomSheet
-        onClose={toggleBottomSheet}
-        isOpen={bottomSheetOpen}
-        mountPoint={document.getElementById('asc-uikit-post-comment') as HTMLElement}
-        detent="content-height"
-      >
-        <CommentOptions
-          pageId={pageId}
-          componentId={componentId}
-          comment={comment}
-          onCloseBottomSheet={toggleBottomSheet}
-          handleEditComment={handleEditComment}
-          handleDeleteComment={handleDeleteComment}
-        />
-      </BottomSheet>
+      {!isDesktop && (
+        <BottomSheet
+          onClose={toggleBottomSheet}
+          isOpen={bottomSheetOpen}
+          mountPoint={document.getElementById('asc-uikit-post-comment') as HTMLElement}
+          detent="content-height"
+        >
+          <CommentOptions
+            pageId={pageId}
+            componentId={componentId}
+            comment={comment}
+            onCloseBottomSheet={toggleBottomSheet}
+            handleEditComment={handleEditComment}
+            handleDeleteComment={handleDeleteComment}
+          />
+        </BottomSheet>
+      )}
     </>
   );
 };

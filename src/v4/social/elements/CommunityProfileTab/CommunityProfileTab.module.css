@@ -28,6 +28,7 @@
 .communityTabs__icon {
   width: 1.5rem;
   height: 1.25rem;
+  fill: var(--asc-icon-color);
 }
 
 .communityTabs__pinIcon {
@@ -40,4 +41,14 @@
   border-bottom: 2px solid var(--asc-color-primary-default);
 
   --asc-icon-color: var(--asc-color-base-default);
+}
+
+@media (width >= 48em) {
+  .communityTabs__container {
+    padding: 0 1rem;
+    position: static;
+    border-radius: 0 0 0.5rem 0.5rem;
+    border-left: 1px solid var(--asc-color-base-shade4);
+    border-right: 1px solid var(--asc-color-base-shade4);
+  }
 }

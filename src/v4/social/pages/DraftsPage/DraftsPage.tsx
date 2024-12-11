@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import {
   AspectRatioButton,
@@ -16,10 +16,15 @@ import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import { PageTypes, useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { VideoPreview } from '~/v4/social/internal-components/VideoPreview';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { RoundedBackButton } from '~/v4/social/elements/RoundedBackButton';
 import ColorThief from 'colorthief';
 
 import styles from './DraftsPage.module.css';
+import { useDrawer } from '~/v4/core/providers/DrawerProvider';
+import { BottomSheet } from '~/v4/core/components';
+import { set } from 'lodash';
 
 export type AmityStoryMediaType = { type: 'image'; url: string } | { type: 'video'; url: string };
 
@@ -38,15 +43,13 @@ export const PlainDraftStoryPage = ({
   targetId,
   targetType,
   mediaType,
-  goToCommunityPage,
-  goToGlobalFeedPage,
   onDiscardCreateStory,
 }: AmityDraftStoryPageProps & {
-  goToCommunityPage: (communityId: string) => void;
-  goToGlobalFeedPage: () => void;
   onDiscardCreateStory: () => void;
 }) => {
-  const { page, onBack } = useNavigation();
+  const { isDesktop } = useResponsive();
+  const { openPopup, closePopup } = usePopupContext();
+  const { onBack, prevPage } = useNavigation();
   const pageId = 'create_story_page';
   const { accessibilityId, themeStyles } = useAmityPage({
     pageId,
@@ -54,10 +57,11 @@ export const PlainDraftStoryPage = ({
 
   const { file, setFile } = useStoryContext();
   const { community } = useCommunityInfo(targetId);
-  const [isHyperLinkBottomSheetOpen, setIsHyperLinkBottomSheetOpen] = useState(false);
+
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
 
+  const [openBottomSheet, setOpenBottomSheet] = useState(false);
   const [hyperLink, setHyperLink] = useState<
     {
       data: { url: string; customText: string };
@@ -73,12 +77,16 @@ export const PlainDraftStoryPage = ({
     },
   ]);
 
-  const handleHyperLinkBottomSheetClose = () => {
-    setIsHyperLinkBottomSheetOpen(false);
-  };
-
   const [imageMode, setImageMode] = useState<'fit' | 'fill'>('fit');
   const [colors, setColors] = useState<string[]>([]);
+
+  const currentHyperlinkUrl = useMemo(() => {
+    return hyperLink.filter((link) => link.type === 'hyperlink')?.[0].data.url;
+  }, [hyperLink]);
+
+  const currentHyperlinkText = useMemo(() => {
+    return hyperLink.filter((link) => link.type === 'hyperlink')?.[0].data.customText;
+  }, [hyperLink]);
 
   const onClickImageMode = () => {
     setImageMode(imageMode === 'fit' ? 'fill' : 'fit');
@@ -87,22 +95,24 @@ export const PlainDraftStoryPage = ({
     }
   };
 
-  const onCreateStory = async (
-    file: File | null,
-    imageMode: 'fit' | 'fill',
-    metadata?: Amity.Metadata,
-    items?: Amity.StoryItem[],
-  ) => {
+  const onCreateStory = async ({
+    file,
+    imageMode,
+    metadata,
+    items,
+  }: {
+    file: File | null;
+    imageMode: 'fit' | 'fill';
+    metadata?: Amity.Metadata;
+    items?: Amity.StoryItem[];
+  }) => {
     if (!file) return;
     try {
       const formData = new FormData();
       formData.append('files', file);
       setFile(null);
-      if (page.type === PageTypes.DraftPage && page.context.storyType === 'globalFeed') {
-        goToGlobalFeedPage();
-      } else {
-        onBack();
-      }
+      if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
+      else onBack();
       if (mediaType?.type === 'image' && targetId) {
         await StoryRepository.createImageStory(
           targetType,
@@ -130,11 +140,11 @@ export const PlainDraftStoryPage = ({
   const discardCreateStory = () => {
     confirm({
       pageId,
-      title: 'Delete this story?',
+      title: 'Discard this story?',
       content:
-        'This story will be permanently deleted. You’ll no longer to see and find this story.',
+        'This story will be permanently discarded. You’ll no longer to see and find this story.',
       cancelText: 'Cancel',
-      okText: 'Delete',
+      okText: 'Discard',
       onOk: () => {
         setFile(null);
         onDiscardCreateStory();
@@ -142,18 +152,22 @@ export const PlainDraftStoryPage = ({
     });
   };
 
-  const onSubmitHyperLink: SubmitHandler<HyperLinkFormInputs> = ({ url, customText }) => {
+  const onSubmitHyperLink: SubmitHandler<HyperLinkFormInputs> = ({ url, customText = '' }) => {
     setHyperLink([
       {
         data: {
           url,
-          customText: customText || '',
+          customText,
         },
         // TODO: fix type
         type: 'hyperlink' as Amity.StoryItemType,
       },
     ]);
-    setIsHyperLinkBottomSheetOpen(false);
+
+    setOpenBottomSheet(false);
+
+    // if (isDesktop) closePopup();
+    // else setOpenBottomSheet(false);
   };
 
   const onRemoveHyperLink = () => {
@@ -168,6 +182,21 @@ export const PlainDraftStoryPage = ({
     ]);
   };
 
+  const renderHyperLinkComponent = (onClose: () => void) => {
+    return (
+      <div className={styles.addHyperlinkContainer}>
+        <HyperLinkConfig
+          pageId={pageId}
+          url={currentHyperlinkUrl}
+          customText={currentHyperlinkText}
+          onClose={onClose}
+          onSubmit={onSubmitHyperLink}
+          onRemove={onRemoveHyperLink}
+        />
+      </div>
+    );
+  };
+
   const handleOnClickHyperLinkActionButton = () => {
     if (hyperLink[0]?.data?.url) {
       notification.info({
@@ -175,7 +204,28 @@ export const PlainDraftStoryPage = ({
       });
       return;
     }
-    setIsHyperLinkBottomSheetOpen(true);
+
+    // if (!isDesktop) {
+    setOpenBottomSheet(true);
+    // } else {
+    // openPopup({
+    //   pageId,
+    //   view: 'desktop',
+    //   children: renderHyperLinkComponent(closePopup),
+    // });
+    // }
+  };
+
+  const handleOnEditHyperlink = () => {
+    // if (!isDesktop) {
+    setOpenBottomSheet(true);
+    // } else {
+    // openPopup({
+    //   pageId,
+    //   view: 'desktop',
+    //   children: renderHyperLinkComponent(closePopup),
+    // });
+    // }
   };
 
   const extractColorsFromImage = useCallback(async (imageUrl: string) => {
@@ -259,31 +309,37 @@ export const PlainDraftStoryPage = ({
             playsInline
           />
         ) : null}
-        {hyperLink[0]?.data?.url && (
+        {currentHyperlinkUrl && (
           <div className={styles.hyperLinkContainer}>
-            <HyperLink onClick={() => setIsHyperLinkBottomSheetOpen(true)}>
-              {hyperLink[0]?.data?.customText || hyperLink[0].data.url.replace(/^https?:\/\//, '')}
+            <HyperLink onClick={handleOnEditHyperlink}>
+              {currentHyperlinkText || currentHyperlinkUrl.replace(/^https?:\/\//, '')}
             </HyperLink>
           </div>
         )}
-        <HyperLinkConfig
-          pageId={pageId}
-          isOpen={isHyperLinkBottomSheetOpen}
-          onClose={handleHyperLinkBottomSheetClose}
-          onSubmit={onSubmitHyperLink}
-          onRemove={onRemoveHyperLink}
-          isHaveHyperLink={hyperLink?.[0]?.data?.url !== ''}
-        />
         <div className={styles.footer}>
           <ShareStoryButton
             community={community}
             pageId={pageId}
             onClick={() =>
-              onCreateStory(file, imageMode, {}, hyperLink[0]?.data?.url ? hyperLink : [])
+              onCreateStory({
+                file,
+                imageMode,
+                metadata: {},
+                items: currentHyperlinkUrl ? hyperLink : [],
+              })
             }
           />
         </div>
       </div>
+      <BottomSheet
+        isOpen={openBottomSheet}
+        children={renderHyperLinkComponent(() => {
+          setOpenBottomSheet(false);
+        })}
+        mountPoint={document.getElementById('asc-uikit-create-story') as HTMLElement}
+        onClose={() => setOpenBottomSheet(false)}
+        style={themeStyles}
+      />
     </div>
   );
 };
@@ -294,9 +350,7 @@ export const AmityDraftStoryPage = (props: AmityDraftStoryPageProps) => {
   return (
     <PlainDraftStoryPage
       {...props}
-      onDiscardCreateStory={() => AmityDraftStoryPageBehavior?.onCloseAction?.()}
-      goToCommunityPage={(communityId) => AmityDraftStoryPageBehavior?.onCloseAction?.()}
-      goToGlobalFeedPage={() => AmityDraftStoryPageBehavior?.onCloseAction?.()}
+      onDiscardCreateStory={() => AmityDraftStoryPageBehavior?.closeAction?.()}
     />
   );
 };

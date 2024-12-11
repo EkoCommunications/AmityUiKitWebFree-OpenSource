@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Truncate from 'react-truncate-markup';
 import { PauseIcon, PlayIcon } from '~/icons';
 import { CloseButton, OverflowMenuButton } from '~/v4/social/elements';
@@ -7,12 +7,13 @@ import clsx from 'clsx';
 import { CommunityAvatar } from '~/v4/social/elements/CommunityAvatar';
 
 import styles from './Header.module.css';
+import { Popover } from '~/v4/core/components/AriaPopover';
 
 const Header: React.FC<
   React.PropsWithChildren<{
     onPlay: () => void;
     onPause: () => void;
-    onAction: () => void;
+    onAction: (openPopover: () => void) => void;
     onClose: () => void;
     onClickCommunity: () => void;
     community?: Amity.Community | null;
@@ -25,6 +26,7 @@ const Header: React.FC<
     onMute?: () => void;
     onUnmute?: () => void;
     addStoryButton?: React.ReactNode;
+    actionButton?: React.ReactNode;
   }>
 > = ({
   community,
@@ -40,7 +42,9 @@ const Header: React.FC<
   onClickCommunity,
   haveStoryPermission,
   addStoryButton,
+  actionButton,
 }) => {
+  // const popoverRef = useRef<HTMLDivElement>(null);
   return (
     <div className={styles.viewStoryHeaderContainer}>
       <div className={styles.viewStoryHeadingInfoContainer}>
@@ -78,7 +82,16 @@ const Header: React.FC<
             onClick={onPause}
           />
         )}
-        {isHaveActions && <OverflowMenuButton pageId="story_page" onPress={onAction} />}
+        {isHaveActions && (
+          <Popover
+            trigger={({ openPopover }) => (
+              <OverflowMenuButton pageId="story_page" onPress={() => onAction(openPopover)} />
+            )}
+          >
+            {actionButton}
+          </Popover>
+        )}
+
         <CloseButton
           defaultClassName={clsx(styles.closeButton)}
           pageId="story_page"

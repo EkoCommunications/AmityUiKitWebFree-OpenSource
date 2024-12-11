@@ -70,10 +70,9 @@ export function CommunitiesByCategoryPage({ categoryId }: CommunitiesByCategoryP
       {isEmpty ? (
         <EmptyCommunity pageId={pageId} />
       ) : (
-        <div>
-          {communities.map((community, index) => (
+        <div className={styles.communitiesByCategoryPage__list}>
+          {communities.map((community) => (
             <React.Fragment key={community.communityId}>
-              <CommunityRowItemDivider />
               <CommunityRowItem
                 community={community}
                 pageId={pageId}

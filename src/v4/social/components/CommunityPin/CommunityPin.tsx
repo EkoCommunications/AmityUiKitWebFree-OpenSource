@@ -8,7 +8,6 @@ import usePinnedPostsCollection from '~/v4/social/hooks/collections/usePinnedPos
 import { CommunityFeedPostContentSkeleton } from '~/v4/social/components/CommunityFeed/CommunityFeed';
 import { Button } from '~/v4/core/natives/Button';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
-import useCommunitySubscription from '~/v4/core/hooks/subscriptions/useCommunitySubscription';
 import { SubscriptionLevels } from '@amityco/ts-sdk';
 import {
   AmityPostCategory,
@@ -32,8 +31,6 @@ export const CommunityPin = ({ pageId = '*', communityId }: CommunityPinProps) =
 
   const { community } = useCommunity({ communityId, shouldCall: !!communityId });
   const { AmityCommunityProfilePageBehavior } = usePageBehavior();
-
-  useCommunitySubscription({ communityId, level: SubscriptionLevels.POST });
   const { pinnedPost, isLoading, refresh } = usePinnedPostsCollection({
     communityId,
   });

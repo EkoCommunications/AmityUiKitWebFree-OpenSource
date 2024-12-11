@@ -336,6 +336,15 @@ export const defaultConfig: DefaultConfig = {
     'social_home_page/my_communities/community_members_count': {},
     'social_home_page/newsfeed_component/*': {},
     'social_home_page/global_feed_component/*': {},
+    'social_home_page/post_composer/image_button': {
+      icon: 'ImageIcon',
+    },
+    'social_home_page/post_composer/video_button': {
+      icon: 'VideoIcon',
+    },
+    'social_home_page/post_composer/story_button': {
+      icon: 'ImageIcon',
+    },
     'global_search_page/*/*': {},
     'post_detail_page/*/back_button': {
       icon: 'backButtonIcon',
@@ -444,6 +453,9 @@ export const defaultConfig: DefaultConfig = {
     },
     'select_story_target_page/*/title': {
       text: 'Share to',
+    },
+    'select_story_target_page/*/my_timeline_text': {
+      text: 'My Timeline',
     },
     '*/*/community_official_badge': {
       image: 'platformValue',
@@ -596,6 +608,158 @@ export const defaultConfig: DefaultConfig = {
     'communities_by_category_page/*/community_empty_image': {},
     'communities_by_category_page/*/community_empty_title': {
       text: 'No community yet',
+    },
+    '*/community_sidebar/community_sidebar_title': {
+      text: 'Community',
+    },
+    '*/community_sidebar/newsfeed_sidebar_menu_item': {
+      text: 'Newsfeed',
+      icon: 'Newspaper',
+    },
+    '*/community_sidebar/explore_sidebar_menu_item': {
+      text: 'Explore',
+      icon: 'Global',
+    },
+    '*/community_sidebar/my_communities_sidebar_title': {
+      text: 'My Communities',
+    },
+    '*/community_sidebar/create_community_sidebar_menu_item': {
+      text: 'Create community',
+      icon: 'Plus',
+    },
+    'user_profile_page/*/*': {},
+    'user_profile_page/*/back_button': {
+      image: 'value',
+    },
+    'user_profile_page/*/menu_button': {
+      image: 'value',
+    },
+    'user_profile_page/*/user_feed_tab_button': {
+      image: 'Feed',
+    },
+    'user_profile_page/*/user_image_feed_tab_button': {
+      image: 'ImageFeed',
+    },
+    'user_profile_page/*/user_video_feed_tab_button': {
+      image: 'VideoFeed',
+    },
+    'user_profile_page/user_profile_header/*': {},
+    'user_profile_page/user_feed/*': {},
+    'user_profile_page/user_image_feed/*': {},
+    'user_profile_page/user_video_feed/*': {},
+    'user_profile_page/post_composer/image_button': {
+      icon: 'ImageIcon',
+    },
+    'user_profile_page/post_composer/video_button': {
+      icon: 'VideoIcon',
+    },
+    'user_profile_page/post_composer/story_button': {
+      icon: 'ImageIcon',
+    },
+    'user_relationship_page/*/*': {},
+    'user_pending_follow_request_page/*/*': {},
+    'user_profile_page/user_profile_header/follow_user_button': {
+      text: 'Follow',
+      image: 'Plus',
+    },
+    'user_profile_page/user_profile_header/following_user_button': {
+      text: 'Following',
+      image: 'FollowingUser',
+    },
+    'user_profile_page/user_profile_header/pending_user_button': {
+      text: 'Cancel request',
+      image: 'PendingUser',
+    },
+    'user_profile_page/user_profile_header/unblock_user_button': {
+      text: 'Unblock',
+      image: 'UnblockUser',
+    },
+    'user_profile_page/user_profile_header/user_avatar': {},
+    'user_profile_page/user_profile_header/user_name': {},
+    'user_profile_page/user_profile_header/user_description': {},
+    'user_profile_page/user_profile_header/user_following': {
+      text: 'following',
+    },
+    'user_profile_page/user_profile_header/user_follower': {
+      text: 'followers',
+    },
+    'user_profile_page/user_feed/empty_user_feed': {
+      text: 'No posts yet',
+      image: 'EmptyPost',
+    },
+    'user_profile_page/user_feed/private_user_feed': {
+      text: 'This account is private',
+      image: 'PrivateFeed',
+    },
+    'user_profile_page/user_feed/private_user_feed_info': {
+      text: 'Follow this user to see their posts.',
+    },
+    'user_profile_page/user_feed/blocked_user_feed': {
+      text: 'You’ve blocked this user',
+      image: 'BlockedUser',
+    },
+    'user_profile_page/user_feed/blocked_user_feed_info': {
+      text: 'Unblock to see their posts.',
+    },
+    'user_profile_page/user_image_feed/empty_user_image_feed': {
+      text: 'No photo yet',
+      image: 'EmptyImagePost',
+    },
+    'user_profile_page/user_image_feed/private_user_image_feed': {
+      text: 'This account is private',
+      image: 'PrivateFeed',
+    },
+    'user_profile_page/user_image_feed/private_user_image_feed_info': {
+      text: 'Follow this user to see their posts.',
+    },
+    'user_profile_page/user_image_feed/blocked_user_image_feed': {
+      text: 'You’ve blocked this user',
+      image: 'BlockedUser',
+    },
+    'user_profile_page/user_image_feed/blocked_user_image_feed_info': {
+      text: 'Unblock to see their posts.',
+    },
+    'user_profile_page/user_video_feed/empty_user_video_feed': {
+      text: 'No video yet',
+      image: 'EmptyVideoPost',
+    },
+    'user_profile_page/user_video_feed/private_user_video_feed': {
+      text: 'This account is private',
+      image: 'PrivateFeed',
+    },
+    'user_profile_page/user_video_feed/private_user_video_feed_info': {
+      text: 'Follow this user to see their posts.',
+    },
+    'user_profile_page/user_video_feed/blocked_user_video_feed': {
+      text: 'You’ve blocked this user',
+      image: 'BlockedUser',
+    },
+    'user_profile_page/user_video_feed/blocked_user_video_feed_info': {
+      text: 'Unblock to see their posts.',
+    },
+    'edit_user_profile_page/*/*': {},
+    'edit_user_profile_page/*/back_button': {},
+    'edit_user_profile_page/*/title': {
+      text: 'Edit profile',
+    },
+    'edit_user_profile_page/*/user_display_name_title': {
+      text: 'Display name',
+    },
+    'edit_user_profile_page/*/user_about_title': {
+      text: 'About',
+    },
+    'edit_user_profile_page/*/update_user_profile_button': {
+      text: 'Save',
+    },
+    'blocked_users_page/*/*': {},
+    'blocked_users_page/*/back_button': {
+      image: 'ArrowLeft',
+    },
+    'blocked_users_page/*/title': {
+      text: 'Manage blocked users',
+    },
+    'blocked_users_page/*/user_list_unblock_user_button': {
+      text: 'Unblock',
     },
     'community_setup_page/*/*': {},
     'community_setup_page/*/close_button': {

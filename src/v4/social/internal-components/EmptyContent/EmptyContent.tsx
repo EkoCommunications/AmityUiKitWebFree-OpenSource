@@ -8,6 +8,8 @@ interface EmptyContentProps {
   pageId?: string;
   componentId?: string;
   elementId?: string;
+  infoElementId?: string;
+  text?: string;
   defaultIcon: () => JSX.Element;
 }
 
@@ -15,6 +17,8 @@ export const EmptyContent: React.FC<EmptyContentProps> = ({
   pageId = '*',
   componentId = '*',
   elementId = '*',
+  infoElementId = '*',
+  text,
   defaultIcon,
 }) => {
   const { config, defaultConfig, isExcluded, themeStyles, accessibilityId, uiReference } =
@@ -23,6 +27,12 @@ export const EmptyContent: React.FC<EmptyContentProps> = ({
       componentId,
       elementId,
     });
+
+  const { config: infoConfig } = useAmityElement({
+    pageId,
+    componentId,
+    elementId: infoElementId,
+  });
 
   if (isExcluded) return null;
 
@@ -35,11 +45,18 @@ export const EmptyContent: React.FC<EmptyContentProps> = ({
         imgIcon={() => <img src={config.image} alt={uiReference} />}
       />
 
-      {config.text && (
-        <div>
+      {config.text ? (
+        <>
           <Typography.Title className={styles.emptyContent__text}>{config.text}</Typography.Title>
-        </div>
-      )}
+          {infoConfig.text && (
+            <Typography.Caption className={styles.emptyContent__text}>
+              {infoConfig.text}
+            </Typography.Caption>
+          )}
+        </>
+      ) : text ? (
+        <Typography.Title className={styles.emptyContent__text}>{text}</Typography.Title>
+      ) : null}
     </div>
   );
 };

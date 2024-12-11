@@ -69,7 +69,7 @@ export function AllCategoriesPage() {
         <AllCategoriesTitle pageId={pageId} />
       </div>
       <div className={styles.allCategoriesList}>
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <React.Fragment key={category.categoryId}>
             <AllCategoryItem
               category={category}
@@ -80,7 +80,6 @@ export function AllCategoriesPage() {
                 });
               }}
             />
-            {index < categories.length - 1 && <div className={styles.allCategoriesList__divider} />}
           </React.Fragment>
         ))}
         <div

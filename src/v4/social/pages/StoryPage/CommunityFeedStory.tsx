@@ -26,7 +26,6 @@ import { FileTrigger } from 'react-aria-components';
 import styles from './StoryPage.module.css';
 import { useGetActiveStoriesByTarget } from '~/v4/social/hooks/useGetActiveStories';
 import { useMotionValue, motion } from 'framer-motion';
-import useCommunityStoriesSubscription from '~/v4/social/hooks/useCommunityStoriesSubscription';
 import useSDK from '~/v4/core/hooks/useSDK';
 
 interface CommunityFeedStoryProps {
@@ -306,11 +305,6 @@ export const CommunityFeedStory = ({
       setCurrentIndex(firstUnseenStoryIndex);
     }
   }, []);
-
-  useCommunityStoriesSubscription({
-    targetId: communityId,
-    targetType: 'community',
-  });
 
   if (file) {
     goToDraftStoryPage(

@@ -1,12 +1,12 @@
-import React from 'react';
-import styles from './Members.module.css';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { Button } from '~/v4/core/natives/Button/Button';
-import { IconComponent } from '~/v4/core/IconComponent';
-import { Members as MembersIcon } from '~/v4/icons/Members';
 import clsx from 'clsx';
+import React from 'react';
+import ChevronRight from '~/v4/icons/ChevronRight';
+import { useAmityElement } from '~/v4/core/hooks/uikit';
+import { IconComponent } from '~/v4/core/IconComponent';
+import { Button } from '~/v4/core/natives/Button/Button';
+import { Members as MembersIcon } from '~/v4/icons/Members';
 import { Typography } from '~/v4/core/components/Typography';
-import AngleRight from '~/v4/icons/AngleRight';
+import styles from './Members.module.css';
 
 type MembersProps = {
   pageId?: string;
@@ -47,9 +47,7 @@ export const Members = ({
         />
         {config.text && <Typography.Body>{config.text}</Typography.Body>}
       </div>
-      <div>
-        <AngleRight className={styles.members__angleRight} />
-      </div>
+      <ChevronRight className={styles.members__angleRight} />
     </Button>
   );
 };

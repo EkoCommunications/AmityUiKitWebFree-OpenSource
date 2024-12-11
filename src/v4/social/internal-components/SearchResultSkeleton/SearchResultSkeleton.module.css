@@ -1,4 +1,5 @@
 .searchResultSkeleton__postSkeleton {
+  padding: 0.5rem 0;
   background-color: var(--asc-color-background-default);
 }
 

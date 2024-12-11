@@ -9,6 +9,7 @@ import { CreateCommunityButton } from '~/v4/social/elements/CreateCommunityButto
 import styles from './EmptyNewsFeed.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { AmityCommunitySetupPageMode } from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
 
 interface EmptyNewsfeedProps {
   pageId?: string;
@@ -17,7 +18,7 @@ interface EmptyNewsfeedProps {
 export function EmptyNewsfeed({ pageId = '*' }: EmptyNewsfeedProps) {
   const componentId = 'empty_newsfeed';
 
-  const { goToCommunityCreatePage } = useNavigation();
+  const { goToCreateCommunityPage } = useNavigation();
 
   const { isExcluded, themeStyles, accessibilityId } = useAmityComponent({
     pageId,
@@ -37,7 +38,7 @@ export function EmptyNewsfeed({ pageId = '*' }: EmptyNewsfeedProps) {
       <CreateCommunityButton
         pageId={pageId}
         componentId={componentId}
-        onClick={goToCommunityCreatePage}
+        onClick={() => goToCreateCommunityPage?.({ mode: AmityCommunitySetupPageMode.CREATE })}
       />
     </div>
   );

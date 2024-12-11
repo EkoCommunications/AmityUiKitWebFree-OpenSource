@@ -5,7 +5,6 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--asc-spacing-l1);
 }
 
 .bottomSheet .react-modal-sheet-backdrop {
@@ -151,4 +150,66 @@
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--asc-color-base-shade4);
+}
+
+.hyperlinkConfig__footer {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hyperlinkConfig__header__closeButton {
+  display: none;
+}
+
+.hyperlinkConfig__header__closeButton__icon {
+  color: var(--asc-color-base-shade3);
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media (width > 48em) {
+  .headerContainer {
+    padding: 1.25rem 1.5rem 0;
+  }
+
+  .hyperlinkConfig__header__editCancelButton {
+    display: none;
+  }
+
+  .hyperlinkConfig__header__editDoneButton {
+    display: none;
+  }
+
+  .hyperlinkConfig__header__closeButton {
+    display: block;
+  }
+
+  .hyperlinkConfig__footer {
+    display: flex;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .hyperlinkConfig__footer__editCancelButton {
+    text-align: center;
+    border-radius: 0.5rem;
+    width: 100%;
+    padding: 0.62rem 1rem;
+    color: var(--asc-color-secondary-default);
+    border: 1px solid var(--asc-color-secondary-shade3, #a5a9b5);
+  }
+
+  .hyperlinkConfig__footer__editDoneButton {
+    text-align: center;
+    border-radius: 0.5rem;
+    width: 100%;
+    padding: 0.62rem 1rem;
+    background-color: var(--asc-color-primary-default);
+    color: var(--asc-color-white) !important;
+  }
+
+  .hyperlinkFormContainer {
+    padding: 0 1.5rem;
+  }
 }

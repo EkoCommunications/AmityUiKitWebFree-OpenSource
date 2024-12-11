@@ -1,7 +1,13 @@
 .backButton {
   all: unset;
-  fill: var(--asc-color-white);
-  cursor: pointer;
   width: 2rem;
   height: 2rem;
+  cursor: pointer;
+  margin-top: 0.13rem;
+  fill: var(--asc-color-white);
+}
+
+.backButton__icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }

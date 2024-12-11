@@ -1,12 +1,12 @@
-import React from 'react';
-import styles from './StorySetting.module.css';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { Button } from '~/v4/core/natives/Button/Button';
-import { IconComponent } from '~/v4/core/IconComponent';
 import clsx from 'clsx';
-import { Typography } from '~/v4/core/components/Typography';
-import AngleRight from '~/v4/icons/AngleRight';
+import React from 'react';
+import ChevronRight from '~/v4/icons/ChevronRight';
 import { PlusCircle } from '~/v4/icons/PlusCircle';
+import { useAmityElement } from '~/v4/core/hooks/uikit';
+import { IconComponent } from '~/v4/core/IconComponent';
+import { Button } from '~/v4/core/natives/Button/Button';
+import { Typography } from '~/v4/core/components/Typography';
+import styles from './StorySetting.module.css';
 
 type StorySettingProps = {
   pageId?: string;
@@ -47,9 +47,7 @@ export const StorySetting = ({
         />
         {config.text && <Typography.Body>{config.text}</Typography.Body>}
       </div>
-      <div>
-        <AngleRight className={styles.storySetting__angleRight} />
-      </div>
+      <ChevronRight className={styles.storySetting__angleRight} />
     </Button>
   );
 };

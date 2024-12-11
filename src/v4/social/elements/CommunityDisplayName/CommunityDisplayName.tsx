@@ -2,17 +2,20 @@ import React from 'react';
 import { Typography } from '~/v4/core/components';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './CommunityDisplayName.module.css';
+import clsx from 'clsx';
 
-export interface CommunityDisplayNameProps {
+export type CommunityDisplayNameProps = {
   pageId?: string;
+  className?: string;
   componentId?: string;
   community?: Amity.Community;
-}
+};
 
 export function CommunityDisplayName({
+  className,
+  community,
   pageId = '*',
   componentId = '*',
-  community,
 }: CommunityDisplayNameProps) {
   const elementId = 'community_display_name';
   const { accessibilityId, isExcluded, themeStyles } = useAmityElement({
@@ -25,9 +28,9 @@ export function CommunityDisplayName({
 
   return (
     <Typography.BodyBold
-      className={styles.communityDisplayName}
       style={themeStyles}
       data-qa-anchor={accessibilityId}
+      className={clsx(styles.communityDisplayName, className)}
     >
       {community?.displayName ?? 'My Timeline'}
     </Typography.BodyBold>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, Children } from 'react';
 import Truncate from 'react-truncate-markup';
 import {
   CustomRenderer,
@@ -19,6 +19,8 @@ import { StoryProgressBar } from '~/v4/social/elements/StoryProgressBar/StoryPro
 import clsx from 'clsx';
 import rendererStyles from './Renderers.module.css';
 import { Action } from 'react-insta-stories/dist/interfaces';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 const useAudioControl = () => {
   const [muted, setMuted] = useState(false);
@@ -94,6 +96,8 @@ export const renderer: CustomRenderer = ({
   onClose,
   onClickCommunity,
 }) => {
+  const { isDesktop } = useResponsive();
+  const { openPopup, closePopup } = usePopupContext();
   const [loaded, setLoaded] = useState(false);
   const { loader } = config;
   const { client } = useSDK();
@@ -123,6 +127,8 @@ export const renderer: CustomRenderer = ({
     data,
     items,
   } = story as Amity.Story;
+
+  const [isShowMenuPopOver, setIsShowMenuPopOver] = useState(false);
 
   const isLiked = story?.myReactions?.includes(LIKE_REACTION_KEY);
   const totalLikes = story?.reactions[LIKE_REACTION_KEY] || 0;
@@ -221,6 +227,64 @@ export const renderer: CustomRenderer = ({
   // @ts-ignore
   const videoDuration = Math.round(story?.videoData?.attributes.metadata.video.duration * 1000);
 
+  const renderCommentTray = () => (
+    <CommentTray
+      referenceId={storyId}
+      referenceType="story"
+      community={community as Amity.Community}
+      shouldAllowCreation={community?.allowCommentInStory}
+      shouldAllowInteraction={isMember}
+    />
+  );
+
+  const renderMenuButton = useCallback(() => {
+    return (
+      <>
+        {actions?.map((bottomSheetAction) => (
+          <Button
+            key={bottomSheetAction.name}
+            className={rendererStyles.actionButton}
+            onPress={() => bottomSheetAction?.action()}
+          >
+            {bottomSheetAction?.icon && bottomSheetAction.icon}
+            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
+          </Button>
+        ))}
+      </>
+    );
+  }, [actions]);
+
+  const onClickCommentButton = useCallback(() => {
+    // if (isDesktop) {
+    //   pause();
+    //   openPopup({
+    //     pageId: 'story_page',
+    //     componentId: 'comment_tray_component',
+    //     header: (
+    //       <Typography.Heading className={rendererStyles.commentTrayHeader}>
+    //         Comments
+    //       </Typography.Heading>
+    //     ),
+    //     children: renderCommentTray(),
+    //     isDismissable: false,
+    //     onClose: () => {
+    //       closePopup();
+    //       play();
+    //     },
+    //   });
+    // } else {
+    openCommentSheet();
+    // }
+  }, [action]);
+
+  const onClickMenuButton = useCallback((openPopover) => {
+    // if (isDesktop) {
+    //   pause();
+    //   openPopover();
+    // } else openBottomSheet();
+    openBottomSheet();
+  }, []);
+
   return (
     <div className={clsx(rendererStyles.rendererContainer)}>
       <StoryProgressBar
@@ -258,10 +322,11 @@ export const renderer: CustomRenderer = ({
         onPause={pause}
         onMute={mute}
         onUnmute={unmute}
-        onAction={openBottomSheet}
+        onAction={onClickMenuButton}
         onClickCommunity={() => onClickCommunity?.()}
         onClose={onClose}
         addStoryButton={addStoryButton}
+        actionButton={renderMenuButton()}
       />
       <video
         data-qa-anchor="video_view"
@@ -293,16 +358,7 @@ export const renderer: CustomRenderer = ({
         mountPoint={document.getElementById('asc-uikit-stories-viewer') as HTMLElement}
         detent="content-height"
       >
-        {actions?.map((bottomSheetAction) => (
-          <Button
-            key={bottomSheetAction.name}
-            className={clsx(rendererStyles.actionButton)}
-            onPress={bottomSheetAction?.action}
-          >
-            {bottomSheetAction?.icon}
-            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
-          </Button>
-        ))}
+        {renderMenuButton()}
       </BottomSheet>
       <BottomSheet
         rootId="asc-uikit-stories-viewer"
@@ -311,13 +367,7 @@ export const renderer: CustomRenderer = ({
         mountPoint={document.getElementById('asc-uikit-stories-viewer') as HTMLElement}
         detent="full-height"
       >
-        <CommentTray
-          referenceId={storyId}
-          referenceType="story"
-          community={community as Amity.Community}
-          shouldAllowCreation={community?.allowCommentInStory}
-          shouldAllowInteraction={isMember}
-        />
+        {renderCommentTray()}
       </BottomSheet>
       {items?.[0]?.data?.url && (
         <div className={clsx(rendererStyles.hyperLinkContainer)}>
@@ -347,7 +397,7 @@ export const renderer: CustomRenderer = ({
         commentsCount={commentsCount}
         reactionsCount={totalLikes}
         isLiked={isLiked}
-        onClickComment={openCommentSheet}
+        onClickComment={onClickCommentButton}
         myReactions={myReactions}
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
         isMember={isMember}

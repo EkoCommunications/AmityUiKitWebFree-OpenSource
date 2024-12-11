@@ -57,6 +57,8 @@ export {
   SelectPostTargetPage as AmityPostTargetSelectionPage,
   PostComposerPage as AmityPostComposerPage,
   CommunityProfilePage as AmityCommunityProfilePage,
+  UserProfilePage as AmityUserProfilePage,
+  EditUserProfilePage as AmityEditUserProfilePage,
 } from '~/v4/social/pages';
 
 export {
@@ -80,4 +82,4 @@ export {
   CommunityPinnedPost as AmityCommunityPinnedPostComponent,
 } from '~/v4/social/components/';
 
-export { HomePageTab as AmitySocialHomePageTab } from '~/v4/social/pages/SocialHomePage';
+export { HomePageTab as AmitySocialHomePageTab } from '~/v4/social/constants/HomePageTab';

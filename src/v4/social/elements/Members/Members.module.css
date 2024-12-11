@@ -13,7 +13,7 @@
 }
 
 .members__icon {
-  padding: 0.31rem;
+  padding: 0.2rem;
   width: 1.75rem;
   height: 1.75rem;
   fill: var(--asc-color-base-default);
@@ -23,6 +23,6 @@
 
 .members__angleRight {
   width: 1.5rem;
-  height: 1.25rem;
+  height: 1.5rem;
   fill: var(--asc-color-base-shade1);
 }

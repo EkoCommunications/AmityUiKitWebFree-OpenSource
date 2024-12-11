@@ -11,8 +11,8 @@ import { SDKContext as SDKContextV3 } from '~/core/providers/SDKProvider';
 import PostRendererProvider from '~/social/providers/PostRendererProvider';
 import NavigationProvider from './NavigationProvider';
 
-import ConfigProvider from '~/social/providers/ConfigProvider';
-import { ConfirmComponent } from '~/v4/core/components/ConfirmModal';
+import ConfigProvider from '~/v4/social/providers/ConfigProvider';
+import { ConfirmModal } from '~/v4/core/components/ConfirmModal';
 import { ConfirmComponent as LegacyConfirmComponent } from '~/core/components/Confirm';
 import { NotificationsContainer } from '~/v4/core/components/Notification';
 import { DrawerContainer } from '~/v4/core/components/Drawer';
@@ -36,6 +36,10 @@ import { CustomReactionProvider } from './CustomReactionProvider';
 import { AdEngineProvider } from './AdEngineProvider';
 import { AdEngine } from '~/v4/core/AdEngine';
 import { GlobalFeedProvider } from '~/v4/social/providers/GlobalFeedProvider';
+import { PopupProvider } from '~/v4/core/providers/PopupProvider';
+import { Popup } from '~/v4/core/components/AriaPopup';
+import { CommunitySetupProvider } from '~/v4/social/providers/CommunitySetupProvider';
+import { StoryProvider } from '~/v4/social/providers/StoryProvider';
 
 const InternalComponent = ({
   apiKey,
@@ -139,10 +143,19 @@ const InternalComponent = ({
                         <PostRendererProvider config={postRendererConfig}>
                           <NavigationProvider>
                             <PageBehaviorProvider pageBehavior={pageBehavior}>
-                              <DrawerProvider>
-                                <GlobalFeedProvider>{children}</GlobalFeedProvider>
-                                <DrawerContainer />
-                              </DrawerProvider>
+                              <StoryProvider>
+                                <CommunitySetupProvider>
+                                  <DrawerProvider>
+                                    <GlobalFeedProvider>
+                                      <PopupProvider>
+                                        <Popup />
+                                        {children}
+                                      </PopupProvider>
+                                    </GlobalFeedProvider>
+                                    <DrawerContainer />
+                                  </DrawerProvider>
+                                </CommunitySetupProvider>
+                              </StoryProvider>
                             </PageBehaviorProvider>
                           </NavigationProvider>
                         </PostRendererProvider>
@@ -204,7 +217,7 @@ const AmityUIKitProvider: React.FC<AmityUIKitProviderProps> = (props) => {
                   <InternalComponent {...props} />
                   <NotificationsContainer />
                   <LegacyNotificationsContainer />
-                  <ConfirmComponent />
+                  <ConfirmModal />
                   <LegacyConfirmComponent />
                 </LegacyConfirmProvider>
               </ConfirmProvider>

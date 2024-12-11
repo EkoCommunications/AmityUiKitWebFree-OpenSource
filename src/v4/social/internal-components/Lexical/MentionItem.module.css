@@ -6,6 +6,7 @@
   padding: 0.5rem 1rem;
   background-color: var(--asc-color-background-default);
   color: var(--asc-color-base-default);
+  cursor: pointer;
 }
 
 .userMentionItem__item[data-is-selected='true'],

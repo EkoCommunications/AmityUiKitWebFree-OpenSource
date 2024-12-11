@@ -39,15 +39,21 @@
 }
 
 .closeIcon {
-  position: absolute;
-  right: 0.5rem;
-  top: 0.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0.19rem;
-  background-color: rgb(0 0 0 / 50%);
   fill: var(--asc-color-primary-shade4);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.closeButton {
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem;
   border-radius: 50%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(from var(--asc-color-black) r g b / 80%);
 }
 
 .icon__status {
@@ -58,4 +64,10 @@
   width: 1.75rem;
   height: 1.75rem;
   fill: var(--asc-color-primary-shade4);
+}
+
+@media (width >= 48em) {
+  .thumbnail__container {
+    padding: 0 1.5rem 1rem;
+  }
 }

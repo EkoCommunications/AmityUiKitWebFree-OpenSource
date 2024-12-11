@@ -6,12 +6,14 @@
 }
 
 .createPostButton__text {
-  margin-left: 0.5rem;
+  margin-left: 0.75rem;
+  margin-top: 0.15rem;
   color: var(--asc-color-base-default);
 }
 
 .createPostButton__icon {
-  fill: var(--asc-color-base-default);
-  width: 1.25rem;
-  height: 1.25rem;
+  color: var(--asc-color-base-default);
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-left: 0.25rem;
 }

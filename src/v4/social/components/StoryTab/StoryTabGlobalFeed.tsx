@@ -60,7 +60,7 @@ export const StoryTabGlobalFeed = ({
 
   if (isExcluded) return null;
 
-  if (stories?.length === 0) return null;
+  if (!isLoading && stories?.length === 0) return null;
 
   return (
     <div

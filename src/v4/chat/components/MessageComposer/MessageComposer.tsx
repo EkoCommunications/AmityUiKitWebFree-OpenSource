@@ -152,7 +152,9 @@ export const MessageComposer = ({
 
     if (text?.trim().length === 0) return;
 
-    if (text.trim().length > (config?.message_limit || COMPOSEBAR_MAX_CHARACTER_LIMIT)) {
+    if (
+      text.trim().length > ((config?.message_limit as number) || COMPOSEBAR_MAX_CHARACTER_LIMIT)
+    ) {
       confirm({
         title: 'Unable to send message',
         content: 'Your message is too long. Please shorten your message and try again.',
@@ -196,7 +198,9 @@ export const MessageComposer = ({
             <RichTextPlugin
               contentEditable={<ContentEditable />}
               placeholder={
-                <span className={styles.editorPlaceholder}>{config.placeholder_text}</span> ?? null
+                config.placeholder_text ? (
+                  <span className={styles.editorPlaceholder}>{config.placeholder_text}</span>
+                ) : null
               }
               ErrorBoundary={LexicalErrorBoundary}
             />

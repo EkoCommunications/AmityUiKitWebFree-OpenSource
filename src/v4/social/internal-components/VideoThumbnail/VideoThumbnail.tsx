@@ -4,7 +4,7 @@ import useFileUpload from '~/v4/social/hooks/useFileUpload';
 import clsx from 'clsx';
 import { CloseIcon, ExclamationCircle, Play } from '~/icons';
 import { Spinner } from '~/v4/social/internal-components/Spinner';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
+import { Button } from '~/v4/core/natives/Button';
 
 interface VideoThumbnailProps {
   pageId?: string;
@@ -79,15 +79,14 @@ export const VideoThumbnail = ({
                 className={styles.thumbnail}
                 src={file.thumbnail}
               />
-              <button
+              <Button
                 data-qa-anchor={`${pageId}/${componentId}/remove_thumbnail`}
                 type="reset"
-                onClick={() => {
-                  handleRemoveThumbnail(file.file, index);
-                }}
+                className={styles.closeButton}
+                onPress={() => handleRemoveThumbnail(file.file, index)}
               >
                 <CloseIcon className={styles.closeIcon} />
-              </button>
+              </Button>
               <div className={styles.playIcon}>
                 <Play />
               </div>

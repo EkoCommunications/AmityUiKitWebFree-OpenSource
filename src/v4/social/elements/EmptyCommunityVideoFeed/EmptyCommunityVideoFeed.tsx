@@ -34,7 +34,7 @@ export const EmptyCommunityVideoFeed = ({
       />
       <div>
         <Typography.Title className={styles.emptyCommunityVideoFeed__text}>
-          No video yet
+          No videos yet
         </Typography.Title>
       </div>
     </div>

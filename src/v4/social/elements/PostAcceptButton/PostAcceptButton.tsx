@@ -2,18 +2,19 @@ import React from 'react';
 import styles from './PostAcceptButton.module.css';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Typography } from '~/v4/core/components';
-import { Button } from '~/v4/core/natives/Button';
+import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
 
-export interface PostAcceptButtonProps {
+export type PostAcceptButtonProps = ButtonProps & {
   pageId?: string;
   componentId?: string;
   onClick?: () => void;
-}
+};
 
 export const PostAcceptButton = ({
+  onClick,
   pageId = '*',
   componentId = '*',
-  onClick,
+  ...props
 }: PostAcceptButtonProps) => {
   const elementId = 'post_accept_button';
 
@@ -25,10 +26,16 @@ export const PostAcceptButton = ({
 
   if (isExcluded) return null;
   return (
-    <Button onPress={onClick} className={styles.postAcceptButton__button}>
+    <Button
+      size="medium"
+      variant="fill"
+      onPress={onClick}
+      className={styles.postAcceptButton__button}
+      {...props}
+    >
       <Typography.BodyBold
-        data-qa-anchor={accessibilityId}
         style={themeStyles}
+        data-qa-anchor={accessibilityId}
         className={styles.postAcceptButton__text}
       >
         {config?.text}

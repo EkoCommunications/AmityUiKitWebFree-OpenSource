@@ -1,13 +1,12 @@
-import React from 'react';
-import styles from './EditProfile.module.css';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { Button } from '~/v4/core/natives/Button/Button';
-import { IconComponent } from '~/v4/core/IconComponent';
-import { Pen } from '~/v4/icons/Pen';
 import clsx from 'clsx';
+import React from 'react';
+import { Pen } from '~/v4/icons/Pen';
+import ChevronRight from '~/v4/icons/ChevronRight';
+import { useAmityElement } from '~/v4/core/hooks/uikit';
+import { IconComponent } from '~/v4/core/IconComponent';
+import { Button } from '~/v4/core/natives/Button/Button';
 import { Typography } from '~/v4/core/components/Typography';
-import { RightButton } from '~/core/components/ImageGallery/styles';
-import AngleRight from '~/v4/icons/AngleRight';
+import styles from './EditProfile.module.css';
 
 type EditProfileProps = {
   pageId?: string;
@@ -48,9 +47,7 @@ export const EditProfile = ({
         />
         {config.text && <Typography.Body>{config.text}</Typography.Body>}
       </div>
-      <div>
-        <AngleRight className={styles.editProfile__angleRight} />
-      </div>
+      <ChevronRight className={styles.editProfile__angleRight} />
     </Button>
   );
 };

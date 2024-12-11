@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Svg = (props: React.SVGProps<SVGSVGElement>) => (
+const UserIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     width="100%"
     height="100%"
@@ -21,4 +21,4 @@ const Svg = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default Svg;
+export default UserIcon;

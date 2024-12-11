@@ -1,30 +1,30 @@
+import clsx from 'clsx';
 import React from 'react';
-import styles from './CommunityCreateButton.module.css';
+import { Plus } from '~/v4/icons/Plus';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { IconComponent } from '~/v4/core/IconComponent';
-import { Button, ButtonProps } from '~/v4/core/natives/Button';
-import { Plus } from '~/v4/icons/Plus';
-import { Typography } from '~/v4/core/components';
-import clsx from 'clsx';
+import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
+import styles from './CommunityCreateButton.module.css';
 
 interface CommunityCreateButtonProps {
   pageId?: string;
   componentId?: string;
-  defaultClassName?: string;
-  imgClassName?: string;
-  onPress?: ButtonProps['onPress'];
   isDisabled?: boolean;
+  imgClassName?: string;
+  defaultClassName?: string;
+  onPress?: ButtonProps['onPress'];
 }
 
 export const CommunityCreateButton = ({
-  pageId = '*',
-  componentId = '*',
-  defaultClassName,
-  imgClassName,
   onPress,
   isDisabled,
+  pageId = '*',
+  imgClassName,
+  componentId = '*',
+  defaultClassName,
 }: CommunityCreateButtonProps) => {
   const elementId = 'community_create_button';
+
   const { config, accessibilityId, themeStyles, isExcluded, defaultConfig, uiReference } =
     useAmityElement({
       pageId,
@@ -36,24 +36,22 @@ export const CommunityCreateButton = ({
 
   return (
     <Button
-      onPress={onPress}
-      data-qa-anchor={accessibilityId}
-      style={themeStyles}
-      className={styles.communityCreateButton__button}
-      isDisabled={isDisabled}
       type="submit"
+      onPress={onPress}
+      style={themeStyles}
+      isDisabled={isDisabled}
+      data-qa-anchor={accessibilityId}
+      className={styles.communityCreateButton__button}
+      icon={({ className }) => (
+        <IconComponent
+          configIconName={config.image}
+          defaultIconName={defaultConfig.image}
+          defaultIcon={() => <Plus className={clsx(className, defaultClassName)} />}
+          imgIcon={() => <img src={config.image} alt={uiReference} className={imgClassName} />}
+        />
+      )}
     >
-      <IconComponent
-        defaultIcon={() => (
-          <Plus className={clsx(styles.communityCreateButton__icon, defaultClassName)} />
-        )}
-        imgIcon={() => <img src={config.image} alt={uiReference} className={imgClassName} />}
-        defaultIconName={defaultConfig.image}
-        configIconName={config.image}
-      />
-      <Typography.Body className={styles.communityCreateButton__text}>
-        {config.text}
-      </Typography.Body>
+      {config.text}
     </Button>
   );
 };

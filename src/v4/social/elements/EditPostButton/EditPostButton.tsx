@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
-import styles from './EditPostButton.module.css';
-import { Button, ButtonProps } from '~/v4/core/natives/Button';
+import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
 
 type EditPostButtonProps = ButtonProps & {
   pageId: string;
@@ -18,12 +17,7 @@ export function EditPostButton({ pageId = '*', componentId = '*', ...props }: Ed
   if (isExcluded) return null;
 
   return (
-    <Button
-      data-qa-anchor={accessibilityId}
-      style={themeStyles}
-      className={styles.editPostButton}
-      {...props}
-    >
+    <Button type="submit" style={themeStyles} data-qa-anchor={accessibilityId} {...props}>
       {config.text}
     </Button>
   );

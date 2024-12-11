@@ -21,11 +21,11 @@ export const CommunityPrivacyPublicTitle = ({
 
   if (isExcluded) return null;
   return (
-    <Typography.Title
+    <Typography.BodyBold
       className={styles.communityPrivacyPublicTitle__text}
       data-qa-anchor={accessibilityId}
     >
       {config.text}
-    </Typography.Title>
+    </Typography.BodyBold>
   );
 };

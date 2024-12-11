@@ -82,3 +82,9 @@
   justify-content: center;
   align-items: center;
 }
+
+@media (width >= 48em) {
+  .thumbnail__container {
+    padding: 0 1.5rem;
+  }
+}

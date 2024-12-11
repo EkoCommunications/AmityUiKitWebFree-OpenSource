@@ -19,14 +19,15 @@
 .topSearchBar__textInput {
   border: none;
   background-color: var(--asc-color-base-shade4);
-  color: var(--asc-color-base-shade2);
   outline: none;
+  font-size: 1rem;
+  color: var(--asc-color-base-default);
 }
 
 .topSearchBar__searchIcon {
-  fill: var(--asc-color-base-default);
   width: 1.25rem;
   height: 1.25rem;
+  fill: var(--asc-color-base-shade2);
 }
 
 .topSearchBar__searchIcon_img {
@@ -36,14 +37,35 @@
 }
 
 .topSearchBar__clearButton {
-  fill: var(--asc-color-base-shade3);
   width: 1.25rem;
   height: 1.25rem;
+}
+
+.topSearchBar__clearButton__default {
   cursor: pointer;
+  fill: var(--asc-color-base-shade3);
 }
 
 .topSearchBar__clearButton__img {
   width: 1.25rem;
   height: 1.25rem;
   cursor: pointer;
+}
+
+.topSearchBar__cancelButton {
+  display: block;
+}
+
+@media (width >= 48em) {
+  .topSearchBar {
+    grid-template-columns: 1fr;
+  }
+
+  .topSearchBar__cancelButton {
+    display: none;
+  }
+
+  .topSearchBar__textInput {
+    font-size: 0.875rem;
+  }
 }

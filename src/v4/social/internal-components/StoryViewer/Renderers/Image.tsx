@@ -19,6 +19,9 @@ import { LIKE_REACTION_KEY } from '~/v4/social/constants/reactions';
 import { checkStoryPermission, formatTimeAgo, isAdmin, isModerator } from '~/v4/social/utils';
 import { Button } from '~/v4/core/natives/Button';
 
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+
 import styles from './Renderers.module.css';
 import clsx from 'clsx';
 
@@ -42,10 +45,14 @@ export const renderer: CustomRenderer = ({
   onClose,
   onClickCommunity,
 }) => {
+  const { isDesktop } = useResponsive();
+  const { openPopup, closePopup } = usePopupContext();
+
   const { formatMessage } = useIntl();
   const [loaded, setLoaded] = useState(false);
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false);
   const [isOpenCommentSheet, setIsOpenCommentSheet] = useState(false);
+  const [isShowMenuPopOver, setIsShowMenuPopOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const { loader } = config;
   const { client } = useSDK();
@@ -211,6 +218,62 @@ export const renderer: CustomRenderer = ({
     }
   }, [dragEventTarget]);
 
+  const renderCommentTray = () => (
+    <CommentTray
+      referenceId={storyId}
+      referenceType="story"
+      community={community as Amity.Community}
+      shouldAllowCreation={community?.allowCommentInStory}
+      shouldAllowInteraction={isMember}
+    />
+  );
+
+  const renderMenuButton = useCallback(() => {
+    return (
+      <>
+        {actions?.map((bottomSheetAction) => (
+          <Button
+            key={bottomSheetAction.name}
+            className={styles.actionButton}
+            onPress={() => bottomSheetAction?.action()}
+          >
+            {bottomSheetAction?.icon && bottomSheetAction.icon}
+            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
+          </Button>
+        ))}
+      </>
+    );
+  }, [actions]);
+
+  const onClickCommentButton = useCallback(() => {
+    // if (isDesktop) {
+    //   pause();
+    //   openPopup({
+    //     pageId: 'story_page',
+    //     componentId: 'comment_tray_component',
+    //     header: (
+    //       <Typography.Heading className={styles.commentTrayHeader}>Comments</Typography.Heading>
+    //     ),
+    //     children: renderCommentTray(),
+    //     isDismissable: false,
+    //     onClose: () => {
+    //       closePopup();
+    //       play();
+    //     },
+    //   });
+    // } else {
+    openCommentSheet();
+    // }
+  }, [action]);
+
+  const onClickMenuButton = useCallback((openPopover) => {
+    // if (isDesktop) {
+    //   pause();
+    //   openPopover();
+    // } else openBottomSheet();
+    openBottomSheet();
+  }, []);
+
   return (
     <div
       className={styles.rendererContainer}
@@ -236,10 +299,11 @@ export const renderer: CustomRenderer = ({
         isPaused={isPaused}
         onPlay={play}
         onPause={pause}
-        onAction={openBottomSheet}
+        onAction={onClickMenuButton}
         onClickCommunity={() => onClickCommunity?.()}
         onClose={handleOnClose}
         addStoryButton={addStoryButton}
+        actionButton={renderMenuButton()}
       />
 
       <div
@@ -271,16 +335,7 @@ export const renderer: CustomRenderer = ({
         mountPoint={document.getElementById(targetRootId) as HTMLElement}
         detent="content-height"
       >
-        {actions?.map((bottomSheetAction) => (
-          <Button
-            key={bottomSheetAction.name}
-            className={styles.actionButton}
-            onPress={() => bottomSheetAction?.action()}
-          >
-            {bottomSheetAction?.icon && bottomSheetAction.icon}
-            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
-          </Button>
-        ))}
+        {renderMenuButton()}
       </BottomSheet>
 
       <BottomSheet
@@ -291,13 +346,7 @@ export const renderer: CustomRenderer = ({
         detent="full-height"
         headerTitle={formatMessage({ id: 'storyViewer.commentSheet.title' })}
       >
-        <CommentTray
-          referenceId={storyId}
-          referenceType="story"
-          community={community as Amity.Community}
-          shouldAllowCreation={community?.allowCommentInStory}
-          shouldAllowInteraction={isMember}
-        />
+        {renderCommentTray()}
       </BottomSheet>
 
       {items?.[0]?.data?.url && (
@@ -330,7 +379,7 @@ export const renderer: CustomRenderer = ({
         reactionsCount={reactionsCount}
         isLiked={isLiked}
         myReactions={myReactions}
-        onClickComment={openCommentSheet}
+        onClickComment={onClickCommentButton}
         // Only story-creator and moderator of the community should be able to see impression count.
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
         isMember={isMember}

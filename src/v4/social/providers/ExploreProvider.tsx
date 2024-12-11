@@ -9,6 +9,7 @@ type ExploreContextType = {
   fetchCommunityCategories: () => void;
   refetchRecommendedCommunities: () => void;
   isLoading: boolean;
+  isCategoryLoading: boolean;
   error: Error | null;
   trendingCommunities: Amity.Community[];
   recommendedCommunities: Amity.Community[];
@@ -33,6 +34,7 @@ const ExploreContext = createContext<ExploreContextType>({
   noTrendingCommunities: false,
   isCommunityEmpty: false,
   isLoading: false,
+  isCategoryLoading: false,
   error: null,
   refresh: () => {},
 });
@@ -108,6 +110,7 @@ export const ExploreProvider: React.FC<ExploreProviderProps> = ({ children }) =>
         isEmpty,
         isCommunityEmpty,
         isLoading,
+        isCategoryLoading: categoriesData.isLoading,
         error,
         refresh,
       }}

@@ -1,17 +1,16 @@
 .drawer__content {
   padding: 1rem;
   background-color: var(--asc-color-background-default);
-  max-height: 50%;
+  max-height: 96%;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  border-top-left-radius: 0.625rem;
-  border-top-right-radius: 0.625rem;
-  margin-top: 6rem;
-  z-index: 5;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
 }
 
 .drawer__content:focus {
@@ -20,9 +19,10 @@
 
 .drawer__innerContent {
   background-color: var(--asc-color-background-default);
-  border-top-left-radius: 0.625rem;
-  border-top-right-radius: 0.625rem;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
   flex: 1;
+  margin-bottom: 2rem;
 }
 
 .drawer__placeholder {
@@ -32,12 +32,23 @@
   flex-shrink: 0;
   border-radius: 9999px;
   background-color: var(--asc-color-secondary-shade2);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .drawer__overlay {
   background-color: color(from var(--asc-color-base-inverse) srgb r g b / 50%);
   inset: 0;
   position: fixed;
+  display: block;
   z-index: 5;
+}
+
+@media (width >= 48em) {
+  .drawer__content {
+    display: none;
+  }
+
+  .drawer__overlay {
+    display: none;
+  }
 }

@@ -12,6 +12,16 @@
   height: 1.5rem;
 }
 
+.commentOptions__deleteButton__icon {
+  color: var(--asc-color-alert-default);
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .commentOptions__actionButton__text {
   color: var(--asc-color-base-default);
+}
+
+.commentOptions__deleteButton__text {
+  color: var(--asc-color-alert-default);
 }

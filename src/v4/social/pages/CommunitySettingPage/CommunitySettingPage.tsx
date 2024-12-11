@@ -90,81 +90,75 @@ export const CommunitySettingPage = ({ community }: CommunitySettingPageProps) =
 
   return (
     <div
-      data-qa-anchor={accessibilityId}
       style={themeStyles}
+      data-qa-anchor={accessibilityId}
       className={styles.communitySettingPage__container}
     >
-      <div className={styles.communitySettingPage__basicInfoWrap}>
-        <div className={styles.communitySettingPage__communityTitleWrap}>
-          <BackButton onPress={onBack} />
-          <Typography.Title className={styles.communitySettingPage__comunityTitle}>
-            {community?.displayName}
-          </Typography.Title>
-          <div />
-        </div>
-        <Typography.Title className={styles.communitySettingPage__basicInfo}>
-          Basic info
+      <div className={styles.communitySettingPage__communityTitleWrap}>
+        <BackButton onPress={() => onBack()} />
+        <Typography.Title className={styles.communitySettingPage__communityTitle}>
+          {community?.displayName}
         </Typography.Title>
-        {checkEditCommunityPermission(client, community?.communityId) && (
-          <EditProfile
-            pageId={pageId}
-            onClick={() =>
-              goToEditCommunityPage?.({
-                mode: AmityCommunitySetupPageMode.EDIT,
-                community: community as Amity.Community,
-              })
-            }
-          />
-        )}
-
-        <Members
-          pageId={pageId}
-          onClick={() => {
-            AmityCommunitySettingPageBehavior?.goToMembershipPage?.({ community });
-          }}
-        />
+        <div />
       </div>
-      {(checkReviewPostPermission(client, community?.communityId) ||
-        checkEditCommunityPermission(client, community?.communityId) ||
-        checkDeleteCommunityPermission(client, community?.communityId)) && (
-        <div className={styles.communitySettingPage__communityPermissionWrap}>
-          {
-            <Typography.Title className={styles.communitySettingPage__comunityPermissions}>
-              Community permissions
-            </Typography.Title>
-          }
-          {checkReviewPostPermission(client, community?.communityId) && (
-            <PostPermission
-              pageId={pageId}
-              onClick={() => {
-                AmityCommunitySettingPageBehavior?.goToPostPermissionPage?.({ community });
-              }}
-            />
-          )}
+      <div className={styles.communitySettingPage__content}>
+        <div className={styles.communitySettingPage__basicInfoWrap}>
+          <Typography.Title className={styles.communitySettingPage__basicInfo}>
+            Basic info
+          </Typography.Title>
           {checkEditCommunityPermission(client, community?.communityId) && (
-            <StorySetting
+            <EditProfile
               pageId={pageId}
-              onClick={() => {
-                AmityCommunitySettingPageBehavior?.goToStorySettingPage?.({ community });
-              }}
+              onClick={() =>
+                goToEditCommunityPage?.({
+                  mode: AmityCommunitySetupPageMode.EDIT,
+                  community: community as Amity.Community,
+                })
+              }
             />
           )}
+          <Members
+            pageId={pageId}
+            onClick={() => AmityCommunitySettingPageBehavior?.goToMembershipPage?.({ community })}
+          />
         </div>
-      )}
-
-      {community?.isJoined && (
-        <LeaveCommunity pageId={pageId} onClick={() => handleLeaveCommunity()} />
-      )}
-      {checkDeleteCommunityPermission(client, community?.communityId) && (
-        <Button
-          onPress={() => {
-            handleCloseCommunity();
-          }}
-        >
-          <CloseCommunity pageId={pageId} />
-          <CloseCommunityDescription pageId={pageId} />
-        </Button>
-      )}
+        {(checkReviewPostPermission(client, community?.communityId) ||
+          checkEditCommunityPermission(client, community?.communityId) ||
+          checkDeleteCommunityPermission(client, community?.communityId)) && (
+          <div className={styles.communitySettingPage__communityPermissionWrap}>
+            {
+              <Typography.Title className={styles.communitySettingPage__communityPermissions}>
+                Community permissions
+              </Typography.Title>
+            }
+            {checkReviewPostPermission(client, community?.communityId) && (
+              <PostPermission
+                pageId={pageId}
+                onClick={() => {
+                  AmityCommunitySettingPageBehavior?.goToPostPermissionPage?.({ community });
+                }}
+              />
+            )}
+            {checkEditCommunityPermission(client, community?.communityId) && (
+              <StorySetting
+                pageId={pageId}
+                onClick={() => {
+                  AmityCommunitySettingPageBehavior?.goToStorySettingPage?.({ community });
+                }}
+              />
+            )}
+          </div>
+        )}
+        {community?.isJoined && (
+          <LeaveCommunity pageId={pageId} onClick={() => handleLeaveCommunity()} />
+        )}
+        {checkDeleteCommunityPermission(client, community?.communityId) && (
+          <Button onPress={handleCloseCommunity}>
+            <CloseCommunity pageId={pageId} />
+            <CloseCommunityDescription pageId={pageId} />
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

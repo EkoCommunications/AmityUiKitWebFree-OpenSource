@@ -1,13 +1,8 @@
-.remoteImageButton {
-  width: 1.5rem;
-  height: 1.5rem;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  padding: var(--asc-spacing-none);
-  margin: var(--asc-spacing-none);
+.closeButton {
+  all: unset;
   display: flex;
+  cursor: pointer;
+  padding: 0.25rem;
   align-items: center;
   justify-content: center;
 
@@ -21,12 +16,14 @@
 }
 
 .closeButton__icon {
+  width: 1.25rem;
+  height: 1.25rem;
   fill: var(--asc-color-base-default);
 }
 
-.closeButton {
-  all: unset;
-  cursor: pointer;
-  width: 1.5rem;
-  height: 1.25rem;
+@media (width >= 48em) {
+  .closeButton[data-focus-visible] {
+    border-radius: 100%;
+    outline: 1px solid var(--asc-color-primary-default);
+  }
 }

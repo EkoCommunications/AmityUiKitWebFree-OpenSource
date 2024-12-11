@@ -26,6 +26,7 @@
   width: 100%;
   height: 100%;
   color: var(--asc-color-white);
+  cursor: pointer;
 
   /* Typograhy.Title is now Typograhpy.TitleBold, need to be fixed  */
   font-weight: 400;
@@ -33,6 +34,7 @@
 
 .userAvatar__container {
   position: relative;
+  cursor: pointer;
 }
 
 .userAvatar__img {

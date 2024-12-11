@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { PostContent } from '~/v4/social/components/PostContent';
 import {
@@ -6,15 +6,16 @@ import {
   AmityPostContentComponentStyle,
 } from '~/v4/social/components/PostContent/PostContent';
 import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
-import styles from './CommunityFeed.module.css';
 import EmptyPost from '~/v4/icons/EmptyPost';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import LockPrivateContent from '~/v4/social/internal-components/LockPrivateContent';
 import { SubscriptionLevels } from '@amityco/ts-sdk';
-import useCommunitySubscription from '~/v4/core/hooks/subscriptions/useCommunitySubscription';
 import { Button } from '~/v4/core/natives/Button';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import usePinnedPostsCollection from '~/v4/social/hooks/collections/usePinnedPostCollection';
+import { Typography } from '~/v4/core/components';
+import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
+import styles from './CommunityFeed.module.css';
 
 export const CommunityFeedPostContentSkeleton = () => {
   return (
@@ -68,9 +69,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
 
   const { AmityCommunityProfilePageBehavior } = usePageBehavior();
 
-  useCommunitySubscription({ communityId, level: SubscriptionLevels.POST });
-
-  const observerTarget = useRef(null);
+  const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
 
   const announcementPosts = allPinnedPost.filter((item) => item.placement === 'announcement');
 
@@ -98,26 +97,12 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
     }
   });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      async (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          loadMore();
-        }
-      },
-      { threshold: 0.5 },
-    );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
-      }
-    };
-  }, [hasMore, loadMore]);
+  useIntersectionObserver({
+    node: intersectionNode,
+    onIntersect: () => {
+      if (hasMore && !isLoading) loadMore();
+    },
+  });
 
   useEffect(() => {
     refresh();
@@ -169,26 +154,28 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
             </Button>
           ))}
         {isLoading &&
-          Array.from({ length: 2 }).map((_, index) => (
+          Array.from({ length: 3 }).map((_, index) => (
             <CommunityFeedPostContentSkeleton key={index} />
           ))}
         {posts?.length === 0 && !isLoading && (
           <div className={styles.communityFeed__emptyPost}>
             <EmptyPost className={styles.communityFeed__emptyPostIcon} />
-            <p className={styles.communityFeed__emptyPostText}>No post yet</p>
+            <Typography.Body className={styles.communityFeed__emptyPostText}>
+              No post yet
+            </Typography.Body>
           </div>
         )}
-        <div ref={observerTarget} className={styles.communityFeed__observerTarget} />
+        <div
+          ref={(node) => setIntersectionNode(node)}
+          className={styles.communityFeed__observerTarget}
+        />
       </>
     );
   };
 
   const renderAnnouncementPost = () => {
-    return isLoadingAllPinnedPosts ? (
-      <CommunityFeedPostContentSkeleton />
-    ) : (
-      announcementPosts &&
-        announcementPosts.map(({ post }: Amity.Post) => {
+    return announcementPosts
+      ? announcementPosts.map(({ post }: Amity.Post) => {
           return (
             <Button
               key={post.postId}
@@ -225,7 +212,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
             </Button>
           );
         })
-    );
+      : null;
   };
 
   return (

@@ -9,6 +9,8 @@
   width: 100%;
   padding-top: 100%;
   position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .videoGallery__item {
@@ -62,4 +64,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 0.5rem;
+}
+
+@media (width >= 48em) {
+  .videoGallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .videoGallery__itemContainer:focus {
+    outline: 2px solid var(--asc-color-primary-default);
+  }
 }

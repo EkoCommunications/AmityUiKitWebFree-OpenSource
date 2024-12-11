@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './CommunityMemberItem.module.css';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
 import { Typography } from '~/v4/core/components/Typography/Typography';
-import { MenuButton } from '~/v4/social/elements/MenuButton/MenuButton';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { PromoteToModerator } from '~/v4/icons/PromoteToModerator';
@@ -16,33 +15,37 @@ import UnFlag from '~/v4/icons/UnFlag';
 import Flag from '~/v4/icons/Flag';
 import { isNonNullable } from '~/v4/helpers/utils';
 import { IconComponent } from '~/v4/core/IconComponent';
-import { Trash } from '~/icons';
 import Banned from '~/v4/icons/Banned';
 import GoldenBadge from '~/v4/icons/GoldenBadge';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import Trash from '~/v4/icons/Trash';
 
 const { COMMUNITY_MODERATOR, CHANNEL_MODERATOR } = MemberRoles;
 
 type CommunityMemberItemProps = {
   pageId?: string;
+  roles?: string[];
   user?: Amity.User;
+  onClick?: () => void;
+  refresh?: () => void;
+  isModeratorTab?: boolean;
   community?: Amity.Community;
   currentUserId?: string | null;
-  roles?: string[];
-  onClick?: () => void;
-  isModeratorTab?: boolean;
 };
 
 export const CommunityMemberItem = ({
-  pageId = '*',
-  isModeratorTab = false,
   user,
-  community,
-  currentUserId,
   roles,
   onClick,
+  refresh,
+  community,
+  pageId = '*',
+  currentUserId,
+  isModeratorTab = false,
 }: CommunityMemberItemProps) => {
-  const { setDrawerData, removeDrawerData } = useDrawer();
   const notification = useNotifications();
+  const { setDrawerData, removeDrawerData } = useDrawer();
+  const { isFlaggedByMe, toggleFlagUser } = useUserFlaggedByMe(currentUserId as string);
   const { hasModeratorPermissions, assignRolesToUsers, removeRolesFromUsers, removeMembers } =
     useModerator({
       community,
@@ -53,35 +56,28 @@ export const CommunityMemberItem = ({
   const isGlobalBanned = user?.isGlobalBan;
   const isCurrentUser = currentUserId === user?.userId;
 
-  const { isFlaggedByMe, toggleFlagUser } = useUserFlaggedByMe(currentUserId as string);
-
   const onReportUser = () => {
     removeDrawerData();
     try {
       toggleFlagUser();
     } catch (err) {
-      notification.error({
-        content: 'Failed to report member. Please try again.',
-      });
+      notification.error({ content: 'Failed to report member. Please try again.' });
     } finally {
-      notification.success({
-        content: isFlaggedByMe ? 'User unreported.' : 'User reported.',
-      });
+      notification.success({ content: isFlaggedByMe ? 'User unreported.' : 'User reported.' });
     }
   };
 
   const onPromoteModeratorClick = async () => {
     removeDrawerData();
     try {
-      assignRolesToUsers([COMMUNITY_MODERATOR, CHANNEL_MODERATOR], [user?.userId as string]);
+      await assignRolesToUsers([COMMUNITY_MODERATOR, CHANNEL_MODERATOR], [user?.userId as string]);
+      setTimeout(() => {
+        refresh?.();
+      }, 2000); // TODO: to remove refresh function after SDK has been fixed.
     } catch (err) {
-      notification.error({
-        content: 'Failed to promote member. Please try again.',
-      });
+      notification.error({ content: 'Failed to promote member. Please try again.' });
     } finally {
-      notification.success({
-        content: 'Successfully promoted to moderator!',
-      });
+      notification.success({ content: 'Successfully promoted to moderator!' });
     }
   };
 
@@ -90,13 +86,9 @@ export const CommunityMemberItem = ({
     try {
       removeRolesFromUsers([COMMUNITY_MODERATOR, CHANNEL_MODERATOR], [user?.userId as string]);
     } catch (err) {
-      notification.error({
-        content: 'Failed to demote member. Please try again.',
-      });
+      notification.error({ content: 'Failed to demote member. Please try again.' });
     } finally {
-      notification.success({
-        content: 'Successfully demoted to member!',
-      });
+      notification.success({ content: 'Successfully demoted to member!' });
     }
   };
 
@@ -105,13 +97,9 @@ export const CommunityMemberItem = ({
     try {
       user?.userId && removeMembers([user.userId]);
     } catch (err) {
-      notification.error({
-        content: 'Failed to remove member. Please try again.',
-      });
+      notification.error({ content: 'Failed to remove member. Please try again.' });
     } finally {
-      notification.success({
-        content: 'Member removed from this community.',
-      });
+      notification.success({ content: 'Member removed from this community.' });
     }
   };
 
@@ -120,8 +108,8 @@ export const CommunityMemberItem = ({
       ? {
           name: 'Promote to moderator',
           action: onPromoteModeratorClick,
-          icon: <PromoteToModerator className={styles.communityMemberItem__bottomSheeticon} />,
           accessibilityId: 'promote_moderator',
+          icon: <PromoteToModerator className={styles.communityMemberItem__bottomSheeticon} />,
         }
       : null,
 
@@ -129,80 +117,117 @@ export const CommunityMemberItem = ({
       ? {
           name: 'Demote to member',
           action: onDismissModeratorClick,
-          icon: <DemoteToMember className={styles.communityMemberItem__bottomSheeticon} />,
           accessibilityId: 'demote_member',
+          icon: <DemoteToMember className={styles.communityMemberItem__bottomSheeticon} />,
         }
       : null,
 
     {
-      name: isFlaggedByMe ? 'Unreport user' : 'Report user',
       action: onReportUser,
+      accessibilityId: 'report_member',
+      name: isFlaggedByMe ? 'Unreport user' : 'Report user',
       icon: isFlaggedByMe ? (
         <UnFlag className={styles.communityMemberItem__bottomSheeticon} />
       ) : (
         <Flag className={styles.communityMemberItem__bottomSheeticon} />
       ),
-      accessibilityId: 'report_member',
     },
     hasModeratorPermissions
       ? {
           name: 'Remove from community',
+          accessibilityId: 'remove_member',
           action: onRemoveFromCommunityClick,
           className: styles.communityMemberItem__alertText,
           icon: <Trash className={styles.communityMemberItem__alertbottomSheeticon} />,
-          accessibilityId: 'remove_member',
         }
       : null,
   ].filter(isNonNullable);
 
   return (
-    <div className={styles.communityMemberItem__items} key={user?.userId}>
+    <div className={styles.communityMemberItem} key={user?.userId}>
       <Button onPress={onClick} className={styles.communityMemberItem__leftSide}>
         <div className={styles.communityMemberItem__memberAvatar}>
-          <UserAvatar userId={user?.userId} isShowModeratorBadge={memberHasModeratorRole} />
+          <UserAvatar
+            userId={user?.userId}
+            isShowModeratorBadge={memberHasModeratorRole}
+            className={styles.communityMemberItem__memberAvatar}
+          />
         </div>
         <Typography.BodyBold className={styles.communityMemberItem__memberName}>
           {user?.displayName}
         </Typography.BodyBold>
         {user?.isBrand && (
           <IconComponent
-            defaultIcon={() => <GoldenBadge className={styles.communityMemberItem__badge} />}
-            imgIcon={() => <GoldenBadge className={styles.communityMemberItem__badge} />}
             defaultIconName="badge icon"
+            imgIcon={() => <GoldenBadge className={styles.communityMemberItem__badge} />}
+            defaultIcon={() => <GoldenBadge className={styles.communityMemberItem__badge} />}
           />
         )}
         {isGlobalBanned && (
           <IconComponent
-            defaultIcon={() => <Banned className={styles.communityMemberItem__bannedIcon} />}
-            imgIcon={() => <Banned className={styles.communityMemberItem__bannedIcon} />}
             defaultIconName="banned icon"
+            imgIcon={() => <Banned className={styles.communityMemberItem__bannedIcon} />}
+            defaultIcon={() => <Banned className={styles.communityMemberItem__bannedIcon} />}
           />
         )}
       </Button>
       {!isCurrentUser && community?.isJoined && (
-        <MenuButton
-          pageId={pageId}
-          onClick={() =>
-            setDrawerData({
-              content: (
-                <div className={styles.communityMemberItem__menuWrapper}>
-                  {options.map((option) => (
-                    <Button onPress={option.action} className={styles.communityMemberItem__menu}>
-                      <IconComponent
-                        defaultIcon={() => option.icon}
-                        imgIcon={() => option.icon}
-                        defaultIconName={option.accessibilityId}
-                      />
-                      <Typography.BodyBold className={option.className ?? ''}>
-                        {option.name}
-                      </Typography.BodyBold>
-                    </Button>
-                  ))}
-                </div>
-              ),
-            })
-          }
-        />
+        <Popover
+          trigger={{
+            pageId,
+            onClick: ({ closePopover }) => {
+              setDrawerData({
+                content: (
+                  <div className={styles.communityMemberItem__menuWrapper}>
+                    {options.map((option) => (
+                      <Button
+                        key={option.name}
+                        className={styles.communityMemberItem__menu}
+                        onPress={() => {
+                          closePopover();
+                          option.action();
+                        }}
+                      >
+                        <IconComponent
+                          imgIcon={() => option.icon}
+                          defaultIcon={() => option.icon}
+                          defaultIconName={option.accessibilityId}
+                        />
+                        <Typography.BodyBold className={option.className ?? ''}>
+                          {option.name}
+                        </Typography.BodyBold>
+                      </Button>
+                    ))}
+                  </div>
+                ),
+              });
+            },
+          }}
+        >
+          {({ closePopover }) => (
+            <div className={styles.communityMemberItem__menuWrapper}>
+              {options.map((option) => (
+                <Button
+                  key={option.name}
+                  className={styles.communityMemberItem__menu}
+                  onPress={() => {
+                    closePopover();
+                    option.action();
+                  }}
+                >
+                  <IconComponent
+                    imgIcon={() => option.icon}
+                    defaultIcon={() => option.icon}
+                    defaultIconName={option.accessibilityId}
+                  />
+                  <Typography.BodyBold className={option.className ?? ''}>
+                    {option.name}
+                  </Typography.BodyBold>
+                </Button>
+              ))}
+            </div>
+          )}
+        </Popover>
       )}
     </div>
   );

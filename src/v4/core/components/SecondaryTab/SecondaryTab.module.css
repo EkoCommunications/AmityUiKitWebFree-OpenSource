@@ -1,0 +1,64 @@
+.tabs {
+  display: flex;
+  color: var(--asc-color-base-shade3);
+}
+
+.tabs[data-orientation='horizontal'] {
+  flex-direction: column;
+}
+
+.tabsList {
+  gap: 1.25rem;
+  display: flex;
+}
+
+.tabsList[data-orientation='horizontal'] {
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+}
+
+.tabPanel {
+  height: 100%;
+  overflow: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabPanel::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  padding: 1rem 0 0.75rem;
+  transition: color 200ms;
+
+  --border-color: transparent;
+
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tab[data-hovered] {
+  color: var(--asc-color-primary-default);
+}
+
+.tab[data-selected] {
+  color: var(--asc-color-primary-default);
+
+  --border-color: var(--asc-color-primary-default);
+}
+
+.tab[data-disabled] {
+  color: var(--asc-color-base-shade3);
+}
+
+.tab[data-disabled] .tab[data-selected] {
+  --border-color: var(--asc-color-base-shade3);
+}
+
+@media (width >= 48em) {
+  .tab[data-focus-visible] {
+    background-color: var(--asc-color-primary-shade3);
+  }
+}

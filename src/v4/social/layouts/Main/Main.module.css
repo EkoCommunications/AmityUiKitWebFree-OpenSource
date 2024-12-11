@@ -1,0 +1,42 @@
+.layout {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: auto 1fr;
+  background: var(--asc-color-background-shade1);
+}
+
+.layout__aside {
+  width: 18rem;
+}
+
+.layout__main {
+  width: 100%;
+  margin: 0 auto;
+  overflow: scroll;
+  max-width: 37.125rem; /* 594px */
+  padding: 1rem 1.5rem 0;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.layout__main::-webkit-scrollbar {
+  display: none;
+}
+
+@media (width < 48em) {
+  .layout {
+    grid-template-columns: 1fr;
+    background: var(--asc-color-background-default);
+  }
+
+  .layout__aside {
+    display: none;
+  }
+
+  .layout__main {
+    padding: 0;
+    max-width: unset;
+  }
+}

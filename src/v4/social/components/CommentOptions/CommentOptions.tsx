@@ -5,8 +5,9 @@ import useCommentPermission from '~/social/hooks/useCommentPermission';
 import useSDK from '~/v4/core/hooks/useSDK';
 import { Typography } from '~/v4/core/components';
 import { isNonNullable } from '~/v4/helpers/utils';
-import { FlagIcon, PenIcon, TrashIcon } from '~/v4/social/icons';
+import { FlagIcon, TrashIcon } from '~/v4/social/icons';
 import styles from './CommentOptions.module.css';
+import { CreatePost } from '~/v4/icons/CreatePost';
 
 interface CommentOptionsProps {
   pageId?: string;
@@ -27,6 +28,7 @@ export const CommentOptions = ({
 }: CommentOptionsProps) => {
   const { userRoles } = useSDK();
   const { toggleFlagComment, isFlaggedByMe } = useCommentFlaggedByMe(comment.commentId);
+  const isReplyComment = comment.parentId != null;
 
   // TODO: change to useCommentPermission v4 - remove readonly
   const { canDelete, canEdit, canReport } = useCommentPermission(comment, false, userRoles);
@@ -58,24 +60,33 @@ export const CommentOptions = ({
       ? {
           name: 'Edit comment',
           action: handleEditComment,
-          icon: <PenIcon className={styles.commentOptions__actionButton__icon} />,
+          icon: <CreatePost className={styles.commentOptions__actionButton__icon} />,
           accessibilityId: 'edit_comment',
+          textStyle: styles.commentOptions__actionButton__text,
         }
       : null,
     canReport
       ? {
-          name: isFlaggedByMe ? 'Unreport comment' : 'Report comment',
+          name: isFlaggedByMe
+            ? isReplyComment
+              ? 'Unreport reply'
+              : 'Unreport comment'
+            : isReplyComment
+              ? 'Report reply'
+              : 'Report comment',
           action: handleReportComment,
           icon: <FlagIcon className={styles.commentOptions__actionButton__icon} />,
           accessibilityId: 'report_comment',
+          textStyle: styles.commentOptions__actionButton__text,
         }
       : null,
     canDelete
       ? {
           name: 'Delete comment',
           action: handleDeleteComment,
-          icon: <TrashIcon className={styles.commentOptions__actionButton__icon} />,
+          icon: <TrashIcon className={styles.commentOptions__deleteButton__icon} />,
           accessibilityId: 'delete_comment',
+          textStyle: styles.commentOptions__deleteButton__text,
         }
       : null,
   ].filter(isNonNullable);
@@ -93,7 +104,7 @@ export const CommentOptions = ({
           }}
         >
           {option.icon}
-          <div className={styles.commentOptions__actionButton__text}>
+          <div className={option.textStyle}>
             <Typography.BodyBold>{option.name}</Typography.BodyBold>
           </div>
         </div>

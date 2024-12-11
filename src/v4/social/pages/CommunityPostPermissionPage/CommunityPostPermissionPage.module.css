@@ -5,22 +5,13 @@
 
 .communityPostPermissionPage__communityTitleWrap {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 1rem 0;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.communityPostPermissionPage__comunityTitle {
+.communityPostPermissionPage__communityTitle {
   color: var(--asc-color-base-default);
-}
-
-.communityPostPermissionPage__save {
-  color: var(--asc-color-primary-default);
-}
-
-.communityPostPermissionPage__save:disabled {
-  color: var(--asc-color-primary-shade3);
-  cursor: not-allowed;
 }
 
 .communityPostPermissionPage__label {
@@ -29,62 +20,69 @@
 }
 
 .communityPostPermissionPage__desc {
-  color: var(--asc-color-base-shade1);
   padding-top: 0.12rem;
+  color: var(--asc-color-base-shade1);
 }
 
-.communityPostPermissionPage__choiceWrap {
+.communityPostPermissionPage__radioGroup {
+  gap: 0;
+}
+
+.communityPostPermissionPage__choice {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 1rem 0;
+  align-items: center;
+  flex-direction: row-reverse;
+  justify-content: space-between;
 }
 
-/* radio */
-.communityPostPermissionPage__radio {
-  position: absolute;
-  opacity: 1;
-  cursor: pointer;
+.communityPostPermissionPage__desktopCtaWrapper {
+  display: none;
 }
 
-.communityPostPermissionPage__customRadio {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  border: 1px solid var(--asc-color-base-shade4);
-  background-color: var(--asc-color-white);
-  transition: background 0.3s;
-  padding: 0.25rem;
-}
+@media only screen and (width >= 48em) {
+  .communityPostPermissionPage__container {
+    padding: 0;
+    gap: 0.75rem;
+    display: grid;
+  }
 
-.communityPostPermissionPage__hiddenRadio {
-  display: none; /* Hides the default radio button */
-}
+  .communityPostPermissionPage__communityTitleWrap {
+    padding: 1.25rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+    background-color: var(--asc-color-background-default);
+  }
 
-/* Create the checked indicator */
-.communityPostPermissionPage__radio:checked + .communityPostPermissionPage__customRadio::after {
-  content: '';
-  display: block;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background-color: var(--asc-color-primary-default);
-  border: 1px solid var(--asc-color-primary-default);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.2s ease-in-out;
-}
+  .communityPostPermissionPage__communityTitle {
+    font-size: 1.25rem;
+  }
 
-.communityPostPermissionPage__hiddenRadio:checked + .communityPostPermissionPage__customRadio {
-  border-color: var(--asc-color-primary-default);
-}
+  .communityPostPermissionPage__mobileCta {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-.communityPostPermissionPage__hiddenRadio:checked
-  + .communityPostPermissionPage__customRadio::after {
-  opacity: 1;
+  .communityPostPermissionPage__communityContentWrap {
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+    background-color: var(--asc-color-background-default);
+  }
+
+  .communityPostPermissionPage__label {
+    padding: 1rem;
+  }
+
+  .communityPostPermissionPage__choice {
+    padding: 1rem;
+  }
+
+  .communityPostPermissionPage__desktopCtaWrapper {
+    padding: 1rem;
+    display: block;
+  }
+
+  .communityPostPermissionPage__desktopCta {
+    width: 100%;
+  }
 }

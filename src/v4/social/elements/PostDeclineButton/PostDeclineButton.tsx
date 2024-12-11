@@ -2,18 +2,19 @@ import React from 'react';
 import styles from './PostDeclineButton.module.css';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Typography } from '~/v4/core/components';
-import { Button } from '~/v4/core/natives/Button';
+import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
 
-export interface PostDeclineButtonProps {
+export type PostDeclineButtonProps = ButtonProps & {
   pageId?: string;
   componentId?: string;
   onClick?: () => void;
-}
+};
 
 export const PostDeclineButton = ({
+  onClick,
   pageId = '*',
   componentId = '*',
-  onClick,
+  ...props
 }: PostDeclineButtonProps) => {
   const elementId = 'post_decline_button';
 
@@ -24,11 +25,19 @@ export const PostDeclineButton = ({
   });
 
   if (isExcluded) return null;
+
   return (
-    <Button onPress={onClick} className={styles.postDeclineButton__button}>
+    <Button
+      size="medium"
+      onPress={onClick}
+      color="secondary"
+      variant="outlined"
+      className={styles.postDeclineButton__button}
+      {...props}
+    >
       <Typography.BodyBold
-        data-qa-anchor={accessibilityId}
         style={themeStyles}
+        data-qa-anchor={accessibilityId}
         className={styles.postDeclineButton__text}
       >
         {config?.text}

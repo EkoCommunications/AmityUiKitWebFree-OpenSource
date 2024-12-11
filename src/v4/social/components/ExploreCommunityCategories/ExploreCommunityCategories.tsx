@@ -1,21 +1,19 @@
-import React, { useEffect, useRef } from 'react';
-import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
-
-import { useAmityComponent } from '~/v4/core/hooks/uikit';
-import { CategoryChip } from '~/v4/social/elements/CategoryChip/CategoryChip';
-import { Typography } from '~/v4/core/components';
-import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { Button } from '~/v4/core/natives/Button/Button';
 import clsx from 'clsx';
-import { useExplore } from '~/v4/social/providers/ExploreProvider';
-import { CategoryChipSkeleton } from '~/v4/social/elements/CategoryChip/CategoryChipSkeleton';
-
-import styles from './ExploreCommunityCategories.module.css';
+import { Typography } from '~/v4/core/components';
+import React, { Fragment, useEffect } from 'react';
 import ChevronRight from '~/v4/icons/ChevronRight';
+import { Carousel } from '~/v4/core/components/Carousel';
+import { Button } from '~/v4/core/natives/Button/Button';
+import { useAmityComponent } from '~/v4/core/hooks/uikit';
+import { useExplore } from '~/v4/social/providers/ExploreProvider';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { CategoryChip } from '~/v4/social/elements/CategoryChip/CategoryChip';
+import { CategoryChipSkeleton } from '~/v4/social/elements/CategoryChip/CategoryChipSkeleton';
+import styles from './ExploreCommunityCategories.module.css';
 
-interface ExploreCommunityCategoriesProps {
+type ExploreCommunityCategoriesProps = {
   pageId?: string;
-}
+};
 
 export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCategoriesProps) => {
   const componentId = 'explore_community_categories';
@@ -26,62 +24,57 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
 
   const { goToAllCategoriesPage, goToCommunitiesByCategoryPage } = useNavigation();
 
-  const { categories, isLoading, fetchCommunityCategories } = useExplore();
+  const { categories, isCategoryLoading, fetchCommunityCategories } = useExplore();
 
   useEffect(() => {
     fetchCommunityCategories();
   }, []);
 
-  const intersectionRef = useRef<HTMLDivElement>(null);
-
-  useIntersectionObserver({
-    node: intersectionRef.current,
-    onIntersect: () => {},
-  });
-
-  if (isLoading) {
-    return (
+  return (
+    <Carousel
+      scrollOffset={300}
+      isHidden={isCategoryLoading}
+      iconClassName={styles.exploreCommunityCategories__arrowIcon}
+      leftArrowClassName={clsx(styles.exploreCommunityCategories__arrow, styles.left)}
+      rightArrowClassName={clsx(styles.exploreCommunityCategories__arrow, styles.right)}
+    >
       <div
-        className={styles.exploreCommunityCategories}
         style={themeStyles}
         data-qa-anchor={accessibilityId}
+        className={styles.exploreCommunityCategories}
       >
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CategoryChipSkeleton key={index} />
-        ))}
+        {isCategoryLoading ? (
+          Array.from({ length: 6 }).map((_, index) => <CategoryChipSkeleton key={index} />)
+        ) : (
+          <Fragment>
+            {categories.map((category) => (
+              <div
+                className={styles.exploreCommunityCategories__categoryChip}
+                key={category.categoryId}
+              >
+                <CategoryChip
+                  pageId={pageId}
+                  category={category}
+                  onClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
+                />
+              </div>
+            ))}
+            {categories.length >= 5 ? (
+              <Typography.BodyBold
+                renderer={({ typoClassName }) => (
+                  <Button
+                    className={clsx(typoClassName, styles.exploreCommunityCategories__seeMore)}
+                    onPress={() => goToAllCategoriesPage()}
+                  >
+                    <div>See more</div>
+                    <ChevronRight className={styles.exploreCommunityCategories__seeMoreIcon} />
+                  </Button>
+                )}
+              />
+            ) : null}
+          </Fragment>
+        )}
       </div>
-    );
-  }
-
-  return (
-    <div
-      className={styles.exploreCommunityCategories}
-      style={themeStyles}
-      data-qa-anchor={accessibilityId}
-    >
-      {categories.map((category) => (
-        <div className={styles.exploreCommunityCategories__categoryChip} key={category.categoryId}>
-          <CategoryChip
-            pageId={pageId}
-            category={category}
-            onClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
-          />
-        </div>
-      ))}
-
-      {categories.length >= 5 ? (
-        <Typography.BodyBold
-          renderer={({ typoClassName }) => (
-            <Button
-              className={clsx(typoClassName, styles.exploreCommunityCategories__seeMore)}
-              onPress={() => goToAllCategoriesPage()}
-            >
-              <div>See more</div>
-              <ChevronRight className={styles.exploreCommunityCategories__seeMoreIcon} />
-            </Button>
-          )}
-        />
-      ) : null}
-    </div>
+    </Carousel>
   );
 };

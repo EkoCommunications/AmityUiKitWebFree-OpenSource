@@ -6,6 +6,7 @@ import useCommunityModeratorsCollection from '~/v4/social/hooks/collections/useC
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { UserListSkeleton } from '~/v4/social/internal-components/MemberList/MemberList';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
+import styles from './ModeratorList.module.css';
 
 type ModeratorListProps = {
   pageId?: string;
@@ -14,27 +15,21 @@ type ModeratorListProps = {
 
 export const ModeratorList = ({ pageId = '*', community }: ModeratorListProps) => {
   const componentId = 'moderator_list';
-  const { accessibilityId, themeStyles } = useAmityComponent({
-    pageId,
-    componentId,
-  });
 
-  const { onClickUser } = useNavigation();
   const { currentUserId } = useSDK();
+  const { onClickUser } = useNavigation();
+  const { accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
-
   const { moderators, hasMore, isLoading, loadMore, refresh } = useCommunityModeratorsCollection({
     communityId: community?.communityId as string,
     shouldCall: !!community?.communityId,
   });
 
   useIntersectionObserver({
-    onIntersect: () => {
-      if (hasMore && isLoading === false) {
-        loadMore();
-      }
-    },
     node: intersectionNode,
+    onIntersect: () => {
+      if (hasMore && !isLoading) loadMore();
+    },
   });
 
   useEffect(() => {
@@ -42,18 +37,23 @@ export const ModeratorList = ({ pageId = '*', community }: ModeratorListProps) =
   }, []);
 
   return (
-    <div style={themeStyles} data-qa-anchor={accessibilityId}>
+    <div
+      style={themeStyles}
+      data-qa-anchor={accessibilityId}
+      className={styles.moderatorList}
+      data-hidden={moderators.length <= 0}
+    >
       {!isLoading &&
         moderators.length > 0 &&
         moderators.map(({ user, roles }) => (
           <CommunityMemberItem
-            pageId={pageId}
             user={user}
+            roles={roles}
+            isModeratorTab
+            pageId={pageId}
             community={community}
             currentUserId={currentUserId}
-            roles={roles}
             onClick={() => onClickUser(user?.userId as string)}
-            isModeratorTab
           />
         ))}
       {isLoading && Array.from({ length: 5 }).map((_, index) => <UserListSkeleton key={index} />)}

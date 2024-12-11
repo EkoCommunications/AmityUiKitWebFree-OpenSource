@@ -21,7 +21,6 @@ import { CreateNewStoryButton } from '~/v4/social/elements/CreateNewStoryButton'
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { FileTrigger } from 'react-aria-components';
 import { useMotionValue, motion } from 'framer-motion';
-import useCommunityStoriesSubscription from '~/v4/social/hooks/useCommunityStoriesSubscription';
 
 import styles from './StoryPage.module.css';
 
@@ -318,11 +317,6 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
       'globalFeed',
     );
   }, [file, goToDraftStoryPage, targetId]);
-
-  useCommunityStoriesSubscription({
-    targetId,
-    targetType: 'community',
-  });
 
   if (!stories || stories.length === 0) return null;
 

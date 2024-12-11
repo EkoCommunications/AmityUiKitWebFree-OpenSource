@@ -15,8 +15,9 @@
   display: none;
 }
 
-.shareStoryIcon {
-  margin-left: var(--asc-spacing-s1);
+.shareStoryButton__icon {
+  width: 1.25rem;
+  height: 0.75rem;
 }
 
 .shareStoryButton__image {

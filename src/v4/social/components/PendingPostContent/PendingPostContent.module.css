@@ -2,7 +2,6 @@
   display: block;
   padding: 0 1rem;
   background-color: var(--asc-color-background-default);
-  border-bottom: 0.5rem solid var(--asc-color-base-shade4);
 }
 
 .pendingPostContent__bar {
@@ -67,4 +66,11 @@
   width: 100%;
   padding: 0.75rem 0;
   border-top: 1px solid var(--asc-color-base-shade4);
+}
+
+@media (width >= 48em) {
+  .pendingPostContent__container {
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+  }
 }

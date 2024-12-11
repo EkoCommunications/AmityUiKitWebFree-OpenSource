@@ -21,3 +21,22 @@
 .imageButton_input {
   display: none;
 }
+
+.imageButton__label {
+  display: inline;
+}
+
+@media (width >= 48em) {
+  .imageButton {
+    padding: 0;
+  }
+
+  .imageButton__label {
+    display: none;
+  }
+
+  .imageButton[data-focus-visible] {
+    border-radius: 100%;
+    outline: 1px solid var(--asc-color-primary-default);
+  }
+}

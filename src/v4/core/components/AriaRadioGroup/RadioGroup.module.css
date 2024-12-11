@@ -1,0 +1,6 @@
+.radioGroup {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  color: var(--asc-color-base-default);
+}

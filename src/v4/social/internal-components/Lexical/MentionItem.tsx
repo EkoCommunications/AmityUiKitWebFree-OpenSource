@@ -1,58 +1,54 @@
 import React from 'react';
-import { UserAvatar } from '~/v4/social/internal-components/UserAvatar/UserAvatar';
-import { MentionTypeaheadOption } from './plugins/MentionPlugin';
 import { MentionData } from './utils';
-
-import styles from './MentionItem.module.css';
-import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
+import { Button } from '~/v4/core/natives/Button';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
+import { MentionTypeaheadOption } from './plugins/MentionPlugin';
+import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
+import { UserAvatar } from '~/v4/social/internal-components/UserAvatar/UserAvatar';
+import styles from './MentionItem.module.css';
 
-interface MentionItemProps {
+type MentionItemProps = {
   pageId?: string;
-  componentId?: string;
   isSelected: boolean;
   onClick: () => void;
+  componentId?: string;
   onMouseEnter: () => void;
   option: MentionTypeaheadOption<MentionData>;
-}
+};
 
 export function MentionItem({
+  option,
+  onClick,
+  isSelected,
+  onMouseEnter,
   pageId = '*',
   componentId = '*',
-  option,
-  isSelected,
-  onClick,
-  onMouseEnter,
 }: MentionItemProps) {
-  const { user } = useUser({
-    userId: option.data.userId,
-  });
+  const { user } = useUser({ userId: option.data.userId });
 
   return (
-    <li
+    <Button
       key={option.key}
-      tabIndex={-1}
-      data-is-selected={isSelected}
-      data-qa-ancgor={`${pageId}/${componentId}/mention_item`}
-      className={styles.userMentionItem__item}
+      onPress={onClick}
       ref={option.setRefElement}
-      role="option"
       aria-selected={isSelected}
-      onMouseEnter={onMouseEnter}
-      onClick={onClick}
+      onHoverStart={onMouseEnter}
+      data-is-selected={isSelected}
+      className={styles.userMentionItem__item}
+      data-qa-anchor={`${pageId}/${componentId}/mention_item`}
     >
       <div>
         <UserAvatar
           pageId={pageId}
           componentId={componentId}
-          className={styles.userMentionItem__avatar}
           userId={option.data.userId}
+          className={styles.userMentionItem__avatar}
         />
       </div>
       <div className={styles.userMentionItem__rightPane}>
         <p className={styles.userMentionItem__displayName}>{user?.displayName}</p>
         {user?.isBrand ? <BrandBadge className={styles.userMentionItem__brandIcon} /> : null}
       </div>
-    </li>
+    </Button>
   );
 }

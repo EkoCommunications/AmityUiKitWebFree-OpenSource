@@ -36,6 +36,6 @@
 
 .linkPreview__unableToPreview__icon {
   width: 3rem;
-  height: 2.25rem;
-  fill: var(--asc-color-base-shade3);
+  height: 3rem;
+  color: var(--asc-color-base-shade3);
 }

@@ -3,7 +3,6 @@ import { Timestamp } from '~/v4/social/elements/Timestamp';
 import { ReactionButton } from '~/v4/social/elements/ReactionButton';
 
 import { ModeratorBadge } from '~/v4/social/elements/ModeratorBadge';
-import { MenuButton } from '~/v4/social/elements/MenuButton';
 import { ShareButton } from '~/v4/social/elements/ShareButton';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import { Typography } from '~/v4/core/components';
@@ -29,7 +28,6 @@ import { ImageViewer } from '~/v4/social/internal-components/ImageViewer/ImageVi
 import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoViewer';
 import usePost from '~/v4/core/hooks/objects/usePost';
 import { PostMenu } from '~/v4/social/internal-components/PostMenu/PostMenu';
-import usePostSubscription from '~/v4/core/hooks/subscriptions/usePostSubscription';
 import { ReactionList } from '~/v4/social/components/ReactionList/ReactionList';
 import { usePostedUserInformation } from '~/v4/core/hooks/usePostedUserInformation';
 import millify from 'millify';
@@ -44,6 +42,7 @@ import clsx from 'clsx';
 import { Lock } from '~/icons';
 import Verified from '~/v4/icons/Verified';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
+import { Popover } from '~/v4/core/components/AriaPopover';
 
 export enum AmityPostContentComponentStyle {
   FEED = 'feed',
@@ -256,12 +255,6 @@ export const PostContent = ({
     }
   }, [initialPost, postData]);
 
-  usePostSubscription({
-    postId: post?.postId,
-    level: SubscriptionLevels.POST,
-    shouldSubscribe: shouldSubscribe,
-  });
-
   const shouldCall = useMemo(() => post?.targetType === 'community', [post?.targetType]);
 
   const { community: targetCommunity } = useCommunity({
@@ -415,30 +408,43 @@ export const PostContent = ({
             category === AmityPostCategory.PIN_AND_ANNOUNCEMENT) && (
             <PinBadge pageId={pageId} componentId={componentId} />
           )}
-
-          {style === AmityPostContentComponentStyle.FEED ? (
-            <div className={styles.postContent__bar__actionButton}>
-              {!hideMenu && (
-                <MenuButton
+          {style === AmityPostContentComponentStyle.FEED && (
+            <Popover
+              containerClassName={styles.postContent__bar__actionButton}
+              trigger={{
+                pageId,
+                componentId,
+                onClick: ({ closePopover }) =>
+                  setDrawerData({
+                    content: (
+                      <PostMenu
+                        post={post}
+                        pageId={pageId}
+                        componentId={componentId}
+                        onPostDeleted={onPostDeleted}
+                        onCloseMenu={() => {
+                          closePopover();
+                          removeDrawerData();
+                        }}
+                      />
+                    ),
+                  }),
+              }}
+            >
+              {({ closePopover }) => (
+                <PostMenu
+                  post={post}
                   pageId={pageId}
                   componentId={componentId}
-                  onClick={() =>
-                    setDrawerData({
-                      content: (
-                        <PostMenu
-                          post={post}
-                          onCloseMenu={() => removeDrawerData()}
-                          pageId={pageId}
-                          componentId={componentId}
-                          onPostDeleted={onPostDeleted}
-                        />
-                      ),
-                    })
-                  }
+                  onPostDeleted={onPostDeleted}
+                  onCloseMenu={() => {
+                    closePopover();
+                    removeDrawerData();
+                  }}
                 />
               )}
-            </div>
-          ) : null}
+            </Popover>
+          )}
         </div>
       </div>
       <div className={styles.postContent__content_and_reactions}>

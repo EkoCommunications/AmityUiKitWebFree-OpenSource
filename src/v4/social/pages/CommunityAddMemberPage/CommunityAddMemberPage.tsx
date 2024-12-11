@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
-import styles from './CommunityAddMemberPage.module.css';
 import { useCommunitySetupContext } from '~/v4/social/providers/CommunitySetupProvider';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { CloseButton } from '~/v4/social/elements/CloseButton';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { Typography } from '~/v4/core/components';
 import { Search } from '~/v4/icons/Search';
-import { CheckboxGroup, Input } from 'react-aria-components';
+import { Input } from 'react-aria-components';
 import { Button } from '~/v4/core/natives/Button';
 import { Clear } from '~/v4/icons/Clear';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
-import { Checkbox as CheckboxIcon } from '~/v4/icons/Checkbox';
+import { CheckboxGroup } from '~/v4/core/components/AriaCheckboxGroup';
 import useAllUsersCollection from '~/v4/core/hooks/collections/useAllUsersCollection';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
 import { useUserQueryByDisplayName } from '~/v4/core/hooks/collections/useUsersCollection';
 import { SearchResultSkeleton } from '~/v4/social/internal-components/SearchResultSkeleton/SearchResultSkeleton';
 import { MemberCommunitySetup } from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
 import useCommunityMembersCollection from '~/v4/social/hooks/collections/useCommunityMembersCollection';
-
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { Button as AriaButton } from '~/v4/core/components/AriaButton';
+import styles from './CommunityAddMemberPage.module.css';
 interface CommunityAddMemberPageProps {
   member?: MemberCommunitySetup[];
   communityId?: string;
+  closePopup?: () => void;
   onAddedAction?: (userId: string[]) => void;
 }
 
 export const CommunityAddMemberPage = ({
   member,
+  closePopup,
   communityId,
   onAddedAction,
 }: CommunityAddMemberPageProps) => {
@@ -38,6 +41,7 @@ export const CommunityAddMemberPage = ({
   const [memberSearch, setMemberSearch] = useState('');
   const [selectedMembers, setSelectedMembers] = useState<MemberCommunitySetup[]>(members ?? []);
   const { onBack } = useNavigation();
+  const { isDesktop } = useResponsive();
 
   const { users, hasMore, loadMore, isLoading } = useAllUsersCollection({
     queryParams: {
@@ -80,14 +84,6 @@ export const CommunityAddMemberPage = ({
     node: intersectionNode,
   });
 
-  const handleSelectMember = (member: MemberCommunitySetup, isChecked: boolean) => {
-    if (isChecked) {
-      setSelectedMembers([...selectedMembers, member]);
-    } else {
-      setSelectedMembers(selectedMembers.filter((c) => c.userId !== member.userId));
-    }
-  };
-
   const handleRemoveUser = (userId: string) => {
     if (selectedMembers.length === 1) return setSelectedMembers([]);
     setSelectedMembers(selectedMembers.filter((user) => user.userId !== userId));
@@ -100,7 +96,7 @@ export const CommunityAddMemberPage = ({
 
   const handleAddMember = () => {
     onAddedAction ? handleSubmitAddMember() : setMembers(selectedMembers);
-    onBack();
+    isDesktop ? closePopup?.() : onBack();
   };
 
   const handleSearchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,6 +140,14 @@ export const CommunityAddMemberPage = ({
     ) : null;
   };
 
+  const filteredUsers = communityId
+    ? memberSearch.length > 0
+      ? nonMemberSearchUsers
+      : nonMemberUsers
+    : memberSearch.length > 0
+      ? userSearchResults
+      : users;
+
   return (
     <div
       data-qa-anchor={accessibilityId}
@@ -152,8 +156,14 @@ export const CommunityAddMemberPage = ({
     >
       <div className={styles.communityAddMemberPage__topbarSticky}>
         <div className={styles.communityAddMemberPage__navbar}>
-          <CloseButton pageId={pageId} onPress={() => onBack()} />
-          <Typography.Title>Add member</Typography.Title>
+          <CloseButton
+            pageId={pageId}
+            onPress={() => (isDesktop ? closePopup?.() : onBack())}
+            defaultClassName={styles.communityAddMemberPage__closeButton}
+          />
+          <Typography.Title className={styles.communityAddMemberPage__title}>
+            Add member
+          </Typography.Title>
           <div className={styles.communityAddMemberPage__emptySapce} />
         </div>
         <div className={styles.communityAddMemberPage__searchWrap}>
@@ -179,67 +189,69 @@ export const CommunityAddMemberPage = ({
         </div>
         {renderSelectedMembers()}
       </div>
-      <div className={styles.communityAddMemberPage__memberList}>
-        <CheckboxGroup aria-label="add-member-checkbox" className={styles.checkbox__group}>
-          {(communityId
-            ? memberSearch.length > 0
-              ? nonMemberSearchUsers
-              : nonMemberUsers
-            : memberSearch.length > 0
-              ? userSearchResults
-              : users
-          ).map((user) => (
-            <div className={styles.checkbox__item} key={user.userId}>
-              <label htmlFor={user.userId} className={styles.communityAddMemberPage__memberItem}>
-                <div className={styles.communityAddMemberPage__leftSide}>
+      <div
+        className={styles.communityAddMemberPage__memberList}
+        data-has-selected={selectedMembers.length > 0}
+      >
+        <CheckboxGroup
+          aria-label="add-member-checkbox"
+          value={selectedMembers.map((member) => member.userId)}
+          checkboxProps={{ className: styles.checkbox__item }}
+          onChange={(value) => {
+            setSelectedMembers((existingSelectedMembers) => {
+              if (value.length < existingSelectedMembers.length) {
+                return existingSelectedMembers.filter((user) => value.includes(user.userId));
+              }
+
+              const oldSelectedMembers = existingSelectedMembers.filter((user) =>
+                value.includes(user.userId),
+              );
+              const newSelectedMemberValue = value.slice(
+                -(value.length - oldSelectedMembers.length),
+              );
+              const newSelectedMembers = filteredUsers
+                .filter((user) => newSelectedMemberValue.includes(user.userId))
+                .map((user) => ({ userId: user.userId, displayName: user.displayName ?? '' }));
+
+              return [...oldSelectedMembers, ...newSelectedMembers];
+            });
+          }}
+          checkboxes={filteredUsers.map((user) => ({
+            value: user.userId,
+            label: (
+              <div className={styles.communityAddMemberPage__checkboxLabel}>
+                <div className={styles.communityAddMemberPage__memberAvatar}>
                   <UserAvatar
                     userId={user.userId}
-                    className={styles.communityAddMemberPage__memberAvatar}
+                    className={styles.communityAddMemberPage__selectedUserAvatarImage}
+                    textPlaceholderClassName={
+                      styles.communityAddMemberPage__selectedUserAvatarImage
+                    }
                   />
-                  <Typography.BodyBold className={styles.communityAddMemberPage__memberName}>
-                    {user.displayName}
-                  </Typography.BodyBold>
                 </div>
-                <input
-                  className={styles.communityAddMemberPage__checkbox}
-                  type="checkbox"
-                  id={user.userId}
-                  checked={!!selectedMembers.find((c) => c.userId === user.userId)}
-                  onChange={(e) =>
-                    handleSelectMember(
-                      {
-                        userId: user.userId,
-                        displayName: user.displayName ?? '',
-                      },
-                      e.target.checked,
-                    )
-                  }
-                />
-                <div aria-hidden="true">
-                  <CheckboxIcon className={styles.communityAddMemberPage__checkboxIcon} />
-                </div>
-              </label>
-            </div>
-          ))}
-          {isLoading || isSearchLoading ? renderLoading() : null}
-        </CheckboxGroup>
+                <Typography.BodyBold className={styles.communityAddMemberPage__memberName}>
+                  {user.displayName}
+                </Typography.BodyBold>
+              </div>
+            ),
+          }))}
+        />
+        {isLoading || isSearchLoading ? renderLoading() : null}
         <div ref={(node) => setIntersectionNode(node)} />
       </div>
       <div className={styles.communityAddMemberPage__addMemberButton}>
-        <Button
-          data-qa-anchor={`${pageId}/*/add_member_button`}
-          onPress={() => {
-            handleAddMember();
-          }}
-          isDisabled={selectedMembers.length === 0}
+        <AriaButton
+          size="medium"
           type="button"
+          variant="fill"
+          color="primary"
+          onPress={handleAddMember}
+          isDisabled={selectedMembers.length === 0}
+          data-qa-anchor={`${pageId}/*/add_member_button`}
           className={styles.communityAddMemberPage__button}
         >
-          {members.length > 0 && <div></div>}
-          <Typography.Title className={styles.communityCreateButton__text}>
-            Add member
-          </Typography.Title>
-        </Button>
+          Add member
+        </AriaButton>
       </div>
     </div>
   );

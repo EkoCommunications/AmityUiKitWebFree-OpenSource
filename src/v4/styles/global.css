@@ -54,6 +54,8 @@
   --asc-color-background-shade1: #f6f7f8;
   --asc-color-background-transparent-black: #00000080;
   --asc-color-background-transparent-white: #fffc;
+  --asc-color-primary-background-hover: #0d47ba;
+  --asc-color-primary-background-pressed: #0b3997;
 
   /* Font */
   --asc-text-global-font-family: inter, -apple-system, blinkmacsystemfont, arial, sans-serif;
@@ -77,6 +79,7 @@
   --asc-text-font-weight-normal: 400;
   --asc-text-font-weight-medium: 500;
   --asc-text-font-weight-bold: 600;
+  --asc-text-font-weight-headline: 700;
   --asc-text-font-weight-black: 900;
 
   /* Line Heights */
@@ -151,6 +154,8 @@
     --asc-color-background-shade1: #f6f7f8;
     --asc-color-background-transparent-black: #00000080;
     --asc-color-background-transparent-white: #fffc;
+    --asc-color-primary-background-hover: #0d47ba;
+    --asc-color-primary-background-pressed: #0b3997;
   }
 }
 
@@ -183,6 +188,8 @@
     --asc-color-background-shade1: #40434e;
     --asc-color-background-transparent-black: #00000080;
     --asc-color-background-transparent-white: #fffc;
+    --asc-color-primary-background-hover: #0d47ba;
+    --asc-color-primary-background-pressed: #0b3997;
   }
 }
 
@@ -191,4 +198,12 @@
   [vaul-drawer][vaul-drawer-direction='bottom']::after {
     height: unset;
   }
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }

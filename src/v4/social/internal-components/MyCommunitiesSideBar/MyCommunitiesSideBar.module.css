@@ -1,0 +1,10 @@
+.myCommunitiesList {
+  gap: 0.5rem;
+  display: grid;
+  overflow-y: scroll;
+  padding-bottom: 2rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: calc(100vh - 22rem);
+  background-color: var(--asc-color-background-default);
+}

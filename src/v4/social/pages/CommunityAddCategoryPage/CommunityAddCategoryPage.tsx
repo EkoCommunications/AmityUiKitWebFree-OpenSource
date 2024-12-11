@@ -4,13 +4,14 @@ import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { CloseButton } from '~/v4/social/elements';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { Avatar, Typography } from '~/v4/core/components';
-import { Button } from '~/v4/core/natives/Button';
 import { CheckboxGroup } from 'react-aria-components';
 import useCategoriesCollection from '~/v4/social/hooks/useCategoriesCollection';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
 import { useCommunitySetupContext } from '~/v4/social/providers/CommunitySetupProvider';
 import { Checkbox as CheckboxIcon } from '~/v4/icons/Checkbox';
 import { Category } from '~/v4/icons/Category';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { Button } from '~/v4/core/components/AriaButton';
 
 interface CommunityAddCategoryPageProps {
   category?: Amity.Category[];
@@ -18,10 +19,10 @@ interface CommunityAddCategoryPageProps {
 
 export const CommunityAddCategoryPage = ({ category }: CommunityAddCategoryPageProps) => {
   const pageId = 'community_add_category_page';
+  const { isDesktop } = useResponsive();
   const { themeStyles, accessibilityId } = useAmityPage({
     pageId,
   });
-  // const [categoriesSearch, setCategoriesSearch] = useState('');
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
   const {
     categories: allCategories,
@@ -54,10 +55,26 @@ export const CommunityAddCategoryPage = ({ category }: CommunityAddCategoryPageP
   const handleSelectCategory = (category: Amity.Category, isChecked: boolean) => {
     if (isChecked) {
       if (selectedCategories.length < MAX_CATEGORIES) {
-        setSelectedCategories([...selectedCategories, category]);
+        setSelectedCategories((selectedCategories) => {
+          const updatedCategories = [...selectedCategories, category];
+          if (isDesktop) {
+            setCategories(updatedCategories);
+            return updatedCategories;
+          }
+          return updatedCategories;
+        });
       }
     } else {
-      setSelectedCategories(selectedCategories.filter((c) => c.categoryId !== category.categoryId));
+      setSelectedCategories((selectedCategories) => {
+        const updatedCategories = selectedCategories.filter(
+          (c) => c.categoryId !== category.categoryId,
+        );
+        if (isDesktop) {
+          setCategories(updatedCategories);
+          return updatedCategories;
+        }
+        return updatedCategories;
+      });
     }
   };
 
@@ -76,9 +93,9 @@ export const CommunityAddCategoryPage = ({ category }: CommunityAddCategoryPageP
 
   return (
     <div
+      style={themeStyles}
       data-qa-anchor={accessibilityId}
       className={styles.communityAddCategoryPage__container}
-      style={themeStyles}
     >
       <div className={styles.communityAddCategoryPage__topMenuSticky}>
         <div className={styles.communityAddCategoryPage__navbar}>
@@ -169,17 +186,16 @@ export const CommunityAddCategoryPage = ({ category }: CommunityAddCategoryPageP
       </div>
       <div className={styles.communityAddCategoryPage__addCategoryButton}>
         <Button
-          data-qa-anchor={`${pageId}/*/add_category_button`}
-          onPress={() => {
-            handleAddCategory();
-          }}
-          isDisabled={selectedCategories.length === 0}
+          size="medium"
           type="button"
+          variant="fill"
+          color="primary"
+          onPress={handleAddCategory}
+          isDisabled={selectedCategories.length === 0}
+          data-qa-anchor={`${pageId}/*/add_category_button`}
           className={styles.communityAddCategoryPage__button}
         >
-          <Typography.Title className={styles.communityCreateButton__text}>
-            Add category
-          </Typography.Title>
+          Add category
         </Button>
       </div>
     </div>

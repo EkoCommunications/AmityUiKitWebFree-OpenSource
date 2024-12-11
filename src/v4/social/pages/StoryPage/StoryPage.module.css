@@ -64,7 +64,7 @@
 /* TODO: should standardize media variable eg. mobile screen, tablet screen ,desktop screen */
 
 /* Mobile-first approach */
-@media (width >= 768px) {
+@media (width >= 48em) {
   .overlayLeft,
   .overlayRight {
     display: none;
@@ -73,4 +73,16 @@
   .arrowButton {
     display: block;
   }
+
+  /* .storyWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--asc-color-background-transparent-black);
+
+    To show this component as modal
+    z-index: 500;
+  } */
 }

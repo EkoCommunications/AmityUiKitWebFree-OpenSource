@@ -296,3 +296,7 @@
 .imageFill {
   object-fit: cover;
 }
+
+.commentTrayHeader {
+  color: var(--asc-color-base-default);
+}

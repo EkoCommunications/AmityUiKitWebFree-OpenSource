@@ -1,55 +1,45 @@
 import React from 'react';
-import styles from './CommunityEditButton.module.css';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { IconComponent } from '~/v4/core/IconComponent';
-import { Button, ButtonProps } from '~/v4/core/natives/Button';
-import { Plus } from '~/v4/icons/Plus';
-import { Typography } from '~/v4/core/components';
-import clsx from 'clsx';
+import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
+import styles from './CommunityEditButton.module.css';
 
-interface CommunityEditButtonProps {
+type CommunityEditButtonProps = {
   pageId?: string;
   componentId?: string;
-  defaultClassName?: string;
-  imgClassName?: string;
-  onPress?: ButtonProps['onPress'];
   isDisabled?: boolean;
-}
+  imgClassName?: string;
+  defaultClassName?: string;
+  onPress?: ButtonProps['onPress'];
+};
 
 export const CommunityEditButton = ({
-  pageId = '*',
-  componentId = '*',
-  defaultClassName,
-  imgClassName,
   onPress,
   isDisabled,
+  pageId = '*',
+  componentId = '*',
 }: CommunityEditButtonProps) => {
   const elementId = 'community_edit_button';
-  const { config, accessibilityId, themeStyles, isExcluded, defaultConfig, uiReference } =
-    useAmityElement({
-      pageId,
-      componentId,
-      elementId,
-    });
+  const { config, accessibilityId, themeStyles, isExcluded } = useAmityElement({
+    pageId,
+    componentId,
+    elementId,
+  });
 
   if (isExcluded) return null;
 
   return (
     <Button
-      onPress={onPress}
-      data-qa-anchor={accessibilityId}
-      style={themeStyles}
-      className={styles.communityEditButton__button}
-      isDisabled={isDisabled}
       type="submit"
+      size="medium"
+      variant="fill"
+      color="primary"
+      onPress={onPress}
+      style={themeStyles}
+      isDisabled={isDisabled}
+      data-qa-anchor={accessibilityId}
+      className={styles.communityEditButton__button}
     >
-      <IconComponent
-        defaultIcon={() => <></>}
-        imgIcon={() => <img src={config.image} alt={uiReference} className={imgClassName} />}
-        defaultIconName={defaultConfig.image}
-        configIconName={config.image}
-      />
-      <Typography.Body className={styles.communityEditButton__text}>{config.text}</Typography.Body>
+      {config.text}
     </Button>
   );
 };

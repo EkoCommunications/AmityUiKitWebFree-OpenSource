@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Lock = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
+export const Lock = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
-    width="61"
-    height="61"
-    viewBox="0 0 61 61"
     fill="none"
+    width="100%"
+    height="100%"
+    viewBox="0 0 61 61"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >

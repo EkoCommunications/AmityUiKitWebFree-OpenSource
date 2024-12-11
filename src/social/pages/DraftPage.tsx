@@ -19,8 +19,6 @@ export const AmityDraftStoryPage = (props: AmityDraftStoryPageProps) => {
           onChangePage(PageTypes.NewsFeed);
         }
       }}
-      goToCommunityPage={(communityId) => onClickCommunity(communityId)}
-      goToGlobalFeedPage={() => onChangePage(PageTypes.NewsFeed)}
     />
   );
 };

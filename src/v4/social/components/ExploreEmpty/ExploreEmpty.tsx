@@ -5,18 +5,15 @@ import { Description } from '~/v4/social/elements/Description/Description';
 import { ExploreCreateCommunity } from '~/v4/social/elements/ExploreCreateCommunity/ExploreCreateCommunity';
 import { ExploreEmptyImage } from '~/v4/social/elements/ExploreEmptyImage/ExploreEmptyImage';
 import { Title } from '~/v4/social/elements/Title/Title';
-
 import styles from './ExploreEmpty.module.css';
 
-interface ExploreEmptyProps {
+type ExploreEmptyProps = {
   pageId?: string;
-}
+};
 
 export function ExploreEmpty({ pageId = '*' }: ExploreEmptyProps) {
   const componentId = 'explore_empty';
-
   const { goToCommunityCreatePage } = useNavigation();
-
   const { themeStyles, accessibilityId } = useAmityComponent({
     componentId,
     pageId,

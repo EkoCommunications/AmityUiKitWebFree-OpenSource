@@ -34,7 +34,7 @@ export const EmptyCommunityImageFeed = ({
       />
       <div>
         <Typography.Title className={styles.emptyCommunityImageFeed__text}>
-          No photo yet
+          No photos yet
         </Typography.Title>
       </div>
     </div>

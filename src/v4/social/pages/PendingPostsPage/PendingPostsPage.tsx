@@ -9,8 +9,9 @@ import { useCommunityInfo } from '~/v4/social/hooks';
 import { PendingPostContent } from '~/v4/social/components/PendingPostContent';
 import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
 import FireworkPaper from '~/v4/icons/FireworkPaper';
-import { CommunityFeedPostContentSkeleton } from '~/v4/social/components/CommunityFeed/CommunityFeed';
 import { useSDK } from '~/v4/core/hooks/useSDK';
+import { PendingPostSkeleton } from './PendingPostsSkeleton';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 type PendingPostsPageProps = {
   communityId: string;
@@ -21,6 +22,7 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
   const { themeStyles, accessibilityId } = useAmityPage({
     pageId,
   });
+  const { isDesktop } = useResponsive();
   const { onBack } = useNavigation();
   const { currentUserId } = useSDK();
   const { pendingPostsCount, canReviewCommunityPosts } = useCommunityInfo(communityId);
@@ -38,44 +40,52 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
       className={styles.pendingPostsPage__container}
       style={themeStyles}
     >
-      <div className={styles.pendingPostsPage__topBar}>
-        <BackButton onPress={onBack} />
+      <div
+        className={styles.pendingPostsPage__topBar}
+        data-review={canReviewCommunityPosts || isDesktop}
+      >
+        <BackButton onPress={() => onBack()} />
         <div className={styles.pendingPostsPage__titleWrap}>
           <Title titleClassName={styles.pendingPostsPage__title} pageId={pageId} />
           <Typography.Title>{`(${pendingPostsCount})`}</Typography.Title>
         </div>
-
         <div className={styles.pendingPostsPage__emptyDiv} />
       </div>
-      {isLoading &&
-        Array.from({ length: 3 }).map((_, index) => (
-          <CommunityFeedPostContentSkeleton key={index} />
-        ))}
+      {(canReviewCommunityPosts || isDesktop) && (
+        <div className={styles.pendingPostsPage__descWrap}>
+          <Typography.Caption className={styles.pendingPostsPage__desc}>
+            Decline pending post will permanently delete the selected post from community.
+          </Typography.Caption>
+        </div>
+      )}
+      {isLoading && (
+        <div className={styles.pendingPostsPage__pendingPostSkeletons}>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <PendingPostSkeleton key={index} />
+          ))}
+        </div>
+      )}
       {reviewingPosts.length === 0 && !isLoading && (
         <div className={styles.pendingPostsPage__noPendingPost}>
+          <FireworkPaper className={styles.pendingPostsPage__fireworkIcon} />
           <Typography.Title className={styles.pendingPostsPage__noPendingPostText}>
             No pending posts
           </Typography.Title>
-          <FireworkPaper className={styles.pendingPostsPage__fireworkIcon} />
         </div>
       )}
       {!isLoading && pendingPostsCount > 0 && (canReviewCommunityPosts || isPostOwner) && (
         <>
-          {canReviewCommunityPosts && (
-            <div className={styles.pendingPostsPage__descWrap}>
-              <Typography.Caption className={styles.pendingPostsPage__desc}>
-                Decline pending post will permanently delete the selected post from community.
-              </Typography.Caption>
+          {reviewingPosts.length > 0 && (
+            <div className={styles.pendingPostsPage__list}>
+              {reviewingPosts?.map((post) => (
+                <PendingPostContent
+                  post={post}
+                  pageId={pageId}
+                  canReviewCommunityPosts={canReviewCommunityPosts}
+                />
+              ))}
             </div>
           )}
-          {reviewingPosts.length > 0 &&
-            reviewingPosts?.map((post) => (
-              <PendingPostContent
-                pageId={pageId}
-                post={post}
-                canReviewCommunityPosts={canReviewCommunityPosts}
-              />
-            ))}
         </>
       )}
     </div>

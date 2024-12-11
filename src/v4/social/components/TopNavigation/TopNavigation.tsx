@@ -5,8 +5,7 @@ import { HeaderLabel } from '~/v4/social/elements/HeaderLabel';
 import styles from './TopNavigation.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { HomePageTab } from '~/v4/social/pages/SocialHomePage/SocialHomePage';
-import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
+import { HomePageTab } from '~/v4/social/constants/HomePageTab';
 import { AmityCommunitySetupPageMode } from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
 
 export interface TopNavigationProps {

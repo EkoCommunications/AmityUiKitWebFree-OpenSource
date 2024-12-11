@@ -1,0 +1,12 @@
+.userFollower__container {
+  display: inline-block;
+}
+
+.userFollower__count {
+  color: var(--asc-color-base-default);
+  margin-right: 0.25rem;
+}
+
+.userFollower__label {
+  color: var(--asc-color-base-shade2);
+}

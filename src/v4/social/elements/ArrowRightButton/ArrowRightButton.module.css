@@ -12,14 +12,14 @@
 .storyButton svg {
   width: 2rem;
   height: 1.75rem;
-  fill: var(--asc-color-base-inverse);
+  fill: var(--asc-color-white);
 }
 
 .desktopOnly {
   display: none;
 }
 
-@media screen and (width >= 768px) {
+@media screen and (width >= 48em) {
   .desktopOnly {
     display: flex;
   }

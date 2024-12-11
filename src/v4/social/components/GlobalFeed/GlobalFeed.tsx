@@ -11,6 +11,7 @@ import {
 } from '~/v4/social/components/PostContent/PostContent';
 import { ClickableArea } from '~/v4/core/natives/ClickableArea';
 import styles from './GlobalFeed.module.css';
+import { Divider } from '~/v4/social/elements/Divider';
 
 interface GlobalFeedProps {
   pageId?: string;
@@ -68,7 +69,7 @@ export const GlobalFeed = ({
     <div className={styles.global_feed} style={themeStyles} data-qa-anchor={accessibilityId}>
       {items.map((item, index) => (
         <React.Fragment key={getItemKey(item, items[Math.max(0, index - 1)])}>
-          {index !== 0 ? <div className={styles.global_feed__divider} /> : null}
+          <Divider isShown={index !== 0} />
           {isAmityAd(item) ? (
             <PostAd ad={item} />
           ) : (
@@ -93,14 +94,12 @@ export const GlobalFeed = ({
           )}
         </React.Fragment>
       ))}
-      {items.length > 0 ? <div className={styles.global_feed__divider} /> : null}
+      <Divider isShown={items.length > 0} />
       {isLoading
-        ? Array.from({ length: 2 }).map((_, index) => (
+        ? Array.from({ length: 5 }).map((_, index) => (
             <div key={index}>
-              <div className={styles.global_feed__postSkeletonContainer}>
-                <PostContentSkeleton />
-              </div>
-              {index !== 1 ? <div className={styles.global_feed__divider} /> : null}
+              <PostContentSkeleton />
+              <Divider isShown={index !== 5} />
             </div>
           ))
         : null}

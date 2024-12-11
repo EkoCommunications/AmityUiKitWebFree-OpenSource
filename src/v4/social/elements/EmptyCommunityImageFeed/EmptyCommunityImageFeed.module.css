@@ -21,3 +21,10 @@
   height: 2.8125rem;
   fill: var(--asc-color-base-shade4);
 }
+
+@media (width >= 48em) {
+  .emptyCommunityImageFeed__container {
+    padding: 2.9rem;
+    min-height: auto;
+  }
+}

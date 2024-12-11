@@ -4,7 +4,9 @@ import { useImage } from '~/v4/core/hooks/useImage';
 import useFile from '~/v4/core/hooks/useFile';
 import { SingleVideoViewer } from '~/v4/social/internal-components/SingleVideoViewer';
 import { formatDuration } from '~/v4/social/utils/formatDuration';
+import VideoControl from '~/v4/icons/VideoControl';
 import { Button } from '~/v4/core/natives/Button';
+import { Typography } from '~/v4/core/components';
 
 const VideoItem = ({
   videoFileId,
@@ -21,7 +23,12 @@ const VideoItem = ({
 
   const file = useFile<Amity.File<'video'>>(videoFileId);
 
-  if (!image || !file) return null;
+  if (!image || !file)
+    return (
+      <div className={styles.videoGallery__skeleton__itemContainer}>
+        <VideoControl className={styles.videoGallery__skeleton__item} />
+      </div>
+    );
 
   return (
     <Button
@@ -29,9 +36,9 @@ const VideoItem = ({
       onPress={() => onClickVideoItem(postIndex)}
     >
       <img className={styles.videoGallery__item} src={image} alt={`${thumbnailFileId}`} />
-      <div className={styles.videoGallery__duration}>
+      <Typography.Caption className={styles.videoGallery__duration}>
         {formatDuration((file?.attributes.metadata.video as any)?.duration)}
-      </div>
+      </Typography.Caption>
     </Button>
   );
 };
@@ -61,8 +68,8 @@ export const VideoGallery: React.FC<VideoGalleryProps> = ({
     <div className={styles.videoGallery}>
       {posts?.map((post, index) => (
         <VideoItem
-          key={post?.data?.videoFileId.original}
-          videoFileId={post?.data?.videoFileId.original}
+          key={post?.data?.videoFileId?.original}
+          videoFileId={post?.data?.videoFileId?.original}
           thumbnailFileId={post?.data?.thumbnailFileId}
           postIndex={index}
           onClickVideoItem={onClickVideoItem}
@@ -73,8 +80,8 @@ export const VideoGallery: React.FC<VideoGalleryProps> = ({
           pageId={pageId}
           componentId={componentId}
           elementId={elementId}
-          fileId={posts[selectedIndex]?.data?.videoFileId.original}
-          thumbnailFileId={posts[selectedIndex]?.data?.thumbnailFileId.fileId}
+          fileId={posts[selectedIndex]?.data?.videoFileId?.original}
+          thumbnailFileId={posts[selectedIndex]?.data?.thumbnailFileId?.fileId}
           onClose={() => setIsImageViewerOpen(false)}
         />
       )}

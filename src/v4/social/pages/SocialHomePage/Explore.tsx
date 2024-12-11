@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { ExploreCommunityCategories } from '~/v4/social/components/ExploreCommunityCategories';
 import { RecommendedCommunities } from '~/v4/social/components/RecommendedCommunities';
 import { TrendingCommunities } from '~/v4/social/components/TrendingCommunities';
@@ -10,16 +10,14 @@ import { ExploreEmpty } from '~/v4/social/components/ExploreEmpty';
 import { ExploreCommunityEmpty } from '~/v4/social/components/ExploreCommunityEmpty';
 import { ExploreTrendingTitle } from '~/v4/social/elements/ExploreTrendingTitle';
 import { ExploreRecommendedTitle } from '~/v4/social/elements/ExploreRecommendedTitle';
-import { RefreshSpinner } from '~/v4/icons/RefreshSpinner';
+import { Divider } from '~/v4/social/elements/Divider';
+import { PullToRefresh } from '~/v4/core/components/PullToRefresh';
 
-interface ExploreProps {
+type ExploreProps = {
   pageId: string;
-}
+};
 
 export function Explore({ pageId }: ExploreProps) {
-  const touchStartY = useRef(0);
-  const [touchDiff, setTouchDiff] = useState(0);
-
   const {
     refresh,
     isLoading,
@@ -35,60 +33,46 @@ export function Explore({ pageId }: ExploreProps) {
   }
 
   if (isEmpty) {
-    return <ExploreEmpty pageId={pageId} />;
+    return (
+      <PullToRefresh className={styles.explore} onTouchEndCallback={refresh}>
+        <Divider />
+        <ExploreEmpty pageId={pageId} />
+      </PullToRefresh>
+    );
   }
 
   if (isCommunityEmpty) {
-    return <ExploreCommunityEmpty pageId={pageId} />;
+    return (
+      <PullToRefresh className={styles.explore} onTouchEndCallback={refresh}>
+        <Divider />
+        <div className={styles.explore__exploreCategories}>
+          <ExploreCommunityCategories pageId={pageId} />
+        </div>
+        <Divider className={styles.explore__divider} />
+        <ExploreCommunityEmpty pageId={pageId} />
+      </PullToRefresh>
+    );
   }
 
   return (
-    <div
-      className={styles.explore}
-      onDrag={(event) => event.stopPropagation()}
-      onTouchStart={(ev) => {
-        touchStartY.current = ev.touches[0].clientY;
-      }}
-      onTouchMove={(ev) => {
-        const touchY = ev.touches[0].clientY;
-
-        if (touchStartY.current > touchY) {
-          return;
-        }
-
-        setTouchDiff(Math.min(touchY - touchStartY.current, 100));
-      }}
-      onTouchEnd={(ev) => {
-        touchStartY.current = 0;
-        if (touchDiff >= 75) {
-          refresh();
-        }
-        setTouchDiff(0);
-      }}
-    >
-      <div
-        style={
-          {
-            '--asc-pull-to-refresh-height': `${touchDiff}px`,
-          } as React.CSSProperties
-        }
-        className={styles.explore__pullToRefresh}
-      >
-        <RefreshSpinner className={styles.explore__pullToRefresh__spinner} />
-      </div>
-      <div className={styles.explore__divider} />
+    <PullToRefresh className={styles.explore} onTouchEndCallback={refresh}>
+      <Divider />
       <div className={styles.explore__exploreCategories}>
         <ExploreCommunityCategories pageId={pageId} />
       </div>
-      {isLoading ? <div className={styles.explore__divider} /> : null}
-      {noRecommendedCommunities === false ? (
-        <div className={styles.explore__recommendedForYou} data-is-loading={isLoading === true}>
-          {isLoading ? null : <ExploreRecommendedTitle pageId={pageId} />}
+      <Divider className={styles.explore__divider} />
+      {!noRecommendedCommunities ? (
+        <div className={styles.explore__recommendedForYou} data-is-loading={!!isLoading}>
+          {isLoading ? (
+            <div className={styles.explore__trendingTitleSkeleton} />
+          ) : (
+            <ExploreRecommendedTitle pageId={pageId} />
+          )}
           <RecommendedCommunities pageId={pageId} />
         </div>
       ) : null}
-      {isLoading ? <div className={styles.explore__divider} /> : null}
-      {noTrendingCommunities === false ? (
+      <Divider className={styles.explore__divider} />
+      {!noTrendingCommunities ? (
         <div className={styles.explore__trendingNow}>
           {isLoading ? (
             <div className={styles.explore__trendingTitleSkeleton} />
@@ -98,6 +82,6 @@ export function Explore({ pageId }: ExploreProps) {
           <TrendingCommunities pageId={pageId} />
         </div>
       ) : null}
-    </div>
+    </PullToRefresh>
   );
 }

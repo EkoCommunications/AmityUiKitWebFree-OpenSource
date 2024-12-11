@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import styles from './PendingPostContent.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
@@ -6,7 +6,6 @@ import { Typography } from '~/v4/core/components';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { Timestamp } from '~/v4/social/elements/Timestamp';
 import clsx from 'clsx';
-import { MenuButton } from '~/v4/social/elements/MenuButton';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import Trash from '~/v4/icons/Trash';
 import { PostAcceptButton } from '~/v4/social/elements/PostAcceptButton';
@@ -20,6 +19,8 @@ import { ImageViewer } from '~/v4/social/internal-components/ImageViewer/ImageVi
 import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoViewer';
 import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { Popover } from '~/v4/core/components/AriaPopover';
 
 type PendingPostContentProps = {
   pageId?: string;
@@ -38,6 +39,9 @@ export const PendingPostContent = ({
     componentId,
   });
   const { currentUserId } = useSDK();
+  const { isDesktop } = useResponsive();
+  const [isPopoverShown, setIsPopoverShown] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const { post: postData } = usePost(initialPost?.postId);
 
   const { setDrawerData, removeDrawerData } = useDrawer();
@@ -149,17 +153,19 @@ export const PendingPostContent = ({
           </div>
           {isMyPost(post.postedUserId) && (
             <div className={styles.pendingPostContent__wrapRightMenu}>
-              <div className={styles.pendingPostContent__actionButton}>
-                <MenuButton
-                  pageId={pageId}
-                  componentId={componentId}
-                  onClick={() =>
+              <Popover
+                containerClassName={styles.pendingPostContent__actionButton}
+                trigger={{
+                  pageId,
+                  componentId,
+                  onClick: ({ closePopover }) =>
                     setDrawerData({
                       content: (
                         <Button
-                          data-qa-anchor={`${pageId}/${componentId}/delete_post`}
                           className={styles.pendingPostContent__item}
+                          data-qa-anchor={`${pageId}/${componentId}/delete_post`}
                           onPress={() => {
+                            closePopover();
                             handleDeletePost(post.postId);
                           }}
                         >
@@ -169,10 +175,25 @@ export const PendingPostContent = ({
                           </Typography.Title>
                         </Button>
                       ),
-                    })
-                  }
-                />
-              </div>
+                    }),
+                }}
+              >
+                {({ closePopover }) => (
+                  <Button
+                    className={styles.pendingPostContent__item}
+                    data-qa-anchor={`${pageId}/${componentId}/delete_post`}
+                    onPress={() => {
+                      closePopover();
+                      handleDeletePost(post.postId);
+                    }}
+                  >
+                    <Trash className={styles.pendingPostContent__deletePost__icon} />
+                    <Typography.Title className={styles.pendingPostContent__deletePost__text}>
+                      Delete post
+                    </Typography.Title>
+                  </Button>
+                )}
+              </Popover>
             </div>
           )}
         </div>

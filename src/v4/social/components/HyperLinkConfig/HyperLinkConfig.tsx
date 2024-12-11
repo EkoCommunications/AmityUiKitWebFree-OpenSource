@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { custom, z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
-import { BottomSheet, Typography } from '~/v4/core/components';
+import { Typography } from '~/v4/core/components';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { Button } from '~/v4/core/components/Button';
 import useSDK from '~/v4/core/hooks/useSDK';
 import Trash from '~/v4/social/icons/trash';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
@@ -14,11 +12,14 @@ import { DoneButton } from '~/v4/social/elements/DoneButton';
 import { EditCancelButton } from '~/v4/social/elements/EditCancelButton';
 
 import styles from './HyperLinkConfig.module.css';
+import Close from '~/v4/icons/Close';
+import { Button } from '~/v4/core/natives/Button/Button';
+import { UnderlineInput } from '~/v4/social/internal-components/UnderlineInput/UnderlineInput';
 
 interface HyperLinkConfigProps {
   pageId: string;
-  isHaveHyperLink: boolean;
-  isOpen: boolean;
+  url?: string;
+  customText?: string;
   onClose: () => void;
   onSubmit: (data: { url: string; customText?: string }) => void;
   onRemove: () => void;
@@ -28,22 +29,21 @@ const MAX_LENGTH = 30;
 
 export const HyperLinkConfig = ({
   pageId = '*',
-  isOpen,
-  isHaveHyperLink,
+  url,
+  customText,
   onClose,
   onSubmit,
   onRemove,
 }: HyperLinkConfigProps) => {
   const componentId = 'hyper_link_config_component';
   const { confirm } = useConfirmContext();
-  const { accessibilityId, config, isExcluded, themeStyles } = useAmityComponent({
+  const { accessibilityId, isExcluded, themeStyles } = useAmityComponent({
     pageId,
     componentId,
   });
 
   if (isExcluded) return null;
 
-  const { formatMessage } = useIntl();
   const { client } = useSDK();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -72,7 +72,7 @@ export const HyperLinkConfig = ({
           }
         },
         {
-          message: formatMessage({ id: 'storyCreation.hyperlink.validation.error.invalidUrl' }),
+          message: 'Please enter a valid URL.',
         },
       )
       .refine(
@@ -84,20 +84,17 @@ export const HyperLinkConfig = ({
           return hasWhitelistedUrls;
         },
         {
-          message: formatMessage({ id: 'storyCreation.hyperlink.validation.error.whitelisted' }),
+          message: 'Please enter a whitelisted URL.',
         },
       ),
     customText: z
       .string()
       .optional()
-      .refine(
-        async (value) => {
-          if (!value) return true;
-          const hasBlockedWord = await client?.validateTexts([value]).catch(() => false);
-          return hasBlockedWord;
-        },
-        formatMessage({ id: 'storyCreation.hyperlink.validation.error.blocked' }),
-      ),
+      .refine(async (value) => {
+        if (!value) return true;
+        const hasBlockedWord = await client?.validateTexts([value]).catch(() => false);
+        return hasBlockedWord;
+      }, 'Your text contains a blocklisted word.'),
   });
 
   type HyperLinkFormInputs = z.infer<typeof schema>;
@@ -111,9 +108,11 @@ export const HyperLinkConfig = ({
     reset,
   } = useForm<HyperLinkFormInputs>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      url,
+      customText,
+    },
   });
-
-  const { url, customText } = watch();
 
   useEffect(() => {
     setHasUnsavedChanges(url !== '' || customText !== '');
@@ -125,6 +124,7 @@ export const HyperLinkConfig = ({
   };
 
   const confirmDiscardHyperlink = () => {
+    // TODO: fix cannot close drawer
     reset();
     onRemove();
     onClose();
@@ -132,10 +132,10 @@ export const HyperLinkConfig = ({
 
   const discardHyperlink = () => {
     confirm({
-      title: formatMessage({ id: 'storyCreation.hyperlink.removeConfirm.title' }),
-      content: formatMessage({ id: 'storyCreation.hyperlink.removeConfirm.content' }),
-      cancelText: formatMessage({ id: 'storyCreation.hyperlink.removeConfirm.cancel' }),
-      okText: formatMessage({ id: 'storyCreation.hyperlink.removeConfirm.confirm' }),
+      title: 'Remove Link',
+      content: 'This link will be removed from story.',
+      cancelText: 'Cancel',
+      okText: 'Remove',
       onOk: confirmDiscardHyperlink,
     });
   };
@@ -143,13 +143,12 @@ export const HyperLinkConfig = ({
   const handleClose = () => {
     if (hasUnsavedChanges) {
       confirm({
-        title: formatMessage({ id: 'storyCreation.hyperlink.unsavedChanges.title' }),
-        content: formatMessage({ id: 'storyCreation.hyperlink.unsavedChanges.content' }),
-        cancelText: formatMessage({ id: 'storyCreation.hyperlink.unsavedChanges.cancel' }),
-        okText: formatMessage({ id: 'storyCreation.hyperlink.unsavedChanges.confirm' }),
+        title: 'Unsaved changes',
+        content: `Are you sure you want to cancel? Your changes won't be saved.`,
+        cancelText: 'No',
+        okText: 'Yes',
         onOk: () => {
           reset();
-          onClose();
         },
       });
     } else {
@@ -158,89 +157,79 @@ export const HyperLinkConfig = ({
   };
 
   return (
-    <BottomSheet
-      data-qa-anchor={accessibilityId}
-      detent="full-height"
-      mountPoint={document.getElementById('asc-uikit-create-story') as HTMLElement}
-      rootId="asc-uikit-create-story"
-      isOpen={isOpen}
-      onClose={handleClose}
-      className={styles.bottomSheet}
-      style={themeStyles}
-    >
+    <div data-qa-anchor={accessibilityId} style={themeStyles}>
       <div className={styles.headerContainer}>
-        <EditCancelButton pageId={pageId} componentId={componentId} onPress={handleClose} />
-        <Typography.Title>
-          {formatMessage({ id: 'storyCreation.hyperlink.bottomSheet.title' })}
-        </Typography.Title>
-        <DoneButton type="submit" pageId={pageId} componentId={componentId} form={formId} />
+        <EditCancelButton
+          pageId={pageId}
+          componentId={componentId}
+          onPress={handleClose}
+          className={styles.hyperlinkConfig__header__editCancelButton}
+        />
+        <Typography.Title>Add link</Typography.Title>
+        <DoneButton
+          type="submit"
+          pageId={pageId}
+          componentId={componentId}
+          form={formId}
+          className={styles.hyperlinkConfig__header__editDoneButton}
+        />
+        <Button onPress={handleClose} className={styles.hyperlinkConfig__header__closeButton}>
+          <Close className={styles.hyperlinkConfig__header__closeButton__icon} />
+        </Button>
       </div>
       <div className={styles.divider} />
       <div className={styles.hyperlinkFormContainer}>
         <form onSubmit={handleSubmit(onSubmitForm)} id={formId} className={styles.form}>
-          <div className={styles.inputContainer}>
-            <Typography.Title>
-              <label
-                htmlFor="asc-uikit-hyperlink-input-url"
-                className={clsx(styles.label, styles.required)}
-              >
-                {formatMessage({ id: 'storyCreation.hyperlink.form.urlLabel' })}
-              </label>
-            </Typography.Title>
-
-            <input
-              id="asc-uikit-hyperlink-input-url"
-              placeholder={formatMessage({ id: 'storyCreation.hyperlink.form.urlPlaceholder' })}
-              className={clsx(styles.input, errors?.url && styles.hasError)}
-              {...register('url', {
-                onChange: () => trigger('url'),
-              })}
-            />
-            {errors?.url && <span className={styles.errorText}>{errors?.url?.message}</span>}
-          </div>
-          <div className={styles.inputContainer}>
-            <div className={styles.labelContainer}>
-              <Typography.Title>
-                <label htmlFor="asc-uikit-hyperlink-input-link-text" className={styles.label}>
-                  {formatMessage({ id: 'storyCreation.hyperlink.form.linkTextLabel' })}
-                </label>
-              </Typography.Title>
-              <div className={styles.characterCount}>
-                {watch('customText')?.length || 0} / {MAX_LENGTH}
-              </div>
-            </div>
-            <input
-              id="asc-uikit-hyperlink-input-link-text"
-              placeholder={formatMessage({
-                id: 'storyCreation.hyperlink.form.linkTextPlaceholder',
-              })}
-              className={clsx(styles.input, errors?.customText && styles.hasError)}
-              {...register('customText')}
-              maxLength={MAX_LENGTH}
-            />
-            {errors?.customText && (
-              <span className={styles.errorText}>{errors?.customText?.message}</span>
-            )}
-            <Typography.Caption>
-              <label className={styles.description}>
-                {formatMessage({ id: 'storyCreation.hyperlink.form.linkTextDescription' })}
-              </label>
-            </Typography.Caption>
-          </div>
+          <UnderlineInput
+            label="URL"
+            required={true}
+            placeholder="https://example.com"
+            value={watch('url')}
+            {...register('url', {
+              onChange: () => trigger('url'),
+            })}
+            {...{ id: 'asc-uikit-hyperlink-input-url' }}
+            isError={!!errors.url?.message}
+            helperText={errors?.url?.message}
+          />
+          <UnderlineInput
+            label="Customize link text"
+            placeholder="Name your link"
+            {...register('customText')}
+            {...{ id: 'asc-uikit-hyperlink-input-link-text' }}
+            isError={!!errors.customText?.message}
+            helperText={
+              errors?.customText?.message ?? 'This text will show on the link instead of URL.'
+            }
+            value={watch('customText')}
+            showCounter={true}
+            maxLength={MAX_LENGTH}
+          />
         </form>
-        {isHaveHyperLink && (
+        {url && (
           <div className={styles.removeLinkContainer}>
-            <Button
-              variant="secondary"
-              onClick={discardHyperlink}
-              className={clsx(styles.removeLinkButton)}
-            >
+            <Button onPress={discardHyperlink} className={clsx(styles.removeLinkButton)}>
               <Trash className={styles.removeIcon} />
-              {formatMessage({ id: 'storyCreation.hyperlink.form.removeButton' })}
+              Remove link
             </Button>
           </div>
         )}
       </div>
-    </BottomSheet>
+      <div className={styles.hyperlinkConfig__footer}>
+        <EditCancelButton
+          pageId={pageId}
+          componentId={componentId}
+          onPress={handleClose}
+          className={styles.hyperlinkConfig__footer__editCancelButton}
+        />
+        <DoneButton
+          type="submit"
+          pageId={pageId}
+          componentId={componentId}
+          form={formId}
+          className={styles.hyperlinkConfig__footer__editDoneButton}
+        />
+      </div>
+    </div>
   );
 };
