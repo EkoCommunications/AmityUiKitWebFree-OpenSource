@@ -40,11 +40,11 @@ export const CommunitySideBar = ({
         <CommunitySideBarTitle pageId={pageId} componentId={componentId} />
         <SocialGlobalSearchPage />
       </div>
-      <div className={styles.communitySideBar__section}>
+      <div className={styles.communitySideBar__menuSection}>
         <NewsFeedMenuItem pageId={pageId} componentId={componentId} />
         {!isExploreHidden && <ExploreMenuItem pageId={pageId} componentId={componentId} />}
       </div>
-      <div className={styles.communitySideBar__section}>
+      <div className={styles.communitySideBar__myCommunitiesSection}>
         <MyCommunitiesSideBarTitle pageId={pageId} componentId={componentId} />
         {socialCommunityCreationButtonVisible && (
           <CreateCommunityMenuItem

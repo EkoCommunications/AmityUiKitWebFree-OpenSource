@@ -1,6 +1,7 @@
 .communitySideBar {
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   border-right: 1px solid var(--asc-color-base-shade4);
   background-color: var(--asc-color-background-default);
 }
@@ -9,11 +10,21 @@
   gap: 1rem;
   padding: 1rem;
   display: grid;
+  flex-shrink: 0;
 }
 
-.communitySideBar__section {
+.communitySideBar__menuSection {
+  flex-shrink: 0;
   display: grid;
   grid-gap: 0.5rem;
   padding: 0.5rem 0;
   border-top: 1px solid var(--asc-color-base-shade4);
+}
+
+.communitySideBar__myCommunitiesSection {
+  display: grid;
+  grid-gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--asc-color-base-shade4);
+  overflow-y: auto;
 }
