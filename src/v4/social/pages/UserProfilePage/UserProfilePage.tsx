@@ -57,7 +57,12 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
 
   const renderTabContent = () => {
     if (currentActiveTab === UserProfileTabs.FEED) {
-      return <UserFeed pageId={pageId} userId={userId} />;
+      return (
+        <>
+          {isCurrentUser && <PostComposer pageId={pageId} />}
+          <UserFeed pageId={pageId} userId={userId} />
+        </>
+      );
     } else if (currentActiveTab === UserProfileTabs.IMAGE) {
       return <UserImageFeed pageId={pageId} userId={userId} />;
     } else if (currentActiveTab === UserProfileTabs.VIDEO) {
@@ -151,7 +156,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
               />
             </div>
           </div>
-          {isCurrentUser && <PostComposer pageId={pageId} />}
+
           {renderTabContent()}
         </div>
       </PullToRefresh>
