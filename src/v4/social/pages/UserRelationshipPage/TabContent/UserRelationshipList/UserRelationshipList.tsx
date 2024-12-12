@@ -29,7 +29,13 @@ export const UserRelationshipList: React.FC<UserRelationshipListProps> = ({
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
 
   const renderSkeleton = () => {
-    return Array.from({ length: 3 }).map((_, index) => <UserListSkeleton key={index} />);
+    return (
+      <div className={styles.userRelationshipList__skeletonContainer}>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <UserListSkeleton key={index} />
+        ))}
+      </div>
+    );
   };
 
   useIntersectionObserver({
