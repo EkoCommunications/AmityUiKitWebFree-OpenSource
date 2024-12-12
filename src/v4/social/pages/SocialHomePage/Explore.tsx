@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ExploreCommunityCategories } from '~/v4/social/components/ExploreCommunityCategories';
 import { RecommendedCommunities } from '~/v4/social/components/RecommendedCommunities';
 import { TrendingCommunities } from '~/v4/social/components/TrendingCommunities';
@@ -27,6 +27,10 @@ export function Explore({ pageId }: ExploreProps) {
     noTrendingCommunities,
     error,
   } = useExplore();
+
+  useEffect(() => {
+    refresh();
+  }, []);
 
   if (error != null) {
     return <ExploreError />;

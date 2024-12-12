@@ -21,7 +21,7 @@ export const Newsfeed = ({ pageId = '*' }: NewsfeedProps) => {
     useGlobalFeedContext();
 
   useEffect(() => {
-    fetch();
+    refetch();
   }, []);
 
   const onFeedReachBottom = () => {

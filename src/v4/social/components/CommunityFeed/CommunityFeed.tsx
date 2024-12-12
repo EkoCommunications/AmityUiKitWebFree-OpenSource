@@ -52,7 +52,13 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
 
   const isMemberPrivateCommunity = community?.isJoined && !community?.isPublic;
 
-  const { posts, hasMore, loadMore, isLoading } = usePostsCollection({
+  const {
+    posts,
+    hasMore,
+    loadMore,
+    isLoading,
+    refresh: refreshPosts,
+  } = usePostsCollection({
     feedType: 'published',
     targetId: communityId,
     targetType: 'community',
@@ -62,7 +68,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
   const {
     pinnedPost: allPinnedPost,
     isLoading: isLoadingAllPinnedPosts,
-    refresh,
+    refresh: refreshPinnedPosts,
   } = usePinnedPostsCollection({
     communityId,
   });
@@ -105,7 +111,8 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
   });
 
   useEffect(() => {
-    refresh();
+    refreshPosts();
+    refreshPinnedPosts();
   }, []);
 
   if (isExcluded) return null;
@@ -207,7 +214,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
                     hideTarget: true,
                   })
                 }
-                onPostDeleted={() => refresh()}
+                onPostDeleted={() => refreshPinnedPosts()}
               />
             </Button>
           );
@@ -227,7 +234,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
           {renderPublicCommunityFeed()}
         </>
       ) : (
-        <LockPrivateContent />
+        <>{!isLoading && !isLoadingAllPinnedPosts && <LockPrivateContent />}</>
       )}
     </div>
   );
