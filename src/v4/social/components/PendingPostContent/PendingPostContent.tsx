@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './PendingPostContent.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
@@ -19,7 +19,6 @@ import { ImageViewer } from '~/v4/social/internal-components/ImageViewer/ImageVi
 import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoViewer';
 import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
-import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Popover } from '~/v4/core/components/AriaPopover';
 
 type PendingPostContentProps = {
@@ -39,9 +38,6 @@ export const PendingPostContent = ({
     componentId,
   });
   const { currentUserId } = useSDK();
-  const { isDesktop } = useResponsive();
-  const [isPopoverShown, setIsPopoverShown] = useState(false);
-  const popoverRef = useRef<HTMLDivElement>(null);
   const { post: postData } = usePost(initialPost?.postId);
 
   const { setDrawerData, removeDrawerData } = useDrawer();
@@ -167,6 +163,7 @@ export const PendingPostContent = ({
                           onPress={() => {
                             closePopover();
                             handleDeletePost(post.postId);
+                            removeDrawerData();
                           }}
                         >
                           <Trash className={styles.pendingPostContent__deletePost__icon} />

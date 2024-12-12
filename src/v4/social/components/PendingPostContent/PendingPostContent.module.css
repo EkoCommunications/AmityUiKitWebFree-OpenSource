@@ -4,6 +4,10 @@
   background-color: var(--asc-color-background-default);
 }
 
+.pendingPostContent__container:last-child {
+  margin-bottom: 0.5rem;
+}
+
 .pendingPostContent__bar {
   display: flex;
   align-items: center;
@@ -72,5 +76,9 @@
   .pendingPostContent__container {
     border-radius: 0.5rem;
     border: 1px solid var(--asc-color-base-shade4);
+  }
+
+  .pendingPostContent__container:last-child {
+    margin-bottom: 0;
   }
 }

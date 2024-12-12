@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './PendingPostsPage.module.css';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
@@ -26,13 +26,22 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
   const { onBack } = useNavigation();
   const { currentUserId } = useSDK();
   const { pendingPostsCount, canReviewCommunityPosts } = useCommunityInfo(communityId);
-  const { posts: reviewingPosts, isLoading } = usePostsCollection({
+  const {
+    posts: reviewingPosts,
+    isLoading,
+    refresh,
+  } = usePostsCollection({
     targetType: 'community',
     targetId: communityId,
     feedType: 'reviewing',
   });
 
   const isPostOwner = reviewingPosts.some((post) => post.postedUserId === currentUserId);
+
+  //TODO : after SDK fix live collection to support update pending post list, remove this useEffect
+  useEffect(() => {
+    refresh();
+  }, [reviewingPosts.length]);
 
   return (
     <div
