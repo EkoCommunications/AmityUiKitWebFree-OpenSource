@@ -5,6 +5,7 @@
   top: 4.3rem;
   left: 1rem;
   user-select: none;
+  cursor: text;
 }
 
 .editorParagraph {

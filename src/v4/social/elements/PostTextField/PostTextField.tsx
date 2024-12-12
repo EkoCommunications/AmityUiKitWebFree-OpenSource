@@ -30,6 +30,7 @@ import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import { MentionItem } from '~/v4/social/internal-components/Lexical/MentionItem';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import clsx from 'clsx';
+import { Button } from '~/v4/core/natives/Button';
 import styles from './PostTextField.module.css';
 
 interface PostTextFieldProps {
@@ -145,10 +146,9 @@ export const PostTextField = ({
   mentionContainerClassName,
 }: PostTextFieldProps) => {
   const elementId = 'post_text_field';
+  const contentEditableRef = useRef<HTMLDivElement>(null);
   const [intersectionNode, setIntersectionNode] = useState<HTMLElement | null>(null);
-
   const { accessibilityId } = useAmityElement({ pageId, componentId, elementId });
-
   const editorConfig = getEditorConfig({
     namespace: 'PostTextField',
     theme: {
@@ -182,11 +182,15 @@ export const PostTextField = ({
     >
       <div className={clsx(styles.editorContainer, className)} data-qa-anchor={accessibilityId}>
         <RichTextPlugin
-          contentEditable={<ContentEditable />}
+          contentEditable={<ContentEditable ref={contentEditableRef} />}
           placeholder={
-            <div className={clsx(styles.editorPlaceholder, placeholderClassName)}>
+            <Button
+              type="button"
+              onPress={() => contentEditableRef.current?.focus()}
+              className={clsx(styles.editorPlaceholder, placeholderClassName)}
+            >
               What's going on...
-            </div>
+            </Button>
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
