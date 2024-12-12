@@ -43,6 +43,8 @@ import { Lock } from '~/icons';
 import Verified from '~/v4/icons/Verified';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { Popover } from '~/v4/core/components/AriaPopover';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 export enum AmityPostContentComponentStyle {
   FEED = 'feed',
@@ -225,6 +227,8 @@ export const PostContent = ({
     componentId,
   });
 
+  const { isDesktop } = useResponsive();
+  const { openPopup } = usePopupContext();
   const { post: postData } = usePost(initialPost?.postId);
   const { setDrawerData, removeDrawerData } = useDrawer();
 
@@ -470,17 +474,14 @@ export const PostContent = ({
           <div className={styles.postContent__reactions_and_comments}>
             <div
               className={styles.postContent__reactionsBar}
-              onClick={() =>
-                setDrawerData({
-                  content: (
-                    <ReactionList
-                      pageId={pageId}
-                      referenceId={post.postId}
-                      referenceType={'post'}
-                    />
-                  ),
-                })
-              }
+              onClick={() => {
+                const reactionList = (
+                  <ReactionList pageId={pageId} referenceId={post.postId} referenceType={'post'} />
+                );
+                isDesktop
+                  ? openPopup({ view: 'desktop', children: reactionList })
+                  : setDrawerData({ content: reactionList });
+              }}
             >
               {hasReaction ? (
                 <div className={styles.postContent__reactionsBar__reactions}>
