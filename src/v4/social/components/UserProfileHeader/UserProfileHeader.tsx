@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './UserProfileHeader.module.css';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
 import { UserFollowing } from '~/v4/social/elements/UserFollowing/UserFollowing';
@@ -13,7 +13,7 @@ import { FollowingUserButton } from '~/v4/social/elements/FollowingUserButton';
 import { PendingUserButton } from '~/v4/social/elements/PendingUserButton';
 import { UnblockUserButton } from '~/v4/social/elements/UnblockUserButton/UnblockUserButton';
 import useFollowCount from '~/v4/core/hooks/objects/useFollowCount';
-import { Button } from '~/v4/core/natives/Button/Button';
+import { Button } from '~/v4/core/components/AriaButton/Button';
 import { Typography } from '~/v4/core/components';
 import NotificationIndicator from '~/v4/icons/NotificationIndicator';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
@@ -21,6 +21,7 @@ import useUserFollow from '~/v4/social/hooks/useUserFollow';
 import UnfollowUser from '~/v4/icons/UnfollowUser';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import useUserBlock from '~/v4/social/hooks/useUserBlock';
+import { SingleImageViewer } from '~/v4/social/internal-components/SingleImageViewer';
 
 interface UserProfileHeaderProps {
   user?: Amity.User | null;
@@ -48,6 +49,7 @@ const UserProfileHeaderSkeleton: React.FC = () => {
 
 export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, pageId = '*' }) => {
   const componentId = 'user_profile_header';
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
   const { currentUserId } = useSDK();
   const { themeStyles, accessibilityId } = useAmityComponent({ pageId, componentId });
@@ -95,13 +97,15 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
       data-qa-anchor={accessibilityId}
     >
       <div className={styles.userProfileHeader__header}>
-        <UserAvatar
-          userId={user.userId}
-          className={styles.userProfileHeader__avatar}
-          textPlaceholderClassName={styles.userProfileHeader__avatar__placeholder}
-          pageId={pageId}
-          componentId={componentId}
-        />
+        <Button variant="text" onPress={() => setIsImageViewerOpen(true)}>
+          <UserAvatar
+            userId={user.userId}
+            className={styles.userProfileHeader__avatar}
+            textPlaceholderClassName={styles.userProfileHeader__avatar__placeholder}
+            pageId={pageId}
+            componentId={componentId}
+          />
+        </Button>
         <UserName
           name={user.displayName ?? user.userId}
           pageId={pageId}
@@ -178,6 +182,15 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
               displayName: user.displayName ?? user.userId,
             })
           }
+        />
+      )}
+
+      {isImageViewerOpen && user.avatarFileId && (
+        <SingleImageViewer
+          fileId={user.avatarFileId}
+          onClose={() => setIsImageViewerOpen(false)}
+          pageId={pageId}
+          componentId={componentId}
         />
       )}
     </div>

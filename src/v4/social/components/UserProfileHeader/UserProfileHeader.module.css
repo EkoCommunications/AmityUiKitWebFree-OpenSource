@@ -13,6 +13,7 @@
   width: 3.5rem !important;
   height: 3.5rem !important;
   font-size: 2rem;
+  flex-shrink: 0;
 }
 
 .userProfileHeader__avatar__placeholder {
