@@ -32,7 +32,7 @@ export const UserDescription: React.FC<UserDescriptionProps> = ({
 
   return (
     <div className={styles.userDescription__description} data-qa-anchor={accessibilityId}>
-      <Typography.Body>
+      <Typography.Body className={styles.userDescription__description__text}>
         {isExpanded ? (
           description
         ) : (
