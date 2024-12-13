@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import { useImage } from '~/v4/core/hooks/useImage';
+import React from 'react';
+import { Button } from '~/v4/core/natives/Button';
 import { Typography } from '~/v4/core/components';
+import { useImage } from '~/v4/core/hooks/useImage';
+import usePost from '~/v4/core/hooks/objects/usePost';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './VideoContent.module.css';
-import usePost from '~/v4/core/hooks/objects/usePost';
-import { Button } from '~/v4/core/natives/Button';
 
 const PlayButtonSvg = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -27,50 +27,45 @@ const PlayButtonSvg = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const VideoThumbnail = ({ fileId }: { fileId: string }) => {
-  const videoThumbnailUrl = useImage({
-    fileId,
-  });
-
+  const videoThumbnailUrl = useImage({ fileId });
   return <img className={styles.videoContent__video} src={videoThumbnailUrl} alt={fileId} />;
 };
 
 const Video = ({
-  pageId = '*',
-  componentId = '*',
   postId,
   postAmount,
-  videoLeftCount,
-  index,
+  isLastVideo,
   onVideoClick,
+  pageId = '*',
+  videoLeftCount,
+  componentId = '*',
 }: {
-  pageId?: string;
-  componentId?: string;
   postId: string;
+  pageId?: string;
   postAmount: number;
+  isLastVideo: boolean;
+  componentId?: string;
   videoLeftCount: number;
-  index: number;
   onVideoClick: () => void;
 }) => {
   const { post: videoPost, isLoading } = usePost(postId);
 
-  if (isLoading) {
-    return null;
-  }
+  if (isLoading) return null;
 
   return (
     <Button
-      className={styles.videoContent__videoContainer}
-      data-videos-amount={Math.min(postAmount, 4)}
       onPress={() => onVideoClick()}
+      data-videos-amount={Math.min(postAmount, 4)}
+      className={styles.videoContent__videoContainer}
       data-qa-anchor={`${pageId}/${componentId}/post_video`}
     >
       <VideoThumbnail fileId={videoPost.data.thumbnailFileId} />
-      {videoLeftCount > 0 && index === postAmount - 1 && (
+      {videoLeftCount > 0 && isLastVideo && (
         <Typography.Heading className={styles.videoContent__videoCover}>
-          + {videoLeftCount}
+          + {videoLeftCount + 1}
         </Typography.Heading>
       )}
-      {videoLeftCount === 0 || index < postAmount - 1 ? (
+      {videoLeftCount === 0 || !isLastVideo ? (
         <div className={styles.videoContent__playButtonCover}>
           <div className={styles.videoContent__playButton} onClick={() => onVideoClick()}>
             <PlayButtonSvg className={styles.videoContent__playButton__svg} />
@@ -81,54 +76,46 @@ const Video = ({
   );
 };
 
-interface VideoContentProps {
+type VideoContentProps = {
   pageId?: string;
-  componentId?: string;
   elementId?: string;
+  componentId?: string;
   post: Amity.Post<'video'>;
   onVideoClick: (index: number) => void;
-}
+};
 
 export const VideoContent = ({
-  pageId = '*',
-  componentId = '*',
-  elementId = '*',
   post,
   onVideoClick,
+  pageId = '*',
+  elementId = '*',
+  componentId = '*',
 }: VideoContentProps) => {
-  const { themeStyles, accessibilityId } = useAmityElement({
-    pageId,
-    componentId,
-    elementId,
-  });
+  const { post: childPost, isLoading } = usePost(post.children[0]);
+  const { themeStyles } = useAmityElement({ pageId, componentId, elementId });
 
   const first4Videos = post.children.slice(0, 4);
-
-  const { post: childPost } = usePost(post.children[0]);
-
   const videoLeftCount = Math.max(0, post.children.length - 4);
 
-  if (childPost?.dataType !== 'video') {
-    return null;
-  }
+  if (isLoading || childPost?.dataType !== 'video') return null;
 
   return (
     <div className={styles.videoContent} style={themeStyles}>
       <div
-        className={styles.videoContent}
         style={themeStyles}
+        className={styles.videoContent}
         data-videos-amount={Math.min(post.children.length, 4)}
       >
         {first4Videos.map((postId: string, index: number) => (
           <Video
-            pageId={pageId}
-            componentId={componentId}
             key={postId}
-            index={index}
+            pageId={pageId}
             postId={postId}
+            componentId={componentId}
             videoLeftCount={videoLeftCount}
             postAmount={post.children.length}
             onVideoClick={() => onVideoClick(index)}
+            isLastVideo={index === first4Videos.length - 1}
           />
         ))}
       </div>
