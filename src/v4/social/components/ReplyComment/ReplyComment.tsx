@@ -23,6 +23,10 @@ import useCommunityPostPermission from '~/v4/social/hooks/useCommunityPostPermis
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
+import { Button } from '~/v4/core/natives/Button';
+import { ReactionList } from '~/v4/social/components/ReactionList';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 
 type ReplyCommentProps = {
   pageId?: string;
@@ -34,6 +38,8 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
   const componentId = 'post_comment';
   const { confirm } = useConfirmContext();
   const { isDesktop } = useResponsive();
+  const { openPopup } = usePopupContext();
+  const { setDrawerData } = useDrawer();
   const { accessibilityId, config, defaultConfig, isExcluded, uiReference, themeStyles } =
     useAmityComponent({
       pageId,
@@ -229,10 +235,24 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
                 </Popover>
               </div>
               {comment.reactionsCount > 0 && (
-                <div className={styles.postReplyComment__secondRow__rightPane}>
+                <Button
+                  className={styles.postReplyComment__secondRow__rightPane}
+                  onPress={() => {
+                    const reactionList = (
+                      <ReactionList
+                        pageId={pageId}
+                        referenceType="comment"
+                        referenceId={comment.commentId}
+                      />
+                    );
+                    isDesktop
+                      ? openPopup({ view: 'desktop', children: reactionList })
+                      : setDrawerData({ content: reactionList });
+                  }}
+                >
                   <Typography.Caption>{millify(comment.reactionsCount)}</Typography.Caption>
                   <Like className={styles.postReplyComment__secondRow__rightPane__like} />
-                </div>
+                </Button>
               )}
             </div>
           </div>

@@ -25,6 +25,10 @@ import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
+import { Button } from '~/v4/core/natives/Button';
+import { ReactionList } from '~/v4/social/components/ReactionList';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 
 const Like = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -79,6 +83,8 @@ export const Comment = ({
   });
 
   const { isDesktop } = useResponsive();
+  const { setDrawerData } = useDrawer();
+  const { openPopup } = usePopupContext();
   const { confirm } = useConfirmContext();
   const mentionRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -288,10 +294,24 @@ export const Comment = ({
                 </div>
               )}
               {comment.reactionsCount > 0 && (
-                <div className={styles.postComment__secondRow__rightPane}>
+                <Button
+                  className={styles.postComment__secondRow__rightPane}
+                  onPress={() => {
+                    const reactionList = (
+                      <ReactionList
+                        pageId={pageId}
+                        referenceType="comment"
+                        referenceId={comment.commentId}
+                      />
+                    );
+                    isDesktop
+                      ? openPopup({ view: 'desktop', children: reactionList })
+                      : setDrawerData({ content: reactionList });
+                  }}
+                >
                   <Typography.Caption>{millify(comment.reactionsCount)}</Typography.Caption>
                   <Like className={styles.postComment__secondRow__rightPane__like} />
-                </div>
+                </Button>
               )}
             </div>
 
