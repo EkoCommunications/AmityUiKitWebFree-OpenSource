@@ -22,6 +22,8 @@ import UnfollowUser from '~/v4/icons/UnfollowUser';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import useUserBlock from '~/v4/social/hooks/useUserBlock';
 import { SingleImageViewer } from '~/v4/social/internal-components/SingleImageViewer';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 interface UserProfileHeaderProps {
   user?: Amity.User | null;
@@ -59,24 +61,62 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
   const { unblockUser } = useUserBlock();
   const { setDrawerData, removeDrawerData } = useDrawer();
 
+  const unFollowUserButton = ({
+    onClickButton,
+    userId,
+  }: {
+    onClickButton?: () => void;
+    userId: string;
+  }) => (
+    <Button
+      className={styles.userProfileHeader__unFollowButton}
+      onPress={() => {
+        removeDrawerData();
+        unFollowUser({ pageId, userId });
+        onClickButton?.();
+      }}
+      variant="text"
+    >
+      <UnfollowUser className={styles.userProfileHeader__unFollowButton__icon} />
+      <Typography.BodyBold className={styles.userProfileHeader__unFollowButton__text}>
+        Unfollow
+      </Typography.BodyBold>
+    </Button>
+  );
+
+  const { isDesktop } = useResponsive();
+
   const onPressFollowingButton = (userId: string) => {
     setDrawerData({
-      content: (
-        <Button
-          className={styles.userProfileHeader__unFollowButton}
-          onPress={() => {
-            removeDrawerData();
-            unFollowUser({ pageId, userId });
-          }}
-        >
-          <UnfollowUser className={styles.userProfileHeader__unFollowButton__icon} />
-          <Typography.BodyBold className={styles.userProfileHeader__unFollowButton__text}>
-            Unfollow
-          </Typography.BodyBold>
-        </Button>
-      ),
+      content: unFollowUserButton({
+        userId,
+      }),
     });
   };
+
+  const renderFollowingButton = (userId: string) => (
+    <Popover
+      trigger={({ openPopover }) => (
+        <FollowingUserButton
+          pageId={pageId}
+          componentId={componentId}
+          onClick={() => {
+            if (!isDesktop) onPressFollowingButton(userId);
+            else openPopover();
+          }}
+        />
+      )}
+    >
+      {({ closePopover }) => (
+        <div className={styles.userProfileHeader__popOver__container}>
+          {unFollowUserButton({
+            userId,
+            onClickButton: closePopover,
+          })}
+        </div>
+      )}
+    </Popover>
+  );
 
   const isShowPendingButton =
     currentUserId && user && currentUserId !== user.userId && followStatus === 'pending';
@@ -152,15 +192,7 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
         />
       )}
 
-      {isShowFollowingButton && (
-        <FollowingUserButton
-          pageId={pageId}
-          componentId={componentId}
-          onClick={() => {
-            onPressFollowingButton(user.userId);
-          }}
-        />
-      )}
+      {isShowFollowingButton && renderFollowingButton(user.userId)}
 
       {isShowPendingButton && (
         <PendingUserButton
