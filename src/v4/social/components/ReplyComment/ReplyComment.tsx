@@ -116,6 +116,7 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
                 pageId={pageId}
                 componentId={componentId}
                 communityId={community?.communityId}
+                mentionContainerClassName={styles.postReplyComment__mentionContainer}
                 value={{
                   data: {
                     text: (comment.data as Amity.ContentDataText).text,

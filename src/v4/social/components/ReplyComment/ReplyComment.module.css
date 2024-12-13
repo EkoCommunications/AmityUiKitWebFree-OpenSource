@@ -211,3 +211,15 @@
   width: 1.125rem;
   height: 1.125rem;
 }
+
+.postReplyComment__mentionContainer {
+  z-index: 9999;
+  display: block;
+  width: 16.25rem;
+  height: 16.5rem;
+  position: relative;
+  overflow-y: scroll;
+  border-radius: 0.5rem;
+  box-shadow: var(--asc-box-shadow-04);
+  background-color: var(--asc-color-background-default);
+}
