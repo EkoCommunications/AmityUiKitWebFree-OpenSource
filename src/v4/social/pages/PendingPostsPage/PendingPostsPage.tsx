@@ -91,6 +91,7 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
                   post={post}
                   pageId={pageId}
                   canReviewCommunityPosts={canReviewCommunityPosts}
+                  refresh={refresh}
                 />
               ))}
             </div>

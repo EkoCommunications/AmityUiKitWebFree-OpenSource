@@ -20,17 +20,20 @@ import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoVi
 import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
 import { Popover } from '~/v4/core/components/AriaPopover';
+import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 
 type PendingPostContentProps = {
   pageId?: string;
   post?: Amity.Post;
   canReviewCommunityPosts?: boolean;
+  refresh?: () => void;
 };
 
 export const PendingPostContent = ({
   pageId = '*',
   post: initialPost,
   canReviewCommunityPosts = false,
+  refresh,
 }: PendingPostContentProps) => {
   const componentId = 'pending_post_content';
   const { accessibilityId, themeStyles } = useAmityComponent({
@@ -42,6 +45,7 @@ export const PendingPostContent = ({
 
   const { setDrawerData, removeDrawerData } = useDrawer();
   const notification = useNotifications();
+  const { info } = useConfirmContext();
 
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isVideoViewerOpen, setIsVideoViewerOpen] = useState(false);
@@ -65,27 +69,57 @@ export const PendingPostContent = ({
 
   const handleApprovePost = async (postId: string) => {
     if (postId == null) return;
-    await PostRepository.approvePost(postId);
-    notification.success({
-      content: 'Post accepted.',
-    });
+
+    try {
+      await PostRepository.approvePost(postId);
+      notification.success({
+        content: 'Post accepted.',
+      });
+    } catch (error) {
+      info({
+        content: 'Failed to accept post. Post has been reviewed.',
+        onOk: () => {
+          refresh?.();
+        },
+      });
+    }
   };
 
   const handleDeclinePost = async (postId: string) => {
     if (postId == null) return;
-    await PostRepository.declinePost(postId);
-    notification.success({
-      content: 'Post declined.',
-    });
+
+    try {
+      await PostRepository.declinePost(postId);
+      notification.success({
+        content: 'Post declined.',
+      });
+    } catch (error) {
+      info({
+        content: 'Failed to decline post. Post has been reviewed',
+        onOk: () => {
+          refresh?.();
+        },
+      });
+    }
   };
 
   const handleDeletePost = async (postId: string) => {
     if (postId == null) return;
-    await PostRepository.deletePost(postId);
-    removeDrawerData();
-    notification.success({
-      content: 'Post deleted.',
-    });
+
+    try {
+      await PostRepository.deletePost(postId);
+      removeDrawerData();
+      notification.success({
+        content: 'Post deleted.',
+      });
+    } catch (error) {
+      info({
+        content: 'Failed to delete post. Post has been deleted.',
+        onOk: () => {
+          refresh?.();
+        },
+      });
+    }
   };
 
   const isMyPost = (postedUserId: string) => {
