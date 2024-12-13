@@ -74,3 +74,25 @@
   justify-content: center;
   align-items: center;
 }
+
+.imageContent__skeleton {
+  background-color: var(--asc-color-base-shade4);
+  border-radius: 0.5rem;
+  width: 100%;
+  height: 100%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}

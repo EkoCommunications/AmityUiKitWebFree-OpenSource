@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '~/v4/core/natives/Button';
 import { Typography } from '~/v4/core/components';
 import { useImage } from '~/v4/core/hooks/useImage';
@@ -6,9 +6,24 @@ import usePost from '~/v4/core/hooks/objects/usePost';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './ImageContent.module.css';
 
-const ImageThumbnail = ({ fileId }: { fileId: string }) => {
+const ImageThumbnail = ({
+  fileId,
+  placeholder,
+}: {
+  fileId: string;
+  placeholder: React.ReactNode;
+}) => {
   const imageUrl = useImage({ fileId });
-  return <img loading="lazy" className={styles.imageContent__img} src={imageUrl} alt={fileId} />;
+
+  return (
+    <>
+      {!imageUrl ? (
+        placeholder
+      ) : (
+        <img loading="lazy" className={styles.imageContent__img} src={imageUrl} alt={fileId} />
+      )}
+    </>
+  );
 };
 
 type ImageProps = {
@@ -38,7 +53,10 @@ const Image = ({
       className={styles.imageContent__imgContainer}
       data-qa-anchor={`${pageId}/${componentId}/post_image`}
     >
-      <ImageThumbnail fileId={imagePost.data.fileId} />
+      <ImageThumbnail
+        fileId={imagePost.data.fileId}
+        placeholder={<div className={styles.imageContent__skeleton}></div>}
+      />
       {imageLeftCount > 0 && isLastImage && (
         <Typography.Heading className={styles.imageContent__imgCover}>
           + {imageLeftCount + 1}

@@ -5,6 +5,7 @@ import { useImage } from '~/v4/core/hooks/useImage';
 import usePost from '~/v4/core/hooks/objects/usePost';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './VideoContent.module.css';
+import VideoControl from '~/v4/icons/VideoControl';
 
 const PlayButtonSvg = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -26,9 +27,29 @@ const PlayButtonSvg = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const VideoThumbnail = ({ fileId }: { fileId: string }) => {
+const VideoThumbnail = ({
+  fileId,
+  placeholder,
+}: {
+  fileId: string;
+  placeholder: React.ReactNode;
+}) => {
   const videoThumbnailUrl = useImage({ fileId });
-  return <img className={styles.videoContent__video} src={videoThumbnailUrl} alt={fileId} />;
+
+  return (
+    <>
+      {!videoThumbnailUrl ? (
+        placeholder
+      ) : (
+        <img
+          loading="lazy"
+          className={styles.videoContent__video}
+          src={videoThumbnailUrl}
+          alt={fileId}
+        />
+      )}
+    </>
+  );
 };
 
 const Video = ({
@@ -59,7 +80,14 @@ const Video = ({
       className={styles.videoContent__videoContainer}
       data-qa-anchor={`${pageId}/${componentId}/post_video`}
     >
-      <VideoThumbnail fileId={videoPost.data.thumbnailFileId} />
+      <VideoThumbnail
+        fileId={videoPost.data.thumbnailFileId}
+        placeholder={
+          <div className={styles.videoContent__skeleton}>
+            <VideoControl className={styles.videoContent__skeleton__icon} />
+          </div>
+        }
+      />
       {videoLeftCount > 0 && isLastVideo && (
         <Typography.Heading className={styles.videoContent__videoCover}>
           + {videoLeftCount + 1}
