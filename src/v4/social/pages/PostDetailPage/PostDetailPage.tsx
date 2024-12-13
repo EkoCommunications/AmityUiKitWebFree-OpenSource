@@ -16,6 +16,7 @@ import {
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import styles from './PostDetailPage.module.css';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 interface PostDetailPageProps {
   id: string;
@@ -28,6 +29,7 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
 
   const [replyComment, setReplyComment] = useState<Amity.Comment | undefined>();
 
+  const { isDesktop } = useResponsive();
   const { onBack } = useNavigation();
   const { themeStyles } = useAmityPage({ pageId });
   const { post, isLoading: isPostLoading } = usePost(id);
@@ -53,6 +55,16 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
           ) : null}
         </div>
         <div className={styles.postDetailPage__comments__divider} data-is-loading={isPostLoading} />
+        {post && isDesktop && (
+          <CommentComposer
+            pageId={pageId}
+            referenceId={post.postId}
+            referenceType={'post'}
+            replyTo={replyComment}
+            onCancelReply={() => setReplyComment(undefined)}
+            community={community}
+          />
+        )}
         <div className={styles.postDetailPage__comments}>
           {post && (
             <CommentList
@@ -118,7 +130,8 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
           </Typography.Body>
         </div>
       ) : (
-        post && (
+        post &&
+        !isDesktop && (
           <CommentComposer
             pageId={pageId}
             referenceId={post.postId}
