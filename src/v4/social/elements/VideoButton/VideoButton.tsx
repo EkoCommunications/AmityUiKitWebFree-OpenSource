@@ -69,7 +69,6 @@ export function VideoButton({
           type="file"
           accept="video/*"
           id="video-upload"
-          capture="environment"
           onChange={onVideoChange}
           className={styles.videoButton__input}
         />
