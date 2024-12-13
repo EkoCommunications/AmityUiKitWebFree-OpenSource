@@ -14,8 +14,9 @@ interface ImageThumbnailProps {
   onChange: (data: { uploaded: Array<Amity.File>; uploading: Array<File> }) => void;
   onLoadingChange: (loading: boolean) => void;
   uploadLoading: boolean;
-  onError: (isError: boolean) => void;
-  isErrorUpload?: boolean;
+  onError: (message: string) => void;
+  isErrorUpload?: string;
+  onUploadFailed?: (message: string) => void;
 }
 
 export function ImageThumbnail({
@@ -54,9 +55,13 @@ export function ImageThumbnail({
             className={styles.thumbnail__wrapper}
           >
             {uploadLoading ? (
-              <div className={styles.icon__status}>
-                <Spinner />
-              </div>
+              <>
+                <img src={URL.createObjectURL(file as File)} className={styles.thumbnail} alt="" />
+                <div className={styles.thumbnail__overlay} />
+                <div className={styles.icon__status}>
+                  <Spinner />
+                </div>
+              </>
             ) : isErrorUpload ? (
               <div className={styles.icon__status}>
                 <ExclamationCircle />

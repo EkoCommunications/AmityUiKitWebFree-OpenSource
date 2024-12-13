@@ -27,6 +27,25 @@
   height: 21rem;
 }
 
+.thumbnail__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--asc-color-white);
+  opacity: 0.8;
+}
+
+.thumbnail__failed__placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--asc-color-base-shade4);
+}
+
 .thumbnail__wrapper[data-images-height='true'] {
   height: 8.625rem;
 }

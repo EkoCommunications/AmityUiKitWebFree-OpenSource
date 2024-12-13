@@ -14,10 +14,10 @@ interface VideoThumbnailProps {
   onLoadingChange: (loading: boolean) => void;
   onChange: (data: { uploaded: Array<Amity.File>; uploading: Array<File> }) => void;
   uploadLoading: boolean;
-  onError: (isError: boolean) => void;
+  onError: (message: string) => void;
   videoThumbnail?: { file: File; videoUrl: string; thumbnail: string | undefined }[];
   removeThumbnail: (index: number) => void;
-  isErrorUpload?: boolean;
+  isErrorUpload?: string;
 }
 
 export const VideoThumbnail = ({

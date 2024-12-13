@@ -101,7 +101,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
 
   const [isCreating, setIsCreating] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isErrorUpload, setIsErrorUpload] = useState(false);
+  const [isErrorUpload, setIsErrorUpload] = useState<string | undefined>();
   const [videoThumbnail, setVideoThumbnail] = useState<
     { file: File; videoUrl: string; thumbnail: string | undefined }[]
   >([]);
@@ -121,6 +121,35 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       },
     ],
   });
+
+  const onClearFailedUpload = () => {
+    setIsErrorUpload(undefined);
+    setIncomingImages([]);
+    setIncomingVideos([]);
+    setPostImages([]);
+    setPostVideos([]);
+  };
+
+  useEffect(() => {
+    if (typeof isErrorUpload !== 'undefined') {
+      let message = 'Please try again later.';
+      if (
+        isErrorUpload.includes(
+          'Amity SDK (500000): Image uploading failed: Suggestive content is not permitted',
+        )
+      ) {
+        message = 'Suggestive content is not permitted';
+      }
+
+      confirm({
+        pageId,
+        title: 'Failed to upload media',
+        content: message,
+        onOk: () => onClearFailedUpload(),
+        onCancel: () => onClearFailedUpload(),
+      });
+    }
+  }, [isErrorUpload]);
 
   async function createPost(createPostParams: Parameters<typeof PostRepository.createPost>[0]) {
     try {

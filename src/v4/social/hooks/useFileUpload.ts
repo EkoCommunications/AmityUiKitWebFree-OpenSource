@@ -16,13 +16,13 @@ export default function useFileUpload({
   uploadedFiles = [],
   onChange = (data: { uploaded: Array<Amity.File>; uploading: Array<File> }) => {},
   onLoadingChange = (loading: boolean) => {},
-  onError = (isError: boolean) => {},
+  onError = (message: string) => {},
 }: {
   files?: Iterable<File> | Array<File>;
   uploadedFiles: Amity.File[];
   onChange?: (data: { uploaded: Array<Amity.File>; uploading: Array<File> }) => void;
   onLoadingChange?: (loading: boolean) => void;
-  onError?: (isError: boolean) => void;
+  onError?: (message: string) => void;
 }) {
   const [rejected, setRejected] = useState<string[]>([]); // filenames that has loading error
 
@@ -98,9 +98,10 @@ export default function useFileUpload({
           uploading: [],
         });
         setRejected([]);
-      } catch (e) {
+        // TODO: fix type
+      } catch (e: any) {
         setRejected(fileList.map((file) => file.name));
-        onError(true);
+        e.message && onError(e.message ?? '');
       } finally {
         onLoadingChange(false);
       }
