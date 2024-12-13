@@ -137,6 +137,7 @@ export const PostMenu = ({
           data-qa-anchor={`${pageId}/${componentId}/report_post_button`}
           className={styles.postMenu__item}
           onPress={() => {
+            onCloseMenu();
             if (isFlaggedByMe) {
               mutateUnReportPost();
             } else {

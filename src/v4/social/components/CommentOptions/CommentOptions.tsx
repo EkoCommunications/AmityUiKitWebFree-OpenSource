@@ -15,7 +15,7 @@ interface CommentOptionsProps {
   comment: Amity.Comment;
   handleEditComment: () => void;
   handleDeleteComment: () => void;
-  onCloseBottomSheet: () => void;
+  onCloseMenu: () => void;
 }
 
 export const CommentOptions = ({
@@ -24,7 +24,7 @@ export const CommentOptions = ({
   comment,
   handleEditComment,
   handleDeleteComment,
-  onCloseBottomSheet,
+  onCloseMenu,
 }: CommentOptionsProps) => {
   const { userRoles } = useSDK();
   const { toggleFlagComment, isFlaggedByMe } = useCommentFlaggedByMe(comment.commentId);
@@ -99,7 +99,7 @@ export const CommentOptions = ({
           className={styles.commentOptions__actionButton}
           key={index}
           onClick={() => {
-            onCloseBottomSheet();
+            onCloseMenu();
             option.action();
           }}
         >

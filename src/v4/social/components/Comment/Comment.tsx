@@ -279,15 +279,9 @@ export const Comment = ({
                         pageId={pageId}
                         componentId={componentId}
                         comment={comment}
-                        handleEditComment={() => {
-                          closePopover();
-                          handleEditComment();
-                        }}
-                        handleDeleteComment={() => {
-                          closePopover();
-                          handleDeleteComment();
-                        }}
-                        onCloseBottomSheet={toggleBottomSheet}
+                        handleEditComment={handleEditComment}
+                        handleDeleteComment={handleDeleteComment}
+                        onCloseMenu={closePopover}
                       />
                     )}
                   </Popover>
@@ -340,7 +334,7 @@ export const Comment = ({
             comment={comment}
             handleEditComment={handleEditComment}
             handleDeleteComment={handleDeleteComment}
-            onCloseBottomSheet={toggleBottomSheet}
+            onCloseMenu={toggleBottomSheet}
           />
         </BottomSheet>
       )}

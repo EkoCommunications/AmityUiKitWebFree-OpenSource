@@ -221,15 +221,9 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
                       pageId={pageId}
                       componentId={componentId}
                       comment={comment}
-                      onCloseBottomSheet={toggleBottomSheet}
-                      handleEditComment={() => {
-                        closePopover();
-                        handleEditComment();
-                      }}
-                      handleDeleteComment={() => {
-                        closePopover();
-                        handleDeleteComment();
-                      }}
+                      onCloseMenu={closePopover}
+                      handleEditComment={handleEditComment}
+                      handleDeleteComment={handleDeleteComment}
                     />
                   )}
                 </Popover>
@@ -255,7 +249,7 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
             pageId={pageId}
             componentId={componentId}
             comment={comment}
-            onCloseBottomSheet={toggleBottomSheet}
+            onCloseMenu={toggleBottomSheet}
             handleEditComment={handleEditComment}
             handleDeleteComment={handleDeleteComment}
           />
