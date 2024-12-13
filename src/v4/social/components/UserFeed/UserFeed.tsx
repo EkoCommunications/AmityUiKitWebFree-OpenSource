@@ -25,20 +25,22 @@ interface UserFeedProps {
 const UserFeedPostContentSkeleton: React.FC = () => {
   return (
     <>
-      <div className={styles.userFeed_postSkeleton__post}>
-        <div className={styles.userFeed_postSkeleton__post__header}>
-          <div className={styles.userFeed_postSkeleton__post__avatar}></div>
-          <div className={styles.userFeed_postSkeleton__post__headerText_wrap}>
-            <div className={styles.userFeed_postSkeleton__post__displayName}></div>
-            <div className={styles.userFeed_postSkeleton__post__timestamp}></div>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div className={styles.userFeed_postSkeleton__post}>
+          <div className={styles.userFeed_postSkeleton__post__header}>
+            <div className={styles.userFeed_postSkeleton__post__avatar}></div>
+            <div className={styles.userFeed_postSkeleton__post__headerText_wrap}>
+              <div className={styles.userFeed_postSkeleton__post__displayName}></div>
+              <div className={styles.userFeed_postSkeleton__post__timestamp}></div>
+            </div>
+          </div>
+          <div>
+            <div className={styles.userFeed_postSkeleton__post__content}></div>
+            <div className={styles.userFeed_postSkeleton__post__content}></div>
+            <div className={styles.userFeed_postSkeleton__post__content}></div>
           </div>
         </div>
-        <div>
-          <div className={styles.userFeed_postSkeleton__post__content}></div>
-          <div className={styles.userFeed_postSkeleton__post__content}></div>
-          <div className={styles.userFeed_postSkeleton__post__content}></div>
-        </div>
-      </div>
+      ))}
     </>
   );
 };
@@ -77,8 +79,6 @@ export const UserFeed = ({ pageId = '*', userId }: UserFeedProps) => {
   }, []);
 
   const renderUserFeed = () => {
-    if (isLoading && !posts) return <UserFeedPostContentSkeleton />;
-
     if (followStatus === 'blocked')
       return <BlockedUserFeed pageId={pageId} componentId={componentId} />;
 
@@ -86,8 +86,6 @@ export const UserFeed = ({ pageId = '*', userId }: UserFeedProps) => {
       return <PrivateUserFeed pageId={pageId} componentId={componentId} />;
 
     if (error) return <ErrorContent />;
-
-    if (isLoading && !posts) return <UserFeedPostContentSkeleton />;
 
     if (!isLoading && posts.length === 0)
       return <EmptyUserFeed pageId={pageId} componentId={componentId} />;
@@ -117,6 +115,7 @@ export const UserFeed = ({ pageId = '*', userId }: UserFeedProps) => {
       className={styles.userFeed__container}
     >
       {renderUserFeed()}
+      {isLoading && <UserFeedPostContentSkeleton />}
 
       {hasMore && (
         <div
