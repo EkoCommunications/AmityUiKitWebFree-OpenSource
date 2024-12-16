@@ -167,6 +167,8 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       const isModerator =
         (moderators || []).find((moderator) => moderator.userId === post.postedUserId) != null;
 
+      if (!targetId) prependItem(postData.data);
+
       //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
       if (
         ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
@@ -203,18 +205,9 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   }
 
   async function onCreatePost() {
-    const data: { text?: string } = {};
     const attachments = [];
 
-    if (postImages.length) {
-      attachments.push(...postImages.map((i) => ({ fileId: i.fileId, type: FileType.IMAGE })));
-    }
-
-    if (postVideos.length) {
-      attachments.push(...postVideos.map((i) => ({ fileId: i.fileId, type: FileType.VIDEO })));
-    }
-
-    if (data.text?.length && data.text.length > MAXIMUM_POST_CHARACTERS) {
+    if (textValue.text?.length && textValue.text.length > MAXIMUM_POST_CHARACTERS) {
       info({
         pageId,
         title: 'Unable to post',
@@ -222,6 +215,14 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
         okText: 'Done',
       });
       return;
+    }
+
+    if (postImages.length) {
+      attachments.push(...postImages.map((i) => ({ fileId: i.fileId, type: FileType.IMAGE })));
+    }
+
+    if (postVideos.length) {
+      attachments.push(...postVideos.map((i) => ({ fileId: i.fileId, type: FileType.VIDEO })));
     }
 
     const createPostParams: Parameters<typeof PostRepository.createPost>[0] = {

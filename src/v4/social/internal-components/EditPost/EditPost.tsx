@@ -25,6 +25,7 @@ import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { Mentioned, Mentionees } from '~/v4/helpers/utils';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { MAXIMUM_POST_CHARACTERS } from '~/v4/social/constants';
 
 export function EditPost({ post }: AmityPostComposerEditOptions) {
   const pageId = 'post_composer_page';
@@ -37,6 +38,7 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
   const { onBack } = useNavigation();
   const { confirm } = useConfirmContext();
   const { updateItem } = useGlobalFeedContext();
+  const { info } = useConfirmContext();
 
   const [textValue, setTextValue] = useState<CreatePostParams>({
     text: post.data.text ?? '',
@@ -99,6 +101,15 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
   };
 
   const onSave = () => {
+    if (textValue.text?.length && textValue.text.length > MAXIMUM_POST_CHARACTERS) {
+      info({
+        pageId,
+        title: 'Unable to post',
+        content: 'You have reached maximum 50,000 characters in a post.',
+        okText: 'Done',
+      });
+      return;
+    }
     const attachmentsImage = postImages.map((item: Amity.Post<'image'>) => {
       return {
         fileId: item.data.fileId,
