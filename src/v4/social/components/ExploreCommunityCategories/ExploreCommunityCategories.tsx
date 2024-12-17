@@ -33,7 +33,7 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
   return (
     <Carousel
       scrollOffset={300}
-      isHidden={isCategoryLoading}
+      isHidden={isCategoryLoading || categories.length <= 3}
       iconClassName={styles.exploreCommunityCategories__arrowIcon}
       leftArrowClassName={clsx(styles.exploreCommunityCategories__arrow, styles.left)}
       rightArrowClassName={clsx(styles.exploreCommunityCategories__arrow, styles.right)}
@@ -44,13 +44,13 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
         className={styles.exploreCommunityCategories}
       >
         {isCategoryLoading ? (
-          Array.from({ length: 6 }).map((_, index) => <CategoryChipSkeleton key={index} />)
+          Array.from({ length: 5 }).map((_, index) => <CategoryChipSkeleton key={index} />)
         ) : (
           <Fragment>
-            {categories.map((category) => (
+            {categories.slice(0, 5).map((category) => (
               <div
-                className={styles.exploreCommunityCategories__categoryChip}
                 key={category.categoryId}
+                className={styles.exploreCommunityCategories__categoryChip}
               >
                 <CategoryChip
                   pageId={pageId}
@@ -59,19 +59,19 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
                 />
               </div>
             ))}
-            {categories.length >= 5 ? (
+            {categories.length >= 5 && (
               <Typography.BodyBold
                 renderer={({ typoClassName }) => (
                   <Button
-                    className={clsx(typoClassName, styles.exploreCommunityCategories__seeMore)}
                     onPress={() => goToAllCategoriesPage()}
+                    className={clsx(typoClassName, styles.exploreCommunityCategories__seeMore)}
                   >
                     <div>See more</div>
                     <ChevronRight className={styles.exploreCommunityCategories__seeMoreIcon} />
                   </Button>
                 )}
               />
-            ) : null}
+            )}
           </Fragment>
         )}
       </div>

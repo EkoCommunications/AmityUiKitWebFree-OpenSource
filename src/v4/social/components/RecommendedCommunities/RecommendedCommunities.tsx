@@ -145,8 +145,8 @@ export const RecommendedCommunities = ({ pageId = '*' }: RecommendedCommunitiesP
   return (
     <Carousel
       scrollOffset={400}
-      isHidden={isLoading}
       iconClassName={styles.recommendedCommunityCard__arrowIcon}
+      isHidden={isLoading || recommendedCommunities.length < 3}
       leftArrowClassName={clsx(styles.recommendedCommunityCard__arrow, styles.left)}
       rightArrowClassName={clsx(styles.recommendedCommunityCard__arrow, styles.right)}
     >

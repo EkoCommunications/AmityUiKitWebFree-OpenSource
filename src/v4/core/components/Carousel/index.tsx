@@ -24,7 +24,7 @@ export const Carousel = ({
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isScrollable, setIsScrollable] = useState(false);
   const [isArrowLeftButtonShown, setIsArrowLeftButtonShown] = useState(false);
-  const [isArrowRightButtonShown, setIsArrowRightButtonShown] = useState(true);
+  const [isArrowRightButtonShown, setIsArrowRightButtonShown] = useState(false);
 
   const handleScroll = (scrollOffset: number) => {
     if (carouselRef.current)
@@ -38,20 +38,20 @@ export const Carousel = ({
   const checkScrollButtonsVisibility = () => {
     if (carouselRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-      setIsArrowLeftButtonShown(scrollLeft > 0); // Show left button if not at the start
-      setIsArrowRightButtonShown(scrollLeft + clientWidth < scrollWidth); // Show right button if not at the end
+      setIsScrollable(scrollWidth > clientWidth);
+      setIsArrowLeftButtonShown(scrollLeft > 0);
+      setIsArrowRightButtonShown(scrollLeft + clientWidth < scrollWidth);
     }
   };
 
   useEffect(() => {
-    checkScrollButtonsVisibility();
-    const carousel = carouselRef.current;
-    if (carousel) {
-      carousel.addEventListener('scroll', checkScrollButtonsVisibility);
-      setIsScrollable(carouselRef.current.scrollWidth > carouselRef.current.clientWidth); // Check if carousel is scrollable
+    setTimeout(() => checkScrollButtonsVisibility(), 100);
+    if (carouselRef && carouselRef.current) {
+      carouselRef.current.addEventListener('scroll', checkScrollButtonsVisibility);
     }
     return () => {
-      if (carousel) carousel.removeEventListener('scroll', checkScrollButtonsVisibility);
+      if (carouselRef.current)
+        carouselRef.current.removeEventListener('scroll', checkScrollButtonsVisibility);
     };
   }, [carouselRef.current]);
 
