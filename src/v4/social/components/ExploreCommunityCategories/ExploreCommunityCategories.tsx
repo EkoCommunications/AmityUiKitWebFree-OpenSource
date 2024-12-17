@@ -17,14 +17,10 @@ type ExploreCommunityCategoriesProps = {
 
 export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCategoriesProps) => {
   const componentId = 'explore_community_categories';
-  const { accessibilityId, themeStyles } = useAmityComponent({
-    pageId,
-    componentId,
-  });
-
-  const { goToAllCategoriesPage, goToCommunitiesByCategoryPage } = useNavigation();
 
   const { categories, isCategoryLoading, fetchCommunityCategories } = useExplore();
+  const { goToAllCategoriesPage, goToCommunitiesByCategoryPage } = useNavigation();
+  const { accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
 
   useEffect(() => {
     fetchCommunityCategories();
@@ -48,29 +44,21 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
         ) : (
           <Fragment>
             {categories.slice(0, 5).map((category) => (
-              <div
+              <CategoryChip
+                pageId={pageId}
+                category={category}
                 key={category.categoryId}
-                className={styles.exploreCommunityCategories__categoryChip}
-              >
-                <CategoryChip
-                  pageId={pageId}
-                  category={category}
-                  onClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
-                />
-              </div>
+                onClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
+              />
             ))}
             {categories.length >= 5 && (
-              <Typography.BodyBold
-                renderer={({ typoClassName }) => (
-                  <Button
-                    onPress={() => goToAllCategoriesPage()}
-                    className={clsx(typoClassName, styles.exploreCommunityCategories__seeMore)}
-                  >
-                    <div>See more</div>
-                    <ChevronRight className={styles.exploreCommunityCategories__seeMoreIcon} />
-                  </Button>
-                )}
-              />
+              <Button
+                onPress={() => goToAllCategoriesPage()}
+                className={clsx(styles.exploreCommunityCategories__seeMore)}
+              >
+                <Typography.BodyBold>See more</Typography.BodyBold>
+                <ChevronRight className={styles.exploreCommunityCategories__seeMoreIcon} />
+              </Button>
             )}
           </Fragment>
         )}

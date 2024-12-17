@@ -42,13 +42,6 @@
   background-color: var(--asc-color-background-shade1);
 }
 
-.exploreCommunityCategories__categoryChip {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 2.25rem;
-}
-
 .exploreCommunityCategories__arrow {
   z-index: 100;
   display: none;

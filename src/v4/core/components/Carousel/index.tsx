@@ -45,7 +45,7 @@ export const Carousel = ({
   };
 
   useEffect(() => {
-    setTimeout(() => checkScrollButtonsVisibility(), 100);
+    setTimeout(() => checkScrollButtonsVisibility(), 300);
     if (carouselRef && carouselRef.current) {
       carouselRef.current.addEventListener('scroll', checkScrollButtonsVisibility);
     }
