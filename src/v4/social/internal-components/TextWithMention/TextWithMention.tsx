@@ -50,7 +50,7 @@ export const TextWithMention = ({
     [data, mentionees, metadata],
   );
 
-  const convertSerializedToText = (child: SerializedLexicalNode) => {
+  const convertSerializedToText = (child: SerializedLexicalNode, childIndex: number) => {
     if ($isSerializedMentionNode<MentionData>(child)) {
       return (
         <span
@@ -79,7 +79,7 @@ export const TextWithMention = ({
     }
 
     if ($isSerializedTextNode(child)) {
-      return <React.Fragment>{child.text}</React.Fragment>;
+      return <React.Fragment key={childIndex}>{child.text}</React.Fragment>;
     }
 
     return null;
@@ -88,7 +88,7 @@ export const TextWithMention = ({
   const renderText = (paragraph: SerializedParagraphNode[]) => {
     return paragraph.map((p, index) => (
       <React.Fragment key={index}>
-        {p.children.map((child, childIndex) => convertSerializedToText(child))}
+        {p.children.map((child, childIndex) => convertSerializedToText(child, childIndex))}
         <br />
       </React.Fragment>
     ));

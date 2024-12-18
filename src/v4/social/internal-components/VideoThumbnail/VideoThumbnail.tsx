@@ -65,13 +65,27 @@ export const VideoThumbnail = ({
           )}
         >
           {uploadLoading ? (
-            <div className={styles.icon__status}>
-              <Spinner />
-            </div>
+            <>
+              <img src={file.thumbnail} className={styles.thumbnail} alt="thumbnail-video" />
+              <div className={styles.thumbnail__overlay} />
+              <div className={styles.icon__status}>
+                <Spinner />
+              </div>
+            </>
           ) : isErrorUpload ? (
-            <div className={styles.icon__status}>
-              <ExclamationCircle />
-            </div>
+            <>
+              <Button
+                data-qa-anchor={`${pageId}/${componentId}/remove_thumbnail`}
+                type="reset"
+                className={styles.closeButton}
+                onPress={() => handleRemoveThumbnail(file.file, index)}
+              >
+                <CloseIcon className={styles.closeIcon} />
+              </Button>
+              <div className={styles.icon__status}>
+                <ExclamationCircle />
+              </div>
+            </>
           ) : (
             <>
               <img

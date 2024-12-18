@@ -9,6 +9,7 @@ interface NotificationProps {
   icon?: ReactNode;
   duration?: number;
   isShowAttributes?: string | boolean;
+  onClose?: () => void;
 }
 
 export const Notification = ({
@@ -17,12 +18,14 @@ export const Notification = ({
   icon,
   duration,
   isShowAttributes,
+  onClose,
 }: NotificationProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   if (duration) {
     setTimeout(() => {
       setIsVisible(false);
+      onClose?.();
     }, duration);
   }
 

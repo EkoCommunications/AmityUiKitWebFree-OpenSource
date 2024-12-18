@@ -102,6 +102,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   const [isCreating, setIsCreating] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isErrorUpload, setIsErrorUpload] = useState<string | undefined>();
+  const [postErrorText, setPostErrorText] = useState<string | undefined>();
   const [videoThumbnail, setVideoThumbnail] = useState<
     { file: File; videoUrl: string; thumbnail: string | undefined }[]
   >([]);
@@ -122,6 +123,23 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
     ],
   });
 
+  // Check connection
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const onClearFailedUpload = () => {
     setIsErrorUpload(undefined);
     setIncomingImages([]);
@@ -129,34 +147,22 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
     setPostImages([]);
     setPostVideos([]);
   };
-
   useEffect(() => {
-    if (typeof isErrorUpload !== 'undefined') {
-      let message = 'Please try again later.';
-      if (
-        isErrorUpload.includes(
-          'Amity SDK (500000): Image uploading failed: Suggestive content is not permitted',
-        )
-      ) {
-        message = 'Suggestive content is not permitted';
-      }
-
-      confirm({
-        pageId,
-        title: 'Failed to upload media',
-        content: message,
-        onOk: () => onClearFailedUpload(),
-        onCancel: () => onClearFailedUpload(),
-      });
+    if (incomingImages.length == 0 && incomingVideos.length == 0) {
+      setIsErrorUpload(undefined);
     }
-  }, [isErrorUpload]);
+  }, [incomingImages.length, incomingVideos.length]);
 
   async function createPost(createPostParams: Parameters<typeof PostRepository.createPost>[0]) {
+    let shouldRunFinallyLogic = true;
+    if (!isOnline) {
+      return;
+    }
+
     try {
       setIsCreating(true);
 
       const postData = await PostRepository.createPost(createPostParams);
-
       const post = postData.data;
 
       setPostImages([]);
@@ -169,7 +175,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
 
       if (!targetId) prependItem(postData.data);
 
-      //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
+      // TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
       if (
         ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
           .needApprovalOnPostCreation ||
@@ -179,28 +185,43 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
         info({
           pageId,
           content:
-            'Your post has been submitted to pending list. It will be review by community moderator.',
+            'Your post has been submitted to pending list. It will be reviewed by the community moderator.',
           okText: 'OK',
         });
       } else {
         prependItem(postData.data);
       }
-    } catch (error: unknown) {
+    } catch (error) {
+      setIsCreating(false);
       setIsError(true);
-      if (error instanceof Error) {
-        if (error.message === ERROR_RESPONSE.CONTAIN_BLOCKED_WORD) {
-          notification.error({
-            content: 'Text contain blocked word.',
-          });
+
+      if (error instanceof Error && error.message.includes(ERROR_RESPONSE.CONTAIN_BLOCKED_WORD)) {
+        setPostErrorText("Your post wasn't posted because it contains a blocked word.");
+        shouldRunFinallyLogic = false; // Skip finally logic for specific errors
+        return;
+      } else if (
+        error instanceof Error &&
+        error.message.includes(ERROR_RESPONSE.NOT_INCLUDE_WHITELIST_LINK)
+      ) {
+        setPostErrorText("Your post wasn't posted because it contains a link that’s not allowed.");
+        shouldRunFinallyLogic = false; // Skip finally logic for specific errors
+        return;
+      } else {
+        setPostErrorText('Failed to post.');
+      }
+    }
+
+    if (shouldRunFinallyLogic) {
+      if (!isError) {
+        setIsCreating(false);
+        if (isDesktop) {
+          closePopup();
+        } else if (prevPage?.type === PageTypes.SelectPostTargetPage) {
+          AmityPostComposerPageBehavior?.goToSocialHomePage?.();
+        } else {
+          onBack();
         }
       }
-    } finally {
-      setIsCreating(false);
-      isDesktop
-        ? closePopup()
-        : prevPage?.type == PageTypes.SelectPostTargetPage
-          ? AmityPostComposerPageBehavior?.goToSocialHomePage?.()
-          : onBack();
     }
   }
 
@@ -208,12 +229,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
     const attachments = [];
 
     if (textValue.text?.length && textValue.text.length > MAXIMUM_POST_CHARACTERS) {
-      info({
-        pageId,
-        title: 'Unable to post',
-        content: 'You have reached maximum 50,000 characters in a post.',
-        okText: 'Done',
-      });
+      setPostErrorText('You have reached maximum 50,000 characters in a post.');
       return;
     }
 
@@ -238,6 +254,48 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
     return createPost(createPostParams);
   }
 
+  //TODO : Make this function works the issues is can't remove extra mention from DOM
+  // const onChange = (val: { mentioned: Mentioned[]; mentionees: Mentionees; text: string }) => {
+  //   let mentioned = val.mentioned;
+  //   let mentionees = val.mentionees;
+  //   let text = val.text;
+
+  //   if (mentioned.length > MAXIMUM_POST_MENTIONEES) {
+  //     info({
+  //       title: 'Too many users mentioned',
+  //       content: `You can mention up to ${MAXIMUM_POST_MENTIONEES} users per message.`,
+  //       okText: 'OK',
+  //     });
+
+  //     // Truncate to maximum mentions
+  //     mentioned = mentioned.slice(0, MAXIMUM_POST_MENTIONEES);
+  //     mentionees = mentionees.map((ment) => ({
+  //       ...ment,
+  //       userIds: ment.userIds?.slice(0, MAXIMUM_POST_MENTIONEES),
+  //     }));
+
+  //     const extraMentions = val.mentioned.slice(MAXIMUM_POST_MENTIONEES);
+  //     extraMentions.forEach((mention) => {
+  //       const mentionRegex = new RegExp(`@${mention.displayName}\\b`, 'g');
+  //       text = text.replace(mentionRegex, '').trim(); // Remove the mention from text
+  //     });
+
+  //     setTextValue((prev) => ({
+  //       ...prev,
+  //       mentioned,
+  //       text,
+  //       mentionees,
+  //     }));
+  //   } else {
+  //     setTextValue((prev) => ({
+  //       ...prev,
+  //       mentioned,
+  //       text,
+  //       mentionees,
+  //     }));
+  //   }
+  // };
+
   const onChange = (val: { mentioned: Mentioned[]; mentionees: Mentionees; text: string }) => {
     setTextValue((prev) => ({
       ...prev,
@@ -246,7 +304,6 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       mentionees: val.mentionees,
     }));
   };
-
   const handleSnapChange = (newSnap: string) => {
     if (snap === HEIGHT_MEDIA_ATTACHMENT_MENU && newSnap === '0px') {
       return;
@@ -366,23 +423,33 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       className={styles.createPost__notificationWrapper}
       data-item-position={snap === HEIGHT_MEDIA_ATTACHMENT_MENU}
     >
-      {isCreating && (
+      {(isCreating || !isOnline) && (
         <Notification
           icon={<Spinner />}
-          content="Posting..."
+          content={isOnline ? 'Posting...' : 'Waiting for network...'}
           className={styles.createPost__notification}
         />
       )}
-      {isError && (
+      {(isError || postErrorText) && (
         <Notification
           duration={3000}
-          content="Failed to create post"
+          content={postErrorText ? postErrorText : 'Failed to create post.'}
           className={styles.createPost__notification}
           icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
+          onClose={() => {
+            setPostErrorText(undefined);
+            setIsError(false);
+          }}
         />
       )}
     </div>
   );
+
+  const isDisabledPostButton =
+    !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0) ||
+    isCreating ||
+    !isOnline ||
+    uploadLoading;
 
   const isShowDetailMediaAttachmentMenu =
     snap == HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_1 ||
@@ -400,14 +467,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
         <div className={styles.createPost__topBar}>
           <CloseButton pageId={pageId} onPress={onClickClose} />
           <CommunityDisplayName pageId={pageId} community={community} />
-          <CreateNewPostButton
-            pageId={pageId}
-            variant="text"
-            isDisabled={
-              !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0) ||
-              isCreating
-            }
-          />
+          <CreateNewPostButton pageId={pageId} variant="text" isDisabled={isDisabledPostButton} />
         </div>
         <div className={styles.createPost__formContent}>
           <PostTextField
@@ -464,10 +524,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
             variant="fill"
             pageId={pageId}
             className={styles.createPost__cta}
-            isDisabled={
-              !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0) ||
-              isCreating
-            }
+            isDisabled={isDisabledPostButton}
           />
         </div>
         <div
@@ -530,9 +587,10 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
                 drawerRef.current,
               )
             : null}
-          {isCreating && (
+
+          {(isCreating || !isOnline) && (
             <Notification
-              content="Posting..."
+              content={isOnline ? 'Posting...' : 'Waiting for network...'}
               icon={<Spinner />}
               className={styles.createPost__notification}
               isShowAttributes={
@@ -544,13 +602,17 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
               }
             />
           )}
-          {isError && (
+          {(isError || postErrorText) && (
             <Notification
-              content="Failed to create post"
+              content={postErrorText ? postErrorText : 'Failed to create post.'}
               icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
               className={styles.createPost__notification}
               data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
               duration={3000}
+              onClose={() => {
+                setPostErrorText(undefined);
+                setIsError(false);
+              }}
             />
           )}
         </div>

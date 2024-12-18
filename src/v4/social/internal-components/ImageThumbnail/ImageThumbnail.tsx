@@ -62,10 +62,22 @@ export function ImageThumbnail({
                   <Spinner />
                 </div>
               </>
-            ) : isErrorUpload ? (
-              <div className={styles.icon__status}>
-                <ExclamationCircle />
-              </div>
+            ) : isErrorUpload && !('fileId' in file) ? (
+              <>
+                <img src={URL.createObjectURL(file as File)} className={styles.thumbnail} alt="" />
+                <div className={styles.thumbnail__overlay} />
+                <Button
+                  data-qa-anchor={`${pageId}/${componentId}/remove_thumbnail`}
+                  type="reset"
+                  className={styles.closeButton}
+                  onPress={() => removeFile(file)}
+                >
+                  <CloseIcon className={styles.closeIcon} />
+                </Button>
+                <div className={styles.icon__status__error}>
+                  <ExclamationCircle />
+                </div>
+              </>
             ) : (
               <>
                 <img

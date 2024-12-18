@@ -1,10 +1,10 @@
 import React from 'react';
 import { MentionData } from './utils';
-import { Button } from '~/v4/core/natives/Button';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { MentionTypeaheadOption } from './plugins/MentionPlugin';
 import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar/UserAvatar';
+import { Button } from '~/v4/core/components/AriaButton';
 import styles from './MentionItem.module.css';
 
 type MentionItemProps = {
@@ -36,6 +36,7 @@ export function MentionItem({
       data-is-selected={isSelected}
       className={styles.userMentionItem__item}
       data-qa-anchor={`${pageId}/${componentId}/mention_item`}
+      variant="text"
     >
       <div>
         <UserAvatar

@@ -26,6 +26,7 @@ import { Mentioned, Mentionees } from '~/v4/helpers/utils';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { MAXIMUM_POST_CHARACTERS } from '~/v4/social/constants';
+import { ERROR_RESPONSE } from '~/v4/social/constants/errorResponse';
 
 export function EditPost({ post }: AmityPostComposerEditOptions) {
   const pageId = 'post_composer_page';
@@ -52,6 +53,9 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
     ],
   });
 
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [postErrorText, setPostErrorText] = useState<string | undefined>();
+
   const [postImages, setPostImages] = useState<Amity.File[]>([]);
   const [postVideos, setPostVideos] = useState<Amity.File[]>([]);
 
@@ -59,6 +63,20 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
   const [defaultPostVideo, setDefaultPostVideo] = useState<Amity.File[]>([]);
 
   const mentionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   const useMutateUpdatePost = () =>
     useMutation({
@@ -70,7 +88,18 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
         updateItem(response.data);
       },
       onError: (error) => {
-        console.error('Failed to edit post', error);
+        if (error.message.includes(ERROR_RESPONSE.CONTAIN_BLOCKED_WORD)) {
+          setPostErrorText("Your post wasn't posted because it contains a blocked word.");
+          return;
+        } else if (error.message.includes(ERROR_RESPONSE.NOT_INCLUDE_WHITELIST_LINK)) {
+          setPostErrorText(
+            "Your post wasn't posted because it contains a link that’s not allowed.",
+          );
+          return;
+        } else {
+          setPostErrorText('Failed to post.');
+          return;
+        }
       },
     });
 
@@ -102,12 +131,7 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
 
   const onSave = () => {
     if (textValue.text?.length && textValue.text.length > MAXIMUM_POST_CHARACTERS) {
-      info({
-        pageId,
-        title: 'Unable to post',
-        content: 'You have reached maximum 50,000 characters in a post.',
-        okText: 'Done',
-      });
+      setPostErrorText('You have reached maximum 50,000 characters in a post.');
       return;
     }
     const attachmentsImage = postImages.map((item: Amity.Post<'image'>) => {
@@ -169,6 +193,7 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
             variant="text"
             pageId={pageId}
             isDisabled={
+              !isOnline ||
               (post.data.text == textValue.text && !isImageChanged && !isVideoChanged) ||
               !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0)
             }
@@ -207,19 +232,22 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
         </div>
         <div ref={mentionRef} className={styles.editPost__mention} />
         <div className={styles.editPost__notificationContainer}>
-          {isPending && (
+          {(isPending || !isOnline) && (
             <Notification
               icon={<Spinner />}
-              content="Posting..."
+              content={isOnline ? 'Posting...' : 'Waiting for network...'}
               className={styles.editPost__notification}
             />
           )}
-          {isError && (
+          {postErrorText && (
             <Notification
               duration={3000}
-              content="Failed to edit post"
+              content={postErrorText || 'Failed to post.'}
               className={styles.editPost__notification}
               icon={<ExclamationCircle className={styles.editPost__notificationIcon} />}
+              onClose={() => {
+                setPostErrorText(undefined);
+              }}
             />
           )}
         </div>

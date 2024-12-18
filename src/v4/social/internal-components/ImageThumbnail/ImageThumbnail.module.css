@@ -72,7 +72,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(from var(--asc-color-black) r g b / 80%);
+  background-color: rgb(from var(--asc-color-black) r g b / 50%);
+}
+
+.icon__status__error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--asc-color-white);
 }
 
 .icon__status {
