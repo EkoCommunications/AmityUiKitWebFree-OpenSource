@@ -5,11 +5,15 @@ import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
 type CreateNewPostButtonProps = ButtonProps & {
   pageId: string;
   componentId?: string;
+  isValid?: boolean;
+  onSubmit?: () => void;
 };
 
 export function CreateNewPostButton({
   pageId = '*',
   componentId = '*',
+  isValid = false,
+  onSubmit,
   ...props
 }: CreateNewPostButtonProps) {
   const elementId = 'create_new_post_button';

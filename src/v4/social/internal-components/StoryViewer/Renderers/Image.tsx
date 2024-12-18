@@ -246,31 +246,31 @@ export const renderer: CustomRenderer = ({
   }, [actions]);
 
   const onClickCommentButton = useCallback(() => {
-    // if (isDesktop) {
-    //   pause();
-    //   openPopup({
-    //     pageId: 'story_page',
-    //     componentId: 'comment_tray_component',
-    //     header: (
-    //       <Typography.Heading className={styles.commentTrayHeader}>Comments</Typography.Heading>
-    //     ),
-    //     children: renderCommentTray(),
-    //     isDismissable: false,
-    //     onClose: () => {
-    //       closePopup();
-    //       play();
-    //     },
-    //   });
-    // } else {
-    openCommentSheet();
-    // }
+    if (isDesktop) {
+      pause();
+      openPopup({
+        pageId: 'story_page',
+        componentId: 'comment_tray_component',
+        header: (
+          <Typography.Heading className={styles.commentTrayHeader}>Comments</Typography.Heading>
+        ),
+        children: renderCommentTray(),
+        isDismissable: false,
+        onClose: () => {
+          closePopup();
+          play();
+        },
+      });
+    } else {
+      openCommentSheet();
+    }
   }, [action]);
 
   const onClickMenuButton = useCallback((openPopover) => {
-    // if (isDesktop) {
-    //   pause();
-    //   openPopover();
-    // } else openBottomSheet();
+    if (isDesktop) {
+      pause();
+      openPopover();
+    } else openBottomSheet();
     openBottomSheet();
   }, []);
 

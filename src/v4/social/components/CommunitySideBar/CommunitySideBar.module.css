@@ -28,3 +28,9 @@
   border-top: 1px solid var(--asc-color-base-shade4);
   overflow-y: auto;
 }
+
+.sideBar__content {
+  max-height: 55vh;
+  overflow-y: scroll;
+  padding-bottom: 1rem;
+}

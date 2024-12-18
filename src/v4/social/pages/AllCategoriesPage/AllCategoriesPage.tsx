@@ -65,7 +65,7 @@ export function AllCategoriesPage() {
   return (
     <div className={styles.allCategoriesPage} style={themeStyles} data-qa-anchor={accessibilityId}>
       <div className={styles.allCategoriesPage__navigation}>
-        <BackButton pageId={pageId} onPress={onBack} />
+        <BackButton pageId={pageId} onPress={() => onBack()} />
         <AllCategoriesTitle pageId={pageId} />
       </div>
       <div className={styles.allCategoriesList}>

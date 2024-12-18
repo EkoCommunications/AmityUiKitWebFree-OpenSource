@@ -40,13 +40,7 @@ export function ImageButton({
   };
 
   const button = (
-    <Button
-      type="button"
-      onPress={onPress}
-      style={themeStyles}
-      data-qa-anchor={accessibilityId}
-      className={styles.imageButton}
-    >
+    <Button type="button" onPress={onPress} style={themeStyles} className={styles.imageButton}>
       <IconComponent
         configIconName={config.icon}
         defaultIconName={defaultConfig.icon}

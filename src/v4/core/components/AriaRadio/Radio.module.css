@@ -6,6 +6,8 @@
   align-items: center;
   forced-color-adjust: none;
   color: var(--asc-color-base-default);
+  flex-direction: row-reverse;
+  justify-content: space-between;
 }
 
 .radio::before {

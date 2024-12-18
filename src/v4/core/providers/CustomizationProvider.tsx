@@ -552,6 +552,10 @@ export const defaultConfig: DefaultConfig = {
     'community_profile_page/*/create_story_button': {
       text: 'Story',
     },
+    'community_profile_page/*/create_poll_button': {
+      text: 'Poll',
+    },
+
     'pending_posts_page/*/*': {},
     'pending_posts_page/*/back_button': {
       image: 'value',
@@ -859,6 +863,45 @@ export const defaultConfig: DefaultConfig = {
     'community_posts_notification_page/*/*': {},
     'community_comments_notification_page/*/*': {},
     'community_stories_notification_page/*/*': {},
+    'poll_post_composer_page/*/*': {},
+    'poll_post_composer_page/*/poll_question_title': {
+      text: 'Poll question',
+    },
+    'poll_post_composer_page/*/poll_options_title': {
+      text: 'Options',
+    },
+    'poll_post_composer_page/*/poll_options_desc': {
+      text: 'Poll must contain at least 2 options.',
+    },
+    'poll_post_composer_page/*/poll_add_option_button': {
+      text: 'Add option',
+      image: 'plusIcon',
+    },
+    'poll_post_composer_page/*/poll_duration_title': {
+      text: 'Poll duration',
+    },
+    'poll_post_composer_page/*/poll_duration_desc': {
+      text: 'You can always close the poll before the set duration.',
+    },
+    'poll_post_composer_page/*/poll_multiple_selection_title': {
+      text: 'Multiple selection',
+    },
+    'poll_post_composer_page/*/poll_multiple_selection_desc': {
+      text: 'Let participants vote more than one option',
+    },
+    'poll_post_composer_page/*/create_new_post_button': {
+      text: 'Post',
+    },
+    'select_poll_target_page/*/close_button': {
+      image: 'platformValue',
+    },
+    'select_poll_target_page/*/my_timeline_avatar': {},
+    'select_poll_target_page/*/title': {
+      text: 'Post to',
+    },
+    'select_poll_target_page/*/my_timeline_text': {
+      text: 'My Timeline',
+    },
   },
 };
 

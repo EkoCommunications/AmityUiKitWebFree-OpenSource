@@ -1,6 +1,5 @@
 .popup {
   outline: none;
-  max-width: 30rem;
   max-height: 80vh;
   border-radius: 0.75rem;
   background: var(--asc-color-background-default);

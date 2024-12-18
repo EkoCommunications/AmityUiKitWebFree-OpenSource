@@ -107,6 +107,7 @@
     "@amityco/ts-sdk": "6.32.3-a2e735a.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.3.4",
+    "@internationalized/date": "^3.6.0",
     "@lexical/link": "^0.18.0",
     "@lexical/react": "^0.18.0",
     "@tanstack/react-query": "^5.28.14",

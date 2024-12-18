@@ -20,6 +20,8 @@ import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName'
 import { Mode, PostComposerPage } from '~/v4/social/pages/PostComposerPage/';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import styles from './PostComposer.module.css';
+import { PollButton } from '~/v4/social/elements/PollButton';
+import { PollTargetSelectionPage } from '~/v4/social/pages/PollTargetSelectionPage';
 
 type PostComposerProps = {
   pageId?: string;
@@ -114,6 +116,18 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
     });
   };
 
+  const onClickPoll = () => {
+    openPopup({
+      pageId,
+      componentId,
+      view: 'desktop',
+      header: (
+        <Title pageId="select_poll_target_page" titleClassName={styles.postComposer__title} />
+      ),
+      children: <PollTargetSelectionPage />,
+    });
+  };
+
   const renderStoryButton = () => {
     const isExcludedPage = pageId === 'user_profile_page';
 
@@ -161,7 +175,8 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
         componentId={componentId}
         defaultIconClassName={styles.postComposer__button}
       />
-      {/* {renderStoryButton()} */}
+      <PollButton onPress={onClickPoll} pageId="post_composer_page" componentId="poll_button" />
+      {renderStoryButton()}
     </div>
   );
 }

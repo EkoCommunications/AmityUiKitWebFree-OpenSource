@@ -74,7 +74,7 @@
     display: block;
   }
 
-  /* .storyWrapper {
+  .storyWrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -82,7 +82,7 @@
     height: 100%;
     background-color: var(--asc-color-background-transparent-black);
 
-    To show this component as modal
+    /* To show this component as modal */
     z-index: 500;
-  } */
+  }
 }

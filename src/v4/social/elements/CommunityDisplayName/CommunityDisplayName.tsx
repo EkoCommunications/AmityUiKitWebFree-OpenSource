@@ -8,7 +8,7 @@ export type CommunityDisplayNameProps = {
   pageId?: string;
   className?: string;
   componentId?: string;
-  community?: Amity.Community;
+  community?: Amity.Community | null;
 };
 
 export function CommunityDisplayName({

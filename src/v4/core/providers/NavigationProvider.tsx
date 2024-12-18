@@ -33,6 +33,7 @@ export enum PageTypes {
   PostComposerPage = 'PostComposerPage',
   MyCommunitiesSearchPage = 'MyCommunitiesSearchPage',
   StoryTargetSelectionPage = 'StoryTargetSelectionPage',
+  PollTargetSelectionPage = 'PollTargetSelectionPage',
   AllCategoriesPage = 'AllCategoriesPage',
   CommunitiesByCategoryPage = 'CommunitiesByCategoryPage',
   CommunityAddCategoryPage = 'CommunityAddCategoryPage',
@@ -42,6 +43,8 @@ export enum PageTypes {
   CommunityStorySettingPage = 'CommunityStorySettingPage',
   PendingPostsPage = 'PendingPostsPage',
   CommunityMembershipPage = 'CommunityMembershipPage',
+  CommunityCreatePage = 'CommunityCreatePage',
+  PollPostComposerPage = 'PollPostComposerPage',
 }
 
 type Page =
@@ -153,6 +156,13 @@ type Page =
       };
     }
   | {
+      type: PageTypes.PollPostComposerPage;
+      context: {
+        targetId: string | null;
+        targetType: 'community' | 'user';
+      };
+    }
+  | {
       type: PageTypes.CommunityAddMemberPage;
       context: {
         members?: MemberCommunitySetup[];
@@ -189,6 +199,9 @@ type Page =
       context: {
         community: Amity.Community;
       };
+    }
+  | {
+      type: PageTypes.PollTargetSelectionPage;
     };
 
 type ContextValue = {
@@ -212,7 +225,12 @@ type ContextValue = {
   goToSocialGlobalSearchPage: (tab?: string) => void;
   goToMyCommunitiesSearchPage: () => void;
   goToSelectPostTargetPage: () => void;
+  goToSelectPollPostTargetPage: () => void;
   goToStoryTargetSelectionPage: () => void;
+  goToPollPostComposerPage: (context: {
+    targetId: string | null;
+    targetType: 'community' | 'user';
+  }) => void;
   goToDraftStoryPage: (
     targetId: string,
     targetType: string,
@@ -309,6 +327,8 @@ let defaultValue: ContextValue = {
   goToSocialGlobalSearchPage: (tab?: string) => {},
   goToSelectPostTargetPage: () => {},
   goToStoryTargetSelectionPage: () => {},
+  goToSelectPollPostTargetPage: () => {},
+  goToPollPostComposerPage: () => {},
   goToPostComposerPage: () => {},
   goToStoryCreationPage: () => {},
   goToSocialHomePage: () => {},
@@ -367,6 +387,10 @@ if (process.env.NODE_ENV !== 'production') {
     goToSocialGlobalSearchPage: (tab) =>
       console.log(`NavigationContext goToSocialGlobalSearchPage(${tab})`),
     goToSelectPostTargetPage: () => console.log('NavigationContext goToTargetPage()'),
+    goToSelectPollPostTargetPage: () =>
+      console.log(`NavigationContext goToSelectPollPostTargetPage()`),
+    goToPollPostComposerPage: (context) =>
+      console.log(`NavigationContext goToPollPostComposerPage(${context})`),
     goToStoryTargetSelectionPage: () =>
       console.log('NavigationContext goToStoryTargetSelectionPage()'),
     goToDraftStoryPage: (data) => console.log(`NavigationContext goToDraftStoryPage()`),
@@ -782,6 +806,14 @@ export default function NavigationProvider({
     pushPage(next);
   }, [onChangePage, pushPage]);
 
+  const goToSelectPollPostTargetPage = useCallback(() => {
+    const next = {
+      type: PageTypes.PollTargetSelectionPage,
+    };
+
+    pushPage(next);
+  }, [onChangePage, pushPage]);
+
   const goToStoryCreationPage = useCallback(
     ({ targetId, targetType, mediaType, storyType }) => {
       const next = {
@@ -1019,6 +1051,21 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToPollPostComposerPage = useCallback(
+    ({ targetId, targetType }) => {
+      const next = {
+        type: PageTypes.PollPostComposerPage,
+        context: {
+          targetId,
+          targetType,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   return (
     <NavigationContext.Provider
       value={{
@@ -1040,6 +1087,7 @@ export default function NavigationProvider({
         goToViewStoryPage,
         goToSelectPostTargetPage,
         goToStoryTargetSelectionPage,
+        goToSelectPollPostTargetPage,
         goToStoryCreationPage,
         goToDraftStoryPage,
         goToPostComposerPage,
@@ -1056,6 +1104,7 @@ export default function NavigationProvider({
         goToStorySettingPage,
         goToPendingPostPage,
         goToMembershipPage,
+        goToPollPostComposerPage,
         setNavigationBlocker,
         goToUserRelationshipPage,
         goToPendingFollowRequestPage,

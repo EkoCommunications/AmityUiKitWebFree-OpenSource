@@ -23,6 +23,7 @@ import { PostComposer } from '~/v4/social/components/PostComposer';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName';
+import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
 
 interface CommunityProfileProps {
   communityId: string;
@@ -201,9 +202,20 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
                       removeDrawerData();
                     }}
                   />
-                  {/* <FileTrigger onSelect={handleFileSelect}>
+                  <FileTrigger onSelect={handleFileSelect}>
                     <CreateStoryButton pageId={pageId} />
-                  </FileTrigger> */}
+                  </FileTrigger>
+                  <CreatePollButton
+                    pageId={pageId}
+                    componentId={communityId}
+                    onClick={() => {
+                      AmityCommunityProfilePageBehavior?.goToPollPostComposerPage?.({
+                        targetId: communityId,
+                        targetType: 'community',
+                      });
+                      removeDrawerData();
+                    }}
+                  />
                 </>
               ),
             })

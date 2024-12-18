@@ -35,6 +35,8 @@ import { CommunitySetupProvider } from '~/v4/social/providers/CommunitySetupProv
 import { CommunityAddMemberPage } from '~/v4/social/pages/CommunityAddMemberPage/CommunityAddMemberPage';
 import { CommunitySettingPage } from '~/v4/social/pages/CommunitySettingPage';
 import { PendingPostsPage } from '~/v4/social/pages/PendingPostsPage';
+import { PollTargetSelectionPage } from '~/v4/social/pages/PollTargetSelectionPage';
+import { PollPostComposerPage } from '~/v4/social/pages/PollPostComposerPage';
 
 const Application = () => {
   const { isDesktop } = useResponsive();
@@ -150,6 +152,13 @@ const Application = () => {
         )}
         {page.type === PageTypes.CommunityEdit && (
           <CommunityEditPage communityId={page.context.communityId} tab={page.context.tab} />
+        )}
+        {page.type === PageTypes.PollTargetSelectionPage && <PollTargetSelectionPage />}
+        {page.type === PageTypes.PollPostComposerPage && (
+          <PollPostComposerPage
+            targetId={page.context.targetId}
+            targetType={page.context.targetType}
+          />
         )}
         {/*End of V3 */}
       </MainLayout>

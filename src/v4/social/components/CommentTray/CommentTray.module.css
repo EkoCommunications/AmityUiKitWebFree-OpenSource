@@ -62,9 +62,9 @@
   width: 100%;
 }
 
-/* @media screen and (width >= 48em) {
+@media screen and (width >= 48em) {
   .commentTrayContainer {
     height: 50vh;
     min-width: 30rem;
   }
-} */
+}

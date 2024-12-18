@@ -44,6 +44,7 @@ export interface PageBehavior {
   AmityCreatePostMenuComponentBehavior?: {
     goToSelectPostTargetPage?(): void;
     goToStoryTargetSelectionPage?(): void;
+    goToSelectPollPostTargetPage?(): void;
   };
   AmityPostTargetSelectionPage?: {
     goToPostComposerPage?: (context: {
@@ -90,6 +91,10 @@ export interface PageBehavior {
     }): void;
     goToPendingPostPage?(context: { communityId: string }): void;
     goToMembershipPage?(context: { community: Amity.Community }): void;
+    goToPollPostComposerPage?(context: {
+      targetId: string | null;
+      targetType: 'community' | 'user';
+    }): void;
   };
   AmitySocialHomeTopNavigationComponentBehavior?: {
     goToCreateCommunityPage?(context: { mode: AmityCommunitySetupPageMode }): void;
@@ -120,6 +125,7 @@ export interface PageBehavior {
     }): void;
     goToUserProfilePage?: (context: { userId: string }) => void;
   };
+
   AmityUserFeedComponentBehavior?: {
     goToPostDetailPage?(context: { postId: string }): void;
   };
@@ -144,6 +150,12 @@ export interface PageBehavior {
   AmityBlockedUsersPageBehavior: {
     goToUserProfilePage?(context: { userId: string }): void;
   };
+  AmityPollTargetSelectionPageBehavior?: {
+    goToPollPostComposerPage?(context: {
+      targetId: string | null;
+      targetType: 'community' | 'user';
+    }): void;
+  };
 }
 
 const PageBehaviorContext = React.createContext<PageBehavior | undefined>(undefined);
@@ -167,6 +179,7 @@ export const PageBehaviorProvider: React.FC<PageBehaviorProviderProps> = ({
     goToViewStoryPage,
     onChangePage,
     goToSelectPostTargetPage,
+    goToSelectPollPostTargetPage,
     goToStoryTargetSelectionPage,
     goToStoryCreationPage,
     goToPostComposerPage,
@@ -182,6 +195,7 @@ export const PageBehaviorProvider: React.FC<PageBehaviorProviderProps> = ({
     goToPostPermissionPage,
     goToStorySettingPage,
     goToPendingPostPage,
+    goToPollPostComposerPage,
   } = useNavigation();
   const navigationBehavior: PageBehavior = {
     AmityStoryViewPageBehavior: {
@@ -283,6 +297,12 @@ export const PageBehaviorProvider: React.FC<PageBehaviorProviderProps> = ({
         }
         goToStoryTargetSelectionPage();
       },
+      goToSelectPollPostTargetPage() {
+        if (pageBehavior?.AmityCreatePostMenuComponentBehavior?.goToSelectPollPostTargetPage) {
+          return pageBehavior.AmityCreatePostMenuComponentBehavior.goToSelectPollPostTargetPage();
+        }
+        goToSelectPollPostTargetPage();
+      },
     },
     AmityPostTargetSelectionPage: {
       goToPostComposerPage: (context: {
@@ -308,6 +328,19 @@ export const PageBehaviorProvider: React.FC<PageBehaviorProviderProps> = ({
           return pageBehavior.AmityStoryTargetSelectionPage.goToStoryCreationPage(context);
         }
         goToStoryCreationPage(context);
+      },
+    },
+    AmityPollTargetSelectionPageBehavior: {
+      goToPollPostComposerPage: (context: {
+        targetId: string | null;
+        targetType: 'community' | 'user';
+      }) => {
+        if (pageBehavior?.AmityPollTargetSelectionPageBehavior?.goToPollPostComposerPage) {
+          return pageBehavior.AmityPollTargetSelectionPageBehavior.goToPollPostComposerPage(
+            context,
+          );
+        }
+        goToPollPostComposerPage(context);
       },
     },
     AmityPostComposerPageBehavior: {
@@ -369,6 +402,17 @@ export const PageBehaviorProvider: React.FC<PageBehaviorProviderProps> = ({
           return pageBehavior.AmityStoryTargetSelectionPage.goToStoryCreationPage(context);
         }
         goToStoryCreationPage(context);
+      },
+      goToPollPostComposerPage: (context: {
+        targetId: string | null;
+        targetType: 'community' | 'user';
+      }) => {
+        if (pageBehavior?.AmityPollTargetSelectionPageBehavior?.goToPollPostComposerPage) {
+          return pageBehavior.AmityPollTargetSelectionPageBehavior.goToPollPostComposerPage(
+            context,
+          );
+        }
+        goToPollPostComposerPage(context);
       },
     },
     AmityCommunitySetupPageBehavior: {

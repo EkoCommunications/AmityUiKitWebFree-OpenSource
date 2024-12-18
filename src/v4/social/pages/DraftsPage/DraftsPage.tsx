@@ -166,8 +166,8 @@ export const PlainDraftStoryPage = ({
 
     setOpenBottomSheet(false);
 
-    // if (isDesktop) closePopup();
-    // else setOpenBottomSheet(false);
+    if (isDesktop) closePopup();
+    else setOpenBottomSheet(false);
   };
 
   const onRemoveHyperLink = () => {
@@ -205,27 +205,27 @@ export const PlainDraftStoryPage = ({
       return;
     }
 
-    // if (!isDesktop) {
-    setOpenBottomSheet(true);
-    // } else {
-    // openPopup({
-    //   pageId,
-    //   view: 'desktop',
-    //   children: renderHyperLinkComponent(closePopup),
-    // });
-    // }
+    if (!isDesktop) {
+      setOpenBottomSheet(true);
+    } else {
+      openPopup({
+        pageId,
+        view: 'desktop',
+        children: renderHyperLinkComponent(closePopup),
+      });
+    }
   };
 
   const handleOnEditHyperlink = () => {
-    // if (!isDesktop) {
-    setOpenBottomSheet(true);
-    // } else {
-    // openPopup({
-    //   pageId,
-    //   view: 'desktop',
-    //   children: renderHyperLinkComponent(closePopup),
-    // });
-    // }
+    if (!isDesktop) {
+      setOpenBottomSheet(true);
+    } else {
+      openPopup({
+        pageId,
+        view: 'desktop',
+        children: renderHyperLinkComponent(closePopup),
+      });
+    }
   };
 
   const extractColorsFromImage = useCallback(async (imageUrl: string) => {

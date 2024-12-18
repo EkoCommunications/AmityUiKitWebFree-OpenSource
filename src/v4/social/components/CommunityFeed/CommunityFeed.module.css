@@ -182,3 +182,9 @@
     border: 1px solid var(--asc-color-base-shade4);
   }
 }
+
+@media (width >= 48em) {
+  .communityFeed__announcePost {
+    padding-bottom: 0;
+  }
+}

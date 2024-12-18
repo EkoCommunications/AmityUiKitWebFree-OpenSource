@@ -41,6 +41,8 @@ interface PostTextFieldProps {
   placeholderClassName?: string;
   mentionContainer?: HTMLElement | null;
   mentionContainerClassName?: string;
+  placeholder?: string;
+  isValidInput?: string | boolean;
   dataValue: {
     data: { text: string };
     metadata?: {
@@ -143,6 +145,8 @@ export const PostTextField = ({
   componentId = '*',
   placeholderClassName,
   mentionContainerClassName,
+  placeholder,
+  isValidInput: dataInputAttributes,
 }: PostTextFieldProps) => {
   const elementId = 'post_text_field';
   const [intersectionNode, setIntersectionNode] = useState<HTMLElement | null>(null);
@@ -180,12 +184,16 @@ export const PostTextField = ({
           : {}),
       }}
     >
-      <div className={clsx(styles.editorContainer, className)} data-qa-anchor={accessibilityId}>
+      <div
+        data-input-validation={dataInputAttributes}
+        className={clsx(styles.editorContainer, className)}
+        data-qa-anchor={accessibilityId}
+      >
         <RichTextPlugin
           contentEditable={<ContentEditable />}
           placeholder={
             <div className={clsx(styles.editorPlaceholder, placeholderClassName)}>
-              What's going on...
+              {placeholder ?? "What's going on..."}
             </div>
           }
           ErrorBoundary={LexicalErrorBoundary}

@@ -55,7 +55,7 @@ export const Popover = ({
         <$Popover
           {...props}
           isOpen={isOpen}
-          placement="bottom right"
+          placement={props.placement || 'bottom right'}
           triggerRef={popoverRef}
           onOpenChange={setIsOpen}
           className={clsx(styles.popover, className)}
