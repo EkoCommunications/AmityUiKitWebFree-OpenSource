@@ -17,6 +17,7 @@
   transition: all 200ms;
   justify-content: center;
   border: 2px solid var(--asc-color-base-shade3);
+  flex-shrink: 0;
 }
 
 .checkbox .checkbox__icon svg {

@@ -38,6 +38,8 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
     communityId: post?.targetType === 'community' ? post.targetId : null,
   });
 
+  const isNotJoinedCommunity = post?.targetType === 'community' && !community?.isJoined;
+
   return (
     <div className={styles.postDetailPage} style={themeStyles}>
       <div className={styles.postDetailPage__container}>
@@ -51,6 +53,7 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
               category={category ?? AmityPostCategory.GENERAL}
               style={AmityPostContentComponentStyle.DETAIL}
               hideTarget={hideTarget}
+              disabledContent={isNotJoinedCommunity}
             />
           ) : null}
         </div>

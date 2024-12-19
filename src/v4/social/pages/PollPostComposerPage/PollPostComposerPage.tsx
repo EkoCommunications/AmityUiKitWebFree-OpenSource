@@ -89,7 +89,6 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
   const { prependItem } = useGlobalFeedContext();
   const { isDesktop } = useResponsive();
 
-  const [isPopoverShown, setIsPopoverShown] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isError, setIsError] = useState(false);
   const [options, setOptions] = useState([
@@ -216,7 +215,7 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
       targetId: targetId,
       targetType: targetType,
       data: { pollId, text: textValue.text },
-      dataType: 'text',
+      dataType: 'poll',
       metadata: { mentioned: textValue.mentioned },
       mentionees: textValue.mentionees,
       attachments: [],
@@ -507,16 +506,16 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
       </Form>
 
       <div className={styles.pollPostComposerPage__notificationWrapper}>
-        {/* {isCreating && ( */}
-        <>
-          <div className={styles.pollPostComposerPage__overlay} />
-          <Notification
-            icon={<Spinner />}
-            content="Posting..."
-            className={styles.pollPostComposerPage__notification}
-          />
-        </>
-        {/* )} */}
+        {isCreating && (
+          <>
+            <div className={styles.pollPostComposerPage__overlay} />
+            <Notification
+              icon={<Spinner />}
+              content="Posting..."
+              className={styles.pollPostComposerPage__notification}
+            />
+          </>
+        )}
         {isError && (
           <>
             <div className={styles.pollPostComposerPage__overlay} />

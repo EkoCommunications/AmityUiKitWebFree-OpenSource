@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { PostRepository } from '@amityco/ts-sdk';
+import { PollRepository, PostRepository } from '@amityco/ts-sdk';
 import { useMutation } from '@tanstack/react-query';
 import { usePostPermissions } from '~/v4/core/hooks/usePostPermissions';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
@@ -19,6 +19,9 @@ import { PenIcon } from '~/v4/icons/Pen';
 import { TrashIcon } from '~/v4/icons/Trash';
 import styles from './PostMenu.module.css';
 import { CreatePost } from '~/v4/icons/CreatePost';
+import usePost from '~/v4/core/hooks/objects/usePost';
+import usePoll from '~/v4/social/hooks/usePoll';
+import { ClosePollIcon } from '~/v4/icons/ClosePoll';
 
 interface PostMenuProps {
   post: Amity.Post;
@@ -40,6 +43,8 @@ export const PostMenu = ({
   const { success, error } = useNotifications();
   const { isDesktop } = useResponsive();
   const { openPopup } = usePopupContext();
+  const { post: childPost } = usePost(post.children?.[0]);
+  const { item: poll } = usePoll(childPost?.data?.pollId);
 
   const shouldCall = useMemo(() => post?.targetType === 'community', [post?.targetType]);
 
@@ -84,6 +89,15 @@ export const PostMenu = ({
     }
   }, [isCommunityModerator, isOwner]);
 
+  const showClosePollButton = useMemo(() => {
+    if (poll && poll.status === 'open' && isOwner) return true;
+    return false;
+  }, [isOwner, poll]);
+
+  const isPollPost = useMemo(() => {
+    return !!poll;
+  }, [poll]);
+
   const { isFlaggedByMe, isLoading, mutateReportPost, mutateUnReportPost } = usePostFlaggedByMe({
     post,
     isFlaggable: showReportPostButton,
@@ -117,6 +131,20 @@ export const PostMenu = ({
     },
   });
 
+  const { mutateAsync: mutateClosePoll } = useMutation({
+    mutationFn: async () => {
+      if (!poll) return;
+      return PollRepository.closePoll(poll.pollId);
+    },
+    onSuccess: () => {
+      success({ content: 'Poll closed.' });
+      onPostDeleted?.(post);
+    },
+    onError: () => {
+      error({ content: 'Oops, something went wrong.' });
+    },
+  });
+
   const onDeleteClick = () => {
     onCloseMenu();
     confirm({
@@ -130,8 +158,33 @@ export const PostMenu = ({
     });
   };
 
+  const onClosePollClick = () => {
+    onCloseMenu();
+    confirm({
+      title: 'Close poll?',
+      content: `The Poll duration you've set will be ignored and your poll will be closed immediately.`,
+      cancelText: 'Cancel',
+      okText: 'Close poll',
+      onOk: () => mutateClosePoll(),
+      pageId,
+      componentId,
+    });
+  };
+
   return (
     <div className={styles.postMenu}>
+      {showClosePollButton && (
+        <Button
+          data-qa-anchor={`${pageId}/${componentId}/report_post_button`}
+          className={styles.postMenu__item}
+          onPress={() => onClosePollClick()}
+        >
+          <ClosePollIcon className={styles.postMenu__closePoll__icon} />
+          <Typography.BodyBold className={styles.postMenu__reportPost__text}>
+            Close poll
+          </Typography.BodyBold>
+        </Button>
+      )}
       {showReportPostButton && !isLoading ? (
         <Button
           data-qa-anchor={`${pageId}/${componentId}/report_post_button`}
@@ -152,7 +205,7 @@ export const PostMenu = ({
           </Typography.BodyBold>
         </Button>
       ) : null}
-      {showEditPostButton ? (
+      {showEditPostButton && !isPollPost ? (
         <Button
           data-qa-anchor={`${pageId}/${componentId}/edit_post`}
           className={styles.postMenu__item}

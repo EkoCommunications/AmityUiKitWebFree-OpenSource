@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import styles from './PendingPostContent.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
@@ -21,6 +21,7 @@ import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 type PendingPostContentProps = {
   pageId?: string;

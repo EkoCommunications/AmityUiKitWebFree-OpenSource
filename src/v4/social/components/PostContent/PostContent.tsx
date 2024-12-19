@@ -12,6 +12,7 @@ import { CommentButton } from '~/v4/social/elements/CommentButton';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import { useMutation } from '@tanstack/react-query';
 import { ReactionRepository, SubscriptionLevels } from '@amityco/ts-sdk';
+import { PollContent } from './PollContent/PollContent';
 
 import styles from './PostContent.module.css';
 
@@ -173,17 +174,25 @@ export const ChildrenPostContent = ({
   pageId,
   componentId,
   post,
+  disabledContent = false,
   onImageClick,
   onVideoClick,
 }: {
   pageId?: string;
   componentId?: string;
   post: Amity.Post[];
+  disabledContent?: boolean;
   onImageClick: (imageIndex: number) => void;
   onVideoClick: (videoIndex: number) => void;
 }) => {
   return (
     <>
+      <PollContent
+        pageId={pageId}
+        componentId={componentId}
+        post={post}
+        disabled={disabledContent}
+      />
       <ImageContent
         pageId={pageId}
         componentId={componentId}
@@ -209,6 +218,7 @@ interface PostContentProps {
   hideMenu?: boolean;
   hideTarget?: boolean;
   pageId?: string;
+  disabledContent?: boolean;
 }
 
 export const PostContent = ({
@@ -220,6 +230,7 @@ export const PostContent = ({
   hideMenu = false,
   hideTarget = false,
   style,
+  disabledContent = false,
 }: PostContentProps) => {
   const componentId = 'post_content';
   const { themeStyles, accessibilityId } = useAmityComponent({
@@ -344,6 +355,9 @@ export const PostContent = ({
 
   const handleDeletePost = () => {};
 
+  const isNotJoinedCommunity =
+    !targetCommunity?.isJoined && page.type === PageTypes.CommunityProfilePage;
+
   const hasLike = post?.reactions?.like > 0;
   const hasLove = post?.reactions?.love > 0;
   const hasFire = post?.reactions?.fire > 0;
@@ -467,6 +481,7 @@ export const PostContent = ({
               post={post}
               onImageClick={openImageViewer}
               onVideoClick={openVideoViewer}
+              disabledContent={isNotJoinedCommunity || disabledContent}
             />
           ) : null}
         </div>
@@ -520,7 +535,7 @@ export const PostContent = ({
             </Typography.Caption>
           </div>
         ) : null}
-        {!targetCommunity?.isJoined && page.type === PageTypes.CommunityProfilePage ? (
+        {isNotJoinedCommunity ? (
           <>
             <Typography.Body className={styles.postContent__notMember}>
               Join community to interact with all posts
