@@ -175,7 +175,7 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
         componentId={componentId}
         defaultIconClassName={styles.postComposer__button}
       />
-      <PollButton onPress={onClickPoll} pageId="post_composer_page" componentId="poll_button" />
+      {/* <PollButton onPress={onClickPoll} pageId="post_composer_page" componentId="poll_button" /> */}
       {renderStoryButton()}
     </div>
   );

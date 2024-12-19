@@ -3,7 +3,7 @@ import styles from './CreatePostMenu.module.css';
 import { CreatePostButton } from '~/v4/social/elements/CreatePostButton';
 import { CreateStoryButton } from '~/v4/social/elements/CreateStoryButton';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
-import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
+// import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
 
 interface CreatePostMenuProps {
   pageId: string;
@@ -26,11 +26,11 @@ export function CreatePostMenu({ pageId }: CreatePostMenuProps) {
         componentId={componentId}
         onClick={() => AmityCreatePostMenuComponentBehavior?.goToStoryTargetSelectionPage?.()}
       />
-      <CreatePollButton
+      {/* <CreatePollButton
         pageId={pageId}
         componentId={componentId}
         onClick={() => AmityCreatePostMenuComponentBehavior?.goToSelectPollPostTargetPage?.()}
-      />
+      /> */}
     </div>
   );
 }
