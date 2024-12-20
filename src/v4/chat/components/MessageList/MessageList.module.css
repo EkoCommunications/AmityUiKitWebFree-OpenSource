@@ -37,3 +37,9 @@
 .iconContainer {
   margin-bottom: var(--asc-spacing-m1);
 }
+
+.icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--asc-color-base-shade3);
+}

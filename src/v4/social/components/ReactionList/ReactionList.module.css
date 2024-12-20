@@ -165,6 +165,12 @@
   fill: var(--asc-color-base-shade3);
 }
 
+.retryIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--asc-color-base-shade3);
+}
+
 @media only screen and (width >= 48em) {
   .reactionListContainer {
     width: 30rem;

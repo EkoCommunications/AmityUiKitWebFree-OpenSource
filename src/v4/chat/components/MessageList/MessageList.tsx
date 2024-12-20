@@ -93,7 +93,7 @@ export const MessageList = ({
     return (
       <div className={styles.customStatusContainer} ref={containerRef} style={themeStyles}>
         <div className={styles.iconContainer}>
-          <Redo />
+          <Redo className={styles.icon} />
         </div>
         <Typography.Caption>Couldn't load chat</Typography.Caption>
       </div>

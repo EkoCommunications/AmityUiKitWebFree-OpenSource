@@ -9,6 +9,8 @@ import { CommentAd } from '~/v4/social/internal-components/CommentAd/CommentAd';
 import { CommentSkeleton } from '~/v4/social/components/Comment/CommentSkeleton';
 import styles from './CommentList.module.css';
 import { Typography } from '~/v4/core/components';
+import { useNetworkState } from 'react-use';
+import Redo from '~/v4/icons/Redo';
 
 type CommentListProps = {
   referenceId: string;
@@ -36,6 +38,7 @@ export const CommentList = ({
   shouldAllowInteraction = true,
 }: CommentListProps) => {
   const componentId = 'comment_tray_component';
+  const { online } = useNetworkState();
 
   const { themeStyles, accessibilityId } = useAmityComponent({
     componentId,
@@ -70,6 +73,15 @@ export const CommentList = ({
       }
     },
   });
+
+  if (!online) {
+    return (
+      <div className={styles.noCommentsContainer}>
+        <Redo className={styles.noCommentsContainer__icon} />
+        <Typography.Body>Unable to load comments</Typography.Body>
+      </div>
+    );
+  }
 
   if (!isLoading && items.length === 0) {
     return (
