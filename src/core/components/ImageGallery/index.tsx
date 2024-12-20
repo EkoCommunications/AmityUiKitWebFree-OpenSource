@@ -62,8 +62,8 @@ const ImageGallery = <T extends Amity.Post>({
 
   return (
     <Container>
+      <Frame>{renderItem(items[index])}</Frame>
       <InnerContainer>
-        <Frame>{renderItem(items[index])}</Frame>
         <GridContainer>
           {showCounter && <Counter>{`${index + 1} / ${items.length}`}</Counter>}
 
