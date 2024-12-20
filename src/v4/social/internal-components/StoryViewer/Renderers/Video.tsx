@@ -282,7 +282,6 @@ export const renderer: CustomRenderer = ({
       pause();
       openPopover();
     } else openBottomSheet();
-    openBottomSheet();
   }, []);
 
   return (

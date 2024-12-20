@@ -48,6 +48,7 @@ export const PlainDraftStoryPage = ({
   onDiscardCreateStory: () => void;
 }) => {
   const { isDesktop } = useResponsive();
+  const [isLoading, setIsLoading] = useState(false);
   const { openPopup, closePopup } = usePopupContext();
   const { onBack, prevPage } = useNavigation();
   const pageId = 'create_story_page';
@@ -106,13 +107,12 @@ export const PlainDraftStoryPage = ({
     metadata?: Amity.Metadata;
     items?: Amity.StoryItem[];
   }) => {
+    setIsLoading(true);
     if (!file) return;
     try {
       const formData = new FormData();
       formData.append('files', file);
       setFile(null);
-      if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
-      else onBack();
       if (mediaType?.type === 'image' && targetId) {
         await StoryRepository.createImageStory(
           targetType,
@@ -125,6 +125,8 @@ export const PlainDraftStoryPage = ({
       } else if (mediaType?.type === 'video' && targetId) {
         await StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
       }
+      if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
+      else onBack();
       notification.success({
         content: 'Successfully shared story',
       });
@@ -134,6 +136,8 @@ export const PlainDraftStoryPage = ({
           content: error.message ?? 'Failed to share story',
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -320,6 +324,7 @@ export const PlainDraftStoryPage = ({
             community={community}
             pageId={pageId}
             onClick={() =>
+              !isLoading &&
               onCreateStory({
                 file,
                 imageMode,
