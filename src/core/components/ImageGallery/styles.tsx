@@ -85,6 +85,8 @@ export const Frame = styled.div`
   top: 0;
   left: 0;
 
+  pointer-events: auto;
+
   @media (min-width: 768px) {
     position: unset;
     top: unset;
