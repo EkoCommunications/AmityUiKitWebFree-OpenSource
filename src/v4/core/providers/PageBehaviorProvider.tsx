@@ -19,7 +19,11 @@ export interface PageBehavior {
   onClickHyperLink?(): void;
   AmitySocialHomePageBehavior?: Record<string, unknown>;
   AmityGlobalFeedComponentBehavior?: {
-    goToPostDetailPage?: (context: { postId: string }) => void;
+    goToPostDetailPage?: (context: {
+      postId: string;
+      hideTarget?: boolean;
+      category?: AmityPostCategory;
+    }) => void;
     goToViewStoryPage?: (context: {
       targetId: string;
       targetType: Amity.StoryTargetType;
@@ -222,11 +226,15 @@ export const PageBehaviorProvider: React.FC<PageBehaviorProviderProps> = ({
     onClickHyperLink: () => {},
     AmitySocialHomePageBehavior: {},
     AmityGlobalFeedComponentBehavior: {
-      goToPostDetailPage: (context: { postId: string }) => {
+      goToPostDetailPage: (context: {
+        postId: string;
+        hideTarget?: boolean;
+        category?: AmityPostCategory;
+      }) => {
         if (pageBehavior?.AmityGlobalFeedComponentBehavior?.goToPostDetailPage) {
           return pageBehavior?.AmityGlobalFeedComponentBehavior.goToPostDetailPage(context);
         }
-        goToPostDetailPage(context.postId);
+        goToPostDetailPage(context.postId, context.hideTarget, context.category);
       },
       goToViewStoryPage: (context: {
         targetId: string;

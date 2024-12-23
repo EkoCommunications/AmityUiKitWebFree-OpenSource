@@ -42,7 +42,7 @@ export const Newsfeed = ({ pageId = '*' }: NewsfeedProps) => {
         isLoading={isLoading}
         componentId={componentId}
         onFeedReachBottom={() => onFeedReachBottom()}
-        onPostDeleted={(post) => removeItem(post.postId)}
+        onPostDeleted={(post) => removeItem(post?.postId)}
       />
     </PullToRefresh>
   );
