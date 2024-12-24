@@ -12,7 +12,6 @@ import Footer from '~/v4/social/internal-components/StoryViewer/Renderers/Wrappe
 import Header from '~/v4/social/internal-components/StoryViewer/Renderers/Wrappers/Header';
 import { BottomSheet } from '~/v4/core/components/BottomSheet';
 import { Typography } from '~/v4/core/components';
-import useCommunityMembersCollection from '~/v4/social/hooks/collections/useCommunityMembersCollection';
 import useSDK from '~/v4/core/hooks/useSDK';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { LIKE_REACTION_KEY } from '~/v4/social/constants/reactions';
@@ -87,16 +86,6 @@ export const renderer: CustomRenderer = ({
     data,
     items,
   } = story as Amity.Story;
-
-  const { members } = useCommunityMembersCollection({
-    queryParams: {
-      communityId: community?.communityId as string,
-    },
-    shouldCall: !!community?.communityId,
-  });
-
-  const member = members?.find((member) => member.userId === client?.userId);
-  const isMember = member != null;
 
   const { user } = useUser({ userId: client?.userId });
 
@@ -237,7 +226,7 @@ export const renderer: CustomRenderer = ({
       referenceType="story"
       community={community as Amity.Community}
       shouldAllowCreation={community?.allowCommentInStory}
-      shouldAllowInteraction={isMember}
+      shouldAllowInteraction={!!community?.isJoined}
     />
   );
 
@@ -277,7 +266,7 @@ export const renderer: CustomRenderer = ({
     } else {
       openCommentSheet();
     }
-  }, [action]);
+  }, []);
 
   const onClickMenuButton = useCallback((openPopover) => {
     if (isDesktop) {
@@ -402,7 +391,7 @@ export const renderer: CustomRenderer = ({
         onClickComment={onClickCommentButton}
         // Only story-creator and moderator of the community should be able to see impression count.
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
-        isMember={isMember}
+        isMember={!!community?.isJoined}
       />
     </div>
   );
