@@ -46,6 +46,7 @@ import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 
 export enum AmityPostContentComponentStyle {
   FEED = 'feed',
@@ -219,6 +220,7 @@ interface PostContentProps {
   hideTarget?: boolean;
   pageId?: string;
   disabledContent?: boolean;
+  isGlobalFeaturePost?: boolean;
 }
 
 export const PostContent = ({
@@ -231,6 +233,7 @@ export const PostContent = ({
   hideTarget = false,
   style,
   disabledContent = false,
+  isGlobalFeaturePost = false,
 }: PostContentProps) => {
   const componentId = 'post_content';
   const { themeStyles, accessibilityId } = useAmityComponent({
@@ -240,6 +243,7 @@ export const PostContent = ({
 
   const { isDesktop } = useResponsive();
   const { openPopup } = usePopupContext();
+  const { confirm } = useConfirmContext();
   const { post: postData } = usePost(initialPost?.postId);
   const { setDrawerData, removeDrawerData } = useDrawer();
 
@@ -349,14 +353,23 @@ export const PostContent = ({
     setClickedVideoIndex(null);
   };
 
+  const onEditFeaturePost = ({ onConfirm }: { onConfirm: () => void }) => {
+    confirm({
+      title: 'Edit globally featured post?',
+      content: `The post you're editing has been featured globally. If you edit your post, it will need to be re-approved and will no longer be globally featured.`,
+      cancelText: 'Cancel',
+      okText: 'Edit',
+      onOk: onConfirm,
+    });
+  };
+
   const handleUnpinPost = async () => {};
 
   const handleEditPost = () => {};
 
   const handleDeletePost = () => {};
 
-  const isNotJoinedCommunity =
-    !targetCommunity?.isJoined && page.type === PageTypes.CommunityProfilePage;
+  const isNotJoinedCommunity = !targetCommunity?.isJoined && post?.targetType === 'community';
 
   const hasLike = post?.reactions?.like > 0;
   const hasLove = post?.reactions?.love > 0;
@@ -365,6 +378,13 @@ export const PostContent = ({
   const hasCrying = post?.reactions?.crying > 0;
 
   const hasReaction = hasLike || hasLove || hasFire || hasHappy || hasCrying;
+
+  //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
+  const shouldShowConfirmEdit =
+    isGlobalFeaturePost &&
+    ((targetCommunity as Amity.Community & { needApprovalOnPostCreation?: boolean })
+      ?.needApprovalOnPostCreation ||
+      targetCommunity?.postSetting === 'ADMIN_REVIEW_POST_REQUIRED');
 
   const { isVisible } = useVisibilitySensor({
     threshold: 0.6,
@@ -440,6 +460,15 @@ export const PostContent = ({
                         pageId={pageId}
                         componentId={componentId}
                         onPostDeleted={onPostDeleted}
+                        onConfirmEditPost={
+                          shouldShowConfirmEdit
+                            ? ({ onConfirm }) => {
+                                closePopover();
+                                removeDrawerData();
+                                onEditFeaturePost({ onConfirm });
+                              }
+                            : undefined
+                        }
                         onCloseMenu={() => {
                           closePopover();
                           removeDrawerData();
@@ -455,6 +484,15 @@ export const PostContent = ({
                   pageId={pageId}
                   componentId={componentId}
                   onPostDeleted={onPostDeleted}
+                  onConfirmEditPost={
+                    shouldShowConfirmEdit
+                      ? ({ onConfirm }) => {
+                          closePopover();
+                          removeDrawerData();
+                          onEditFeaturePost({ onConfirm });
+                        }
+                      : undefined
+                  }
                   onCloseMenu={() => {
                     closePopover();
                     removeDrawerData();

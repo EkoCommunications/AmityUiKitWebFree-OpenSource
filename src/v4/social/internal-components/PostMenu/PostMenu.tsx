@@ -29,6 +29,7 @@ interface PostMenuProps {
   componentId?: string;
   elementId?: string;
   onCloseMenu: () => void;
+  onConfirmEditPost?: ({ onConfirm }: { onConfirm: () => void }) => void;
   onPostDeleted?: (post: Amity.Post) => void;
 }
 
@@ -37,6 +38,7 @@ export const PostMenu = ({
   pageId = '*',
   componentId = '*',
   elementId = '*',
+  onConfirmEditPost,
   onCloseMenu,
   onPostDeleted,
 }: PostMenuProps) => {
@@ -158,6 +160,43 @@ export const PostMenu = ({
     });
   };
 
+  const onEdit = () => {
+    if (isDesktop) {
+      onCloseMenu();
+      return openPopup({
+        pageId,
+        view: 'desktop',
+        isDismissable: false,
+        header: <EditPostTitle pageId="post_composer_page" />,
+        children: <PostComposerPage mode={Mode.EDIT} post={post} />,
+        onClose: ({ close }) => {
+          confirm({
+            onOk: close,
+            type: 'confirm',
+            okText: 'Discard',
+            cancelText: 'Keep editing',
+            title: 'Discard this post?',
+            pageId: 'post_composer_page',
+            content: 'The post will be permanently deleted. It cannot be undone.',
+          });
+        },
+      });
+    }
+    removeDrawerData();
+    AmityPostContentComponentBehavior?.goToPostComposerPage?.({
+      mode: Mode.EDIT,
+      post,
+    });
+  };
+
+  const onEditClick = () => {
+    if (onConfirmEditPost) {
+      onConfirmEditPost({ onConfirm: onEdit });
+    } else {
+      onEdit();
+    }
+  };
+
   const onClosePollClick = () => {
     onCloseMenu();
     confirm({
@@ -209,34 +248,7 @@ export const PostMenu = ({
         <Button
           data-qa-anchor={`${pageId}/${componentId}/edit_post`}
           className={styles.postMenu__item}
-          onPress={() => {
-            if (isDesktop) {
-              onCloseMenu();
-              return openPopup({
-                pageId,
-                view: 'desktop',
-                isDismissable: false,
-                header: <EditPostTitle pageId="post_composer_page" />,
-                children: <PostComposerPage mode={Mode.EDIT} post={post} />,
-                onClose: ({ close }) => {
-                  confirm({
-                    onOk: close,
-                    type: 'confirm',
-                    okText: 'Discard',
-                    cancelText: 'Keep editing',
-                    title: 'Discard this post?',
-                    pageId: 'post_composer_page',
-                    content: 'The post will be permanently deleted. It cannot be undone.',
-                  });
-                },
-              });
-            }
-            removeDrawerData();
-            AmityPostContentComponentBehavior?.goToPostComposerPage?.({
-              mode: Mode.EDIT,
-              post,
-            });
-          }}
+          onPress={onEditClick}
         >
           <CreatePost className={styles.postMenu__editPost__icon} />
           <Typography.BodyBold className={styles.postMenu__editPost__text}>

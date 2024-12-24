@@ -94,6 +94,7 @@ export const GlobalFeed = ({
               post={item.post}
               category={AmityPostCategory.ANNOUNCEMENT}
               style={AmityPostContentComponentStyle.FEED}
+              isGlobalFeaturePost={true}
               onPostDeleted={() => onPostDeleted?.(item?.post)}
               onClick={() => {
                 AmityGlobalFeedComponentBehavior?.goToPostDetailPage?.({
