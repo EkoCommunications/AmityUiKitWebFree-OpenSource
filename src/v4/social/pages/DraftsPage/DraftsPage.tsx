@@ -109,6 +109,8 @@ export const PlainDraftStoryPage = ({
   }) => {
     setIsLoading(true);
     if (!file) return;
+    if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
+    else onBack();
     try {
       const formData = new FormData();
       formData.append('files', file);
@@ -125,15 +127,13 @@ export const PlainDraftStoryPage = ({
       } else if (mediaType?.type === 'video' && targetId) {
         StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
       }
-      if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
-      else onBack(2);
       notification.success({
         content: 'Successfully shared story',
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
         notification.info({
-          content: error.message ?? 'Failed to share story',
+          content: 'Failed to upload',
         });
       }
     } finally {

@@ -4,6 +4,7 @@ import { PrimaryButton } from '~/core/components/Button/styles';
 export type ConfirmType = {
   onCancel?: () => void;
   onOk?: () => void;
+  onRetry?: () => void;
   type?: 'confirm' | 'info';
   OkButton?: ReactNode;
   CancelButton?: ReactNode;
@@ -14,6 +15,7 @@ export type ConfirmType = {
   pageId?: string;
   componentId?: string;
   elementId?: string;
+  retryText?: ReactNode;
 };
 
 interface ConfirmContextProps {

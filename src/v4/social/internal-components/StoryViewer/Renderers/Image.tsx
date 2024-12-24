@@ -25,7 +25,6 @@ import styles from './Renderers.module.css';
 import clsx from 'clsx';
 
 import { StoryProgressBar } from '~/v4/social/elements/StoryProgressBar/StoryProgressBar';
-
 export const renderer: CustomRenderer = ({
   story: {
     actions,
@@ -43,6 +42,7 @@ export const renderer: CustomRenderer = ({
   config,
   onClose,
   onClickCommunity,
+  onDeleteStory,
 }) => {
   const { isDesktop } = useResponsive();
   const { openPopup, closePopup } = usePopupContext();
@@ -392,6 +392,9 @@ export const renderer: CustomRenderer = ({
         // Only story-creator and moderator of the community should be able to see impression count.
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
         isMember={!!community?.isJoined}
+        onPlay={play}
+        onPause={pause}
+        onDeleteStory={onDeleteStory}
       />
     </div>
   );

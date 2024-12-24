@@ -89,6 +89,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
             ...props,
             onClose: () => onClose(targetId),
             onClickCommunity: () => onClickCommunity(targetId),
+            onDeleteStory: () => onDeleteStory(props.story.story?.storyId as string),
           });
 
         return {
@@ -125,8 +126,27 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
     setCurrentIndex((prevIndex) => prevIndex - 1);
   };
 
-  const confirmDeleteStory = (storyId: string) => {
+  const onDeleteStory = async (storyId: string) => {
     const isLastStory = currentIndex === stories.length - 1;
+
+    await StoryRepository.softDeleteStory(storyId);
+    notification.success({
+      content: 'Story deleted',
+    });
+    if (stories.length === 1) {
+      // If it's the only story, close the ViewStory screen
+      onChangePage?.();
+    } else if (isLastStory) {
+      // If it's the last story, move to the previous one
+      previousStory();
+    } else {
+      // For any other case (including first story), stay on the same index
+      // The next story will automatically take its place
+      setCurrentIndex((prevIndex) => prevIndex);
+    }
+  };
+
+  const confirmDeleteStory = (storyId: string) => {
     confirm({
       pageId,
       title: 'Delete this story?',
@@ -134,21 +154,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
         'This story will be permanently deleted. You’ll no longer to see and find this story.',
       okText: 'Delete',
       onOk: async () => {
-        await StoryRepository.softDeleteStory(storyId);
-        notification.success({
-          content: 'Story deleted',
-        });
-        if (stories.length === 1) {
-          // If it's the only story, close the ViewStory screen
-          onChangePage?.();
-        } else if (isLastStory) {
-          // If it's the last story, move to the previous one
-          previousStory();
-        } else {
-          // For any other case (including first story), stay on the same index
-          // The next story will automatically take its place
-          setCurrentIndex((prevIndex) => prevIndex);
-        }
+        onDeleteStory(storyId);
       },
     });
   };

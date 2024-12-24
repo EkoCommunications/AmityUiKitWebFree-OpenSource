@@ -1,5 +1,6 @@
 .icon__container {
   display: flex;
+  padding-right: 0.75rem;
   align-items: center;
   gap: var(--asc-spacing-s1);
   align-self: stretch;

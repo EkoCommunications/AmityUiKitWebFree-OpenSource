@@ -28,6 +28,7 @@ const Confirm = ({
   type = 'confirm',
   componentId = '*',
   cancelText = 'Cancel',
+  retryText,
 }: ConfirmProps) => {
   const elementId = 'confirm-modal';
   const { accessibilityId, themeStyles } = useAmityElement({ pageId, componentId, elementId });

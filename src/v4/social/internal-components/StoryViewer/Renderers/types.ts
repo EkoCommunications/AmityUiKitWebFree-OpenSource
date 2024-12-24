@@ -49,6 +49,7 @@ export type CustomRendererProps = RendererProps & {
   onClose: () => void;
   onSwipeDown?: () => void;
   onClickCommunity?: () => void;
+  onDeleteStory?: () => Promise<void>;
   messageHandler: (
     type: string,
     data: any,

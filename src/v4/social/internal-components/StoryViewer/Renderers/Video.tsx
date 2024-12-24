@@ -95,6 +95,7 @@ export const renderer: CustomRenderer = ({
   messageHandler,
   onClose,
   onClickCommunity,
+  onDeleteStory,
 }) => {
   const { isDesktop } = useResponsive();
   const { openPopup, closePopup } = usePopupContext();
@@ -400,6 +401,9 @@ export const renderer: CustomRenderer = ({
         myReactions={myReactions}
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
         isMember={isMember}
+        onPlay={play}
+        onPause={pause}
+        onDeleteStory={onDeleteStory}
       />
     </div>
   );
