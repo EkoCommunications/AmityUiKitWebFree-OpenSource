@@ -38,12 +38,7 @@ export const FloatingActionButtonMenu: FC<FloatingActionButtonMenuProps> = ({
     //   icon: <CreateStory className={styles.floatingActionButtonMenu__icon} />,
     //   onPress: goToStoryTargetSelectionPage,
     // },
-    // {
-    //   id: 'poll',
-    //   label: 'Poll',
-    //   icon: <CreatePoll className={styles.floatingActionButtonMenu__icon} />,
-    //   onPress: () => goToPollPostComposerPage({ targetId: null, targetType: 'user' }),
-    // },
+    // s
   ];
   return (
     <div className={styles.floatingActionButtonMenu}>

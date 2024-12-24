@@ -39,6 +39,16 @@
   margin-top: 0.75rem;
 }
 
+.communityProfilePage__createPostHeader {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 1.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--asc-color-base-default);
+}
+
 @media (width >= 48em) {
   .communityProfilePage__createPostButton {
     display: none;

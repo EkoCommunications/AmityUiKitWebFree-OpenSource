@@ -16,8 +16,6 @@ import { StoryButton } from '~/v4/social/elements/StoryButton/StoryButton';
 import { SelectPostTargetPage } from '~/v4/social/pages/SelectPostTargetPage';
 import { StoryTargetSelectionPage } from '~/v4/social/pages/StoryTargetSelectionPage';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName';
-import { Mode, PostComposerPage } from '~/v4/social/pages/PostComposerPage/';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import styles from './PostComposer.module.css';
 import { PollButton } from '~/v4/social/elements/PollButton';
@@ -26,10 +24,16 @@ import { PollTargetSelectionPage } from '~/v4/social/pages/PollTargetSelectionPa
 type PostComposerProps = {
   pageId?: string;
   onClickPost?: () => void;
+  onClickPoll?: () => void;
   onSelectFile?: (files: FileList | null) => void;
 };
 
-export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostComposerProps) {
+export function PostComposer({
+  pageId = '*',
+  onClickPost,
+  onClickPoll,
+  onSelectFile,
+}: PostComposerProps) {
   const componentId = 'post_composer';
 
   const { currentUserId } = useSDK();
@@ -50,60 +54,17 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
       return;
     }
 
-    if (pageId === 'user_profile_page' && currentUserId === user?.userId) {
-      if (isDesktop) {
-        openPopup({
-          pageId,
-          view: 'desktop',
-          isDismissable: false,
-          onClose: () => {
-            confirm({
-              type: 'confirm',
-              onOk: closePopup,
-              okText: 'Discard',
-              cancelText: 'Keep editing',
-              title: 'Discard this post?',
-              pageId: 'post_composer_page',
-              content: 'The post will be permanently deleted. It cannot be undone.',
-            });
-          },
-          header: (
-            <CommunityDisplayName
-              community={undefined}
-              pageId="post_composer_page"
-              className={styles.selectPostTargetPage__displayName}
-            />
-          ),
-          children: (
-            <PostComposerPage
-              targetId={null}
-              targetType="user"
-              mode={Mode.CREATE}
-              community={undefined}
-            />
-          ),
-        });
-      } else {
-        AmityPostTargetSelectionPage?.goToPostComposerPage?.({
-          mode: Mode.CREATE,
-          targetId: null,
-          targetType: 'user',
-          community: undefined,
-        });
-      }
-    } else {
-      // Default behavior for other cases
-      openPopup({
-        pageId,
-        componentId,
-        view: 'desktop',
-        header: (
-          <Title pageId="select_post_target_page" titleClassName={styles.postComposer__title} />
-        ),
-        children: <SelectPostTargetPage />,
-      });
-    }
+    openPopup({
+      pageId,
+      componentId,
+      view: 'desktop',
+      header: (
+        <Title pageId="select_post_target_page" titleClassName={styles.postComposer__title} />
+      ),
+      children: <SelectPostTargetPage />,
+    });
   };
+
   const onClickStory = () => {
     openPopup({
       pageId,
@@ -116,7 +77,11 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
     });
   };
 
-  const onClickPoll = () => {
+  const handlePollClick = () => {
+    if (onClickPoll) {
+      onClickPoll();
+      return;
+    }
     openPopup({
       pageId,
       componentId,
@@ -175,7 +140,7 @@ export function PostComposer({ pageId = '*', onClickPost, onSelectFile }: PostCo
         componentId={componentId}
         defaultIconClassName={styles.postComposer__button}
       />
-      {/* <PollButton onPress={onClickPoll} pageId="post_composer_page" componentId="poll_button" /> */}
+      {/* <PollButton onPress={handlePollClick} pageId="post_composer_page" componentId="poll_button" /> */}
       {renderStoryButton()}
     </div>
   );

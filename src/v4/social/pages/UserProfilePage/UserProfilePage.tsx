@@ -22,6 +22,10 @@ import { FloatingActionButtonMenu } from './FloatingActionButtonMenu/FloatingAct
 import { Popover } from '~/v4/core/components/AriaPopover';
 import useSDK from '~/v4/core/hooks/useSDK';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import { PollPostComposerPage } from '~/v4/social/pages/PollPostComposerPage/PollPostComposerPage';
+import { Mode, PostComposerPage } from '~/v4/social/pages/PostComposerPage';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 type UserProfilePageProps = {
   userId: string;
@@ -43,6 +47,8 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
   const { onBack } = useNavigation();
   const { setDrawerData, removeDrawerData } = useDrawer();
   const { currentUserId } = useSDK();
+  const { confirm } = useConfirmContext();
+  const { openPopup } = usePopupContext();
 
   const isCurrentUser = user?.userId === currentUserId;
 
@@ -59,7 +65,33 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
     if (currentActiveTab === UserProfileTabs.FEED) {
       return (
         <>
-          {isCurrentUser && <PostComposer pageId={pageId} />}
+          {isCurrentUser && (
+            <PostComposer
+              pageId={pageId}
+              onClickPost={() => {
+                openPopup({
+                  pageId,
+                  view: 'desktop',
+                  isDismissable: false,
+                  onClose: onCloseCreatePostPopup,
+                  header: CreatePostHeader,
+                  children: (
+                    <PostComposerPage mode={Mode.CREATE} targetType="user" targetId={null} />
+                  ),
+                });
+              }}
+              onClickPoll={() => {
+                openPopup({
+                  pageId,
+                  view: 'desktop',
+                  isDismissable: false,
+                  onClose: onCloseCreatePostPopup,
+                  header: CreatePostHeader,
+                  children: <PollPostComposerPage targetId={null} targetType="user" />,
+                });
+              }}
+            />
+          )}
           <UserFeed pageId={pageId} userId={userId} />
         </>
       );
@@ -69,6 +101,24 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
       return <UserVideoFeed pageId={pageId} userId={userId} />;
     }
   };
+
+  const onCloseCreatePostPopup = ({ close }: { close: () => void }) => {
+    confirm({
+      onOk: close,
+      type: 'confirm',
+      okText: 'Discard',
+      cancelText: 'Keep editing',
+      title: 'Discard this post?',
+      pageId: 'post_composer_page',
+      content: 'The post will be permanently deleted. It cannot be undone.',
+    });
+  };
+
+  const CreatePostHeader = (
+    <Typography.Headline className={styles.userProfilePage__createPostHeader}>
+      My Timeline
+    </Typography.Headline>
+  );
 
   useEffect(() => {
     const handleScroll = () => {

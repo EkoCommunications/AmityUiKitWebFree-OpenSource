@@ -19,6 +19,13 @@
   background-color: var(--asc-color-background-default);
 }
 
+.pollPostComposerPage__topBar__displayName {
+  font-weight: var(--asc-text-font-weight-bold);
+  font-size: var(--asc-text-font-size-md);
+  line-height: var(--asc-line-height-md);
+  color: var(--asc-color-base-default);
+}
+
 /* Poll Question */
 
 .pollPostComposerPage__pollQuestion {
@@ -213,7 +220,7 @@
 @media (width >= 48em) {
   .pollPostComposerPage__container {
     width: 34.125rem;
-    max-height: 31.25rem;
+    max-height: calc(80vh - 4.75rem);
     overflow-y: scroll;
     position: static;
     border-radius: 0.75rem;

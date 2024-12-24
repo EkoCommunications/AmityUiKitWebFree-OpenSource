@@ -23,6 +23,7 @@ import { PostComposer } from '~/v4/social/components/PostComposer';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName';
+import { PollPostComposerPage } from '~/v4/social/pages/PollPostComposerPage/PollPostComposerPage';
 // import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
 
 interface CommunityProfileProps {
@@ -77,6 +78,26 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
   const handleRefresh = async () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
+
+  const onCloseCreatePostPopup = ({ close }: { close: () => void }) => {
+    confirm({
+      onOk: close,
+      type: 'confirm',
+      okText: 'Discard',
+      cancelText: 'Keep editing',
+      title: 'Discard this post?',
+      pageId: 'post_composer_page',
+      content: 'The post will be permanently deleted. It cannot be undone.',
+    });
+  };
+
+  const CreatePostHeader = (
+    <CommunityDisplayName
+      pageId="post_composer_page"
+      community={community as Amity.Community}
+      className={styles.communityProfilePage__createPostHeader}
+    />
+  );
 
   useEffect(() => {
     if (file) {
@@ -151,30 +172,29 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
                 pageId,
                 view: 'desktop',
                 isDismissable: false,
-                onClose: ({ close }) => {
-                  confirm({
-                    onOk: close,
-                    type: 'confirm',
-                    okText: 'Discard',
-                    cancelText: 'Keep editing',
-                    title: 'Discard this post?',
-                    pageId: 'post_composer_page',
-                    content: 'The post will be permanently deleted. It cannot be undone.',
-                  });
-                },
-                header: (
-                  <CommunityDisplayName
-                    pageId="post_composer_page"
-                    community={community as Amity.Community}
-                    className={styles.selectPostTargetPage__displayName}
-                  />
-                ),
+                onClose: onCloseCreatePostPopup,
+                header: CreatePostHeader,
                 children: (
                   <PostComposerPage
                     mode={Mode.CREATE}
                     targetType="community"
                     community={community as Amity.Community}
                     targetId={community?.communityId as string}
+                  />
+                ),
+              });
+            }}
+            onClickPoll={() => {
+              openPopup({
+                pageId,
+                view: 'desktop',
+                isDismissable: false,
+                onClose: onCloseCreatePostPopup,
+                header: CreatePostHeader,
+                children: (
+                  <PollPostComposerPage
+                    targetId={community?.communityId as string}
+                    targetType="community"
                   />
                 ),
               });

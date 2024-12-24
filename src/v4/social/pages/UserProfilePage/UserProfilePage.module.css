@@ -52,6 +52,10 @@
   right: 1rem;
 }
 
+.userProfilePage__createPostHeader {
+  color: var(--asc-color-base-default);
+}
+
 @media (width >=48em) {
   .userProfilePage {
     background-color: transparent;

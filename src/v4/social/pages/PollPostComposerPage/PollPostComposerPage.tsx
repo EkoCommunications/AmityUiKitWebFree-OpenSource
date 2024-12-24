@@ -194,7 +194,10 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
       }
     } finally {
       setIsCreating(false);
-      prevPage?.type == PageTypes.PollTargetSelectionPage ? onBack(-2) : onBack();
+      if (isDesktop) closePopup();
+      else {
+        prevPage?.type === PageTypes.PollTargetSelectionPage ? onBack(2) : onBack();
+      }
     }
   }
 
@@ -327,7 +330,11 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
       >
         <div className={styles.pollPostComposerPage__topBar}>
           <CloseButton pageId={pageId} onPress={onClickClose} />
-          <CommunityDisplayName pageId={pageId} community={community} />
+          <CommunityDisplayName
+            pageId={pageId}
+            community={community}
+            className={styles.pollPostComposerPage__topBar__displayName}
+          />
           <AriaButton
             size="medium"
             variant="text"
