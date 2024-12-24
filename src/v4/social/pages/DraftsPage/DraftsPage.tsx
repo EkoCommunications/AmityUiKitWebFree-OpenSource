@@ -126,7 +126,7 @@ export const PlainDraftStoryPage = ({
         StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
       }
       if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
-      else onBack();
+      else onBack(2);
       notification.success({
         content: 'Successfully shared story',
       });

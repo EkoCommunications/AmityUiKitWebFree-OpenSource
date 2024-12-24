@@ -62,6 +62,19 @@ export const renderer: CustomRenderer = ({
   const isLiked = !!(story && story.myReactions && story.myReactions.includes(LIKE_REACTION_KEY));
   const reactionsCount = story?.reactionsCount || 0;
 
+  const [isVisible, setIsVisible] = useState(true);
+  const [currentUrl, setCurrentUrl] = useState(url);
+
+  useEffect(() => {
+    if (url !== currentUrl) {
+      setIsVisible(false);
+      setTimeout(() => {
+        setCurrentUrl(url);
+        setIsVisible(true);
+      }, 200);
+    }
+  }, [url]);
+
   const {
     storyId,
     syncState,
@@ -277,7 +290,7 @@ export const renderer: CustomRenderer = ({
     <div
       className={styles.rendererContainer}
       style={{
-        background: backgroundGradient,
+        background: !isVisible ? 'black' : backgroundGradient,
       }}
     >
       <StoryProgressBar
@@ -313,10 +326,18 @@ export const renderer: CustomRenderer = ({
       >
         <img
           ref={imageRef}
-          className={clsx(styles.storyImage, {
-            [styles.imageFit]: data.imageDisplayMode === 'fit',
-            [styles.imageFill]: data.imageDisplayMode === 'fill',
-          })}
+          className={clsx(
+            styles.storyImage,
+            {
+              [styles.imageFit]: data.imageDisplayMode === 'fit',
+              [styles.imageFill]: data.imageDisplayMode === 'fill',
+            },
+            styles.fadeTransition,
+            {
+              [styles.visible]: isVisible,
+              [styles.hidden]: !isVisible,
+            },
+          )}
           data-qa-anchor="image_view"
           src={url ?? (story?.data.fileData as string)}
           onLoad={imageLoaded}
