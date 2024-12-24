@@ -114,7 +114,7 @@ export const PlainDraftStoryPage = ({
       formData.append('files', file);
       setFile(null);
       if (mediaType?.type === 'image' && targetId) {
-        await StoryRepository.createImageStory(
+        StoryRepository.createImageStory(
           targetType,
           targetId,
           formData,
@@ -123,7 +123,7 @@ export const PlainDraftStoryPage = ({
           items,
         );
       } else if (mediaType?.type === 'video' && targetId) {
-        await StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
+        StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
       }
       if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
       else onBack();

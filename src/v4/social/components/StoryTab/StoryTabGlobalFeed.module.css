@@ -71,6 +71,39 @@
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
 
+.storyTabGlobalFeeed__arrow {
+  z-index: 100;
+  display: none;
+  top: calc(50% - 1rem);
+  padding: 0.25rem;
+  position: absolute;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--asc-box-shadow-03);
+  border: 1px solid var(--asc-color-base-shade4);
+  background-color: var(--asc-color-background-default);
+}
+
+.storyTabGlobalFeeed__arrowIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: var(--asc-color-base-default);
+}
+
+.left {
+  left: 0.75rem;
+}
+
+.right {
+  right: 0.75rem;
+}
+
+.right[data-shown='false'],
+.left[data-shown='false'] {
+  display: none;
+}
+
 @keyframes skeleton-pulse {
   0% {
     opacity: 0.6;
@@ -89,5 +122,9 @@
   .storyTabContainer {
     border-radius: 0.5rem;
     border: 1px solid var(--asc-color-base-shade4);
+  }
+
+  .storyTabGlobalFeeed__arrow {
+    display: flex;
   }
 }

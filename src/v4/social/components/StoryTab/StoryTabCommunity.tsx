@@ -67,9 +67,10 @@ export const StoryTabCommunityFeed: React.FC<StoryTabCommunityFeedProps> = ({
   const isGlobalAdmin = isAdmin(user?.roles);
   const hasStoryPermission = isGlobalAdmin || checkStoryPermission(client, communityId);
   const hasStories = stories?.length > 0;
-  const hasUnSeen = stories.some((story) => !story?.isSeen);
-  const uploading = stories.some((story) => story?.syncState === 'syncing');
-  const isErrored = stories.some((story) => story?.syncState === 'error');
+  const storiesWithoutAds = stories.filter((story) => !(story as Amity.Ad).adId) as Amity.Story[];
+  const hasUnSeen = storiesWithoutAds.some((story) => !story?.isSeen);
+  const uploading = storiesWithoutAds.some((story) => story?.syncState === 'syncing');
+  const isErrored = storiesWithoutAds.some((story) => story?.syncState === 'error');
 
   const handleOnClick = () => {
     if (Array.isArray(stories) && stories.length === 0) return;
