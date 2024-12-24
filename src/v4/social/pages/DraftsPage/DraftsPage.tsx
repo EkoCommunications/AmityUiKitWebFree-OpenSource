@@ -115,8 +115,11 @@ export const PlainDraftStoryPage = ({
       const formData = new FormData();
       formData.append('files', file);
       setFile(null);
+      if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
+      if (prevPage?.type === PageTypes.ViewStoryPage) onBack(2);
+      else onBack();
       if (mediaType?.type === 'image' && targetId) {
-        StoryRepository.createImageStory(
+        await StoryRepository.createImageStory(
           targetType,
           targetId,
           formData,
@@ -125,7 +128,7 @@ export const PlainDraftStoryPage = ({
           items,
         );
       } else if (mediaType?.type === 'video' && targetId) {
-        StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
+        await StoryRepository.createVideoStory(targetType, targetId, formData, metadata, items);
       }
       notification.success({
         content: 'Successfully shared story',
