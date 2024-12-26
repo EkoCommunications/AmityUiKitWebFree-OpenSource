@@ -25,6 +25,7 @@ import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName';
 import { PollPostComposerPage } from '~/v4/social/pages/PollPostComposerPage/PollPostComposerPage';
 import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 
 interface CommunityProfileProps {
   communityId: string;
@@ -32,26 +33,20 @@ interface CommunityProfileProps {
 }
 
 export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communityId, page }) => {
-  const { activeTab, setActiveTab } = useCommunityTabContext();
   const pageId = 'community_profile_page';
-  const { themeStyles, accessibilityId } = useAmityPage({
-    pageId,
-  });
 
   const { openPopup } = usePopupContext();
   const { confirm } = useConfirmContext();
-  const { AmityCommunityProfilePageBehavior } = usePageBehavior();
-
-  const { community } = useCommunity({
-    communityId,
-    shouldCall: !!communityId,
-  });
-
-  const [refreshKey, setRefreshKey] = useState(0);
-  const { setDrawerData, removeDrawerData } = useDrawer();
   const { file, setFile } = useStoryContext();
   const [isSticky, setIsSticky] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { setDrawerData, removeDrawerData } = useDrawer();
+  const { activeTab, setActiveTab } = useCommunityTabContext();
+  const { hasStoryPermission } = useStoryPermission(communityId);
+  const { AmityCommunityProfilePageBehavior } = usePageBehavior();
+  const { themeStyles, accessibilityId } = useAmityPage({ pageId });
+  const { community } = useCommunity({ communityId, shouldCall: !!communityId });
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -68,15 +63,13 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
     }
   };
 
-  const handleFileSelect = (files: FileList | null) => {
-    if (files && files.length > 0) {
-      setFile(files[0]);
-    }
-    removeDrawerData();
-  };
+  const handleTabChange = (tab: CommunityTab) => setActiveTab(tab);
 
-  const handleRefresh = async () => {
-    setRefreshKey((prevKey) => prevKey + 1);
+  const handleRefresh = async () => setRefreshKey((prevKey) => prevKey + 1);
+
+  const handleFileSelect = (files: FileList | null) => {
+    if (files && files.length > 0) setFile(files[0]);
+    removeDrawerData();
   };
 
   const onCloseCreatePostPopup = ({ close }: { close: () => void }) => {
@@ -113,32 +106,20 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
     }
   }, [file]);
 
-  const handleTabChange = (tab: CommunityTab) => {
-    setActiveTab(tab);
-  };
-
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
         const scrollPosition = containerRef.current.scrollTop;
-
-        if (scrollPosition > 95) {
-          setIsSticky(true);
-        } else {
-          setIsSticky(false);
-        }
+        setIsSticky(scrollPosition > 95);
       }
     };
 
     const container = containerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-    }
+
+    if (container) container.addEventListener('scroll', handleScroll);
 
     return () => {
-      if (container) {
-        container.removeEventListener('scroll', handleScroll);
-      }
+      if (container) container.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -166,6 +147,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
         <div className={styles.communityProfilePage__poseComposer}>
           <PostComposer
             pageId={pageId}
+            communityId={communityId}
             onSelectFile={handleFileSelect}
             onClickPost={() => {
               openPopup({
@@ -222,9 +204,11 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
                       removeDrawerData();
                     }}
                   />
-                  <FileTrigger onSelect={handleFileSelect}>
-                    <CreateStoryButton pageId={pageId} />
-                  </FileTrigger>
+                  {hasStoryPermission && (
+                    <FileTrigger onSelect={handleFileSelect}>
+                      <CreateStoryButton pageId={pageId} />
+                    </FileTrigger>
+                  )}
                   <CreatePollButton
                     pageId={pageId}
                     componentId={communityId}

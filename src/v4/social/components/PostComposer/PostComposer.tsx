@@ -8,21 +8,20 @@ import { useImage } from '~/v4/core/hooks/useImage';
 import { FileTrigger } from 'react-aria-components';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
-import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { PollButton } from '~/v4/social/elements/PollButton';
 import { ImageButton } from '~/v4/social/elements/ImageButton';
 import { VideoButton } from '~/v4/social/elements/VideoButton';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 import { StoryButton } from '~/v4/social/elements/StoryButton/StoryButton';
 import { SelectPostTargetPage } from '~/v4/social/pages/SelectPostTargetPage';
-import { StoryTargetSelectionPage } from '~/v4/social/pages/StoryTargetSelectionPage';
-import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
-import styles from './PostComposer.module.css';
-import { PollButton } from '~/v4/social/elements/PollButton';
 import { PollTargetSelectionPage } from '~/v4/social/pages/PollTargetSelectionPage';
+import { StoryTargetSelectionPage } from '~/v4/social/pages/StoryTargetSelectionPage';
+import styles from './PostComposer.module.css';
 
 type PostComposerProps = {
   pageId?: string;
+  communityId?: string;
   onClickPost?: () => void;
   onClickPoll?: () => void;
   onSelectFile?: (files: FileList | null) => void;
@@ -30,6 +29,7 @@ type PostComposerProps = {
 
 export function PostComposer({
   pageId = '*',
+  communityId,
   onClickPost,
   onClickPoll,
   onSelectFile,
@@ -37,22 +37,14 @@ export function PostComposer({
   const componentId = 'post_composer';
 
   const { currentUserId } = useSDK();
-  const { confirm } = useConfirmContext();
-  const { openPopup, closePopup } = usePopupContext();
-  const { isDesktop } = useResponsive();
-  const { AmityPostTargetSelectionPage } = usePageBehavior();
+  const { openPopup } = usePopupContext();
   const { user } = useUser({ userId: currentUserId });
+  const { hasStoryPermission } = useStoryPermission(communityId);
   const avatarUrl = useImage({ fileId: user?.avatarFileId, imageSize: 'small' });
-  const { accessibilityId, themeStyles } = useAmityComponent({
-    pageId,
-    componentId,
-  });
+  const { accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
 
   const handlePostClick = () => {
-    if (onClickPost) {
-      onClickPost();
-      return;
-    }
+    if (onClickPost) return onClickPost();
 
     openPopup({
       pageId,
@@ -95,10 +87,13 @@ export function PostComposer({
 
   const renderStoryButton = () => {
     const isExcludedPage = pageId === 'user_profile_page';
+    const isFileTriggerPage = pageId === 'community_profile_page';
 
-    if (isExcludedPage) return null;
+    if (!hasStoryPermission) return null;
 
-    if (pageId === 'community_profile_page') {
+    if (hasStoryPermission && isExcludedPage) return null;
+
+    if (isFileTriggerPage) {
       return (
         <FileTrigger onSelect={onSelectFile}>
           <StoryButton

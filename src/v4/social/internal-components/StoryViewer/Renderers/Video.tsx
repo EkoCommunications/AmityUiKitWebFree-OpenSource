@@ -14,13 +14,14 @@ import useCommunityMembersCollection from '~/v4/social/hooks/collections/useComm
 import useSDK from '~/v4/core/hooks/useSDK';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { LIKE_REACTION_KEY } from '~/v4/social/constants/reactions';
-import { checkStoryPermission, formatTimeAgo, isAdmin, isModerator } from '~/v4/social/utils';
+import { checkStoryPermission, formatTimeAgo } from '~/v4/social/utils';
 import { StoryProgressBar } from '~/v4/social/elements/StoryProgressBar/StoryProgressBar';
 import clsx from 'clsx';
 import rendererStyles from './Renderers.module.css';
 import { Action } from 'react-insta-stories/dist/interfaces';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 
 const useAudioControl = () => {
   const [muted, setMuted] = useState(false);
@@ -129,8 +130,6 @@ export const renderer: CustomRenderer = ({
     items,
   } = story as Amity.Story;
 
-  const [isShowMenuPopOver, setIsShowMenuPopOver] = useState(false);
-
   const isLiked = story?.myReactions?.includes(LIKE_REACTION_KEY);
   const totalLikes = story?.reactions[LIKE_REACTION_KEY] || 0;
 
@@ -142,10 +141,7 @@ export const renderer: CustomRenderer = ({
 
   const isOfficial = community?.isOfficial || false;
   const isCreator = creator?.userId === user?.userId;
-  const isGlobalAdmin = isAdmin(user?.roles);
-  const isModeratorUser = isModerator(user?.roles);
-  const haveStoryPermission =
-    isGlobalAdmin || isModeratorUser || checkStoryPermission(client, community?.communityId);
+  const { hasStoryPermission } = useStoryPermission(community?.communityId);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -315,7 +311,7 @@ export const renderer: CustomRenderer = ({
           )
         }
         isHaveActions={actions?.length > 0}
-        haveStoryPermission={haveStoryPermission}
+        haveStoryPermission={hasStoryPermission}
         isOfficial={isOfficial}
         isPaused={isPaused}
         onPlay={play}

@@ -15,7 +15,7 @@ import { Typography } from '~/v4/core/components';
 import useSDK from '~/v4/core/hooks/useSDK';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { LIKE_REACTION_KEY } from '~/v4/social/constants/reactions';
-import { checkStoryPermission, formatTimeAgo, isAdmin, isModerator } from '~/v4/social/utils';
+import { checkStoryPermission, formatTimeAgo } from '~/v4/social/utils';
 import { Button } from '~/v4/core/natives/Button';
 
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
@@ -25,6 +25,8 @@ import styles from './Renderers.module.css';
 import clsx from 'clsx';
 
 import { StoryProgressBar } from '~/v4/social/elements/StoryProgressBar/StoryProgressBar';
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
+
 export const renderer: CustomRenderer = ({
   story: {
     actions,
@@ -51,7 +53,6 @@ export const renderer: CustomRenderer = ({
   const [loaded, setLoaded] = useState(false);
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false);
   const [isOpenCommentSheet, setIsOpenCommentSheet] = useState(false);
-  const [isShowMenuPopOver, setIsShowMenuPopOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const { loader } = config;
   const { client } = useSDK();
@@ -88,13 +89,10 @@ export const renderer: CustomRenderer = ({
   } = story as Amity.Story;
 
   const { user } = useUser({ userId: client?.userId });
+  const { hasStoryPermission } = useStoryPermission(community?.communityId);
 
   const isOfficial = community?.isOfficial || false;
   const isCreator = creator?.userId === user?.userId;
-  const isGlobalAdmin = isAdmin(user?.roles);
-  const isModeratorUser = isModerator(user?.roles);
-  const haveStoryPermission =
-    isGlobalAdmin || isModeratorUser || checkStoryPermission(client, community?.communityId);
 
   const heading = useMemo(
     () => <div data-qa-anchor="community_display_name">{community?.displayName}</div>,
@@ -295,7 +293,7 @@ export const renderer: CustomRenderer = ({
         heading={heading}
         subheading={subheading}
         isHaveActions={actions?.length > 0}
-        haveStoryPermission={haveStoryPermission}
+        haveStoryPermission={hasStoryPermission}
         isOfficial={isOfficial}
         isPaused={isPaused}
         onPlay={play}
