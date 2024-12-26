@@ -24,7 +24,7 @@ import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName';
 import { PollPostComposerPage } from '~/v4/social/pages/PollPostComposerPage/PollPostComposerPage';
-// import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
+import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
 
 interface CommunityProfileProps {
   communityId: string;
@@ -225,7 +225,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
                   <FileTrigger onSelect={handleFileSelect}>
                     <CreateStoryButton pageId={pageId} />
                   </FileTrigger>
-                  {/* <CreatePollButton
+                  <CreatePollButton
                     pageId={pageId}
                     componentId={communityId}
                     onClick={() => {
@@ -235,7 +235,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
                       });
                       removeDrawerData();
                     }}
-                  /> */}
+                  />
                 </>
               ),
             })

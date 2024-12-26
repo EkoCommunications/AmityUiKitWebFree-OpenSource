@@ -140,7 +140,7 @@ export function PostComposer({
         componentId={componentId}
         defaultIconClassName={styles.postComposer__button}
       />
-      {/* <PollButton onPress={handlePollClick} pageId="post_composer_page" componentId="poll_button" /> */}
+      <PollButton onPress={handlePollClick} pageId="post_composer_page" componentId="poll_button" />
       {renderStoryButton()}
     </div>
   );
