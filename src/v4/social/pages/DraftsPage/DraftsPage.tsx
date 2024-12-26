@@ -176,6 +176,10 @@ export const PlainDraftStoryPage = ({
     else setOpenBottomSheet(false);
   };
 
+  const openBottomSheetChange = (isOpen: boolean) => {
+    setOpenBottomSheet(isOpen);
+  };
+
   const onRemoveHyperLink = () => {
     setHyperLink([
       {
@@ -198,6 +202,7 @@ export const PlainDraftStoryPage = ({
           onClose={onClose}
           onSubmit={onSubmitHyperLink}
           onRemove={onRemoveHyperLink}
+          openBottomSheetChange={openBottomSheetChange}
         />
       </div>
     );

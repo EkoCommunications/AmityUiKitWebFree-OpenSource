@@ -15,6 +15,7 @@ import styles from './HyperLinkConfig.module.css';
 import Close from '~/v4/icons/Close';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { UnderlineInput } from '~/v4/social/internal-components/UnderlineInput/UnderlineInput';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 interface HyperLinkConfigProps {
   pageId: string;
@@ -23,6 +24,7 @@ interface HyperLinkConfigProps {
   onClose: () => void;
   onSubmit: (data: { url: string; customText?: string }) => void;
   onRemove: () => void;
+  openBottomSheetChange?: (isOpen: boolean) => void;
 }
 
 const MAX_LENGTH = 30;
@@ -34,6 +36,7 @@ export const HyperLinkConfig = ({
   onClose,
   onSubmit,
   onRemove,
+  openBottomSheetChange,
 }: HyperLinkConfigProps) => {
   const componentId = 'hyper_link_config_component';
   const { confirm } = useConfirmContext();
@@ -41,6 +44,8 @@ export const HyperLinkConfig = ({
     pageId,
     componentId,
   });
+
+  const { closePopup } = usePopupContext();
 
   if (isExcluded) return null;
 
@@ -131,24 +136,33 @@ export const HyperLinkConfig = ({
   };
 
   const discardHyperlink = () => {
+    openBottomSheetChange?.(false);
     confirm({
       title: 'Remove Link',
       content: 'This link will be removed from story.',
       cancelText: 'Cancel',
       okText: 'Remove',
       onOk: confirmDiscardHyperlink,
+      onCancel: () => {
+        openBottomSheetChange?.(true);
+      },
     });
   };
 
   const handleClose = () => {
+    openBottomSheetChange?.(false);
     if (hasUnsavedChanges) {
       confirm({
         title: 'Unsaved changes',
         content: `Are you sure you want to cancel? Your changes won't be saved.`,
         cancelText: 'No',
         okText: 'Yes',
+        onCancel: () => {
+          openBottomSheetChange?.(true);
+        },
         onOk: () => {
           reset();
+          closePopup();
         },
       });
     } else {
