@@ -109,15 +109,16 @@ export const PlainDraftStoryPage = ({
   }) => {
     setIsLoading(true);
     if (!file) return;
-    if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
+    if (
+      prevPage?.type === PageTypes.ViewStoryPage ||
+      prevPage?.type === PageTypes.StoryTargetSelectionPage
+    )
+      onBack(2);
     else onBack();
     try {
       const formData = new FormData();
       formData.append('files', file);
       setFile(null);
-      if (prevPage?.type === PageTypes.StoryTargetSelectionPage) onBack(2);
-      if (prevPage?.type === PageTypes.ViewStoryPage) onBack(2);
-      else onBack();
       if (mediaType?.type === 'image' && targetId) {
         await StoryRepository.createImageStory(
           targetType,

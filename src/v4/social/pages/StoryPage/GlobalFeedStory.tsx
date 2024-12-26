@@ -69,6 +69,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const dragEventTarget = useRef(new EventTarget());
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [lastSeenIndex, setLastSeenIndex] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -303,14 +304,16 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
 
   useEffect(() => {
     if (stories.filter(isStory).every((story) => story?.isSeen)) return;
+    if (lastSeenIndex !== 0) return;
     const firstUnseenStoryIndex = stories.findIndex((story) =>
       isStory(story) ? !story?.isSeen : false,
     );
 
     if (firstUnseenStoryIndex !== -1) {
+      setLastSeenIndex(firstUnseenStoryIndex);
       setCurrentIndex(firstUnseenStoryIndex);
     }
-  }, []);
+  }, [stories]);
 
   useEffect(() => {
     if (!file) return;
