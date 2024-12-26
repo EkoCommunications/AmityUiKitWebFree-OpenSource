@@ -234,22 +234,29 @@ export const renderer: CustomRenderer = ({
     />
   );
 
-  const renderMenuButton = useCallback(() => {
-    return (
-      <>
-        {actions?.map((bottomSheetAction) => (
-          <Button
-            key={bottomSheetAction.name}
-            className={rendererStyles.actionButton}
-            onPress={() => bottomSheetAction?.action()}
-          >
-            {bottomSheetAction?.icon && bottomSheetAction.icon}
-            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
-          </Button>
-        ))}
-      </>
-    );
-  }, [actions]);
+  const renderMenuButton = useCallback(
+    (closePopover?: () => void) => {
+      return (
+        <>
+          {actions?.map((bottomSheetAction) => (
+            <Button
+              key={bottomSheetAction.name}
+              className={rendererStyles.actionButton}
+              onPress={() => {
+                closePopover?.();
+                closeBottomSheet();
+                bottomSheetAction?.action();
+              }}
+            >
+              {bottomSheetAction?.icon && bottomSheetAction.icon}
+              <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
+            </Button>
+          ))}
+        </>
+      );
+    },
+    [actions],
+  );
 
   const onClickCommentButton = useCallback(() => {
     if (isDesktop) {
@@ -322,7 +329,7 @@ export const renderer: CustomRenderer = ({
         onClickCommunity={() => onClickCommunity?.()}
         onClose={onClose}
         addStoryButton={addStoryButton}
-        actionButton={renderMenuButton()}
+        actionButton={renderMenuButton}
       />
       <video
         data-qa-anchor="video_view"
