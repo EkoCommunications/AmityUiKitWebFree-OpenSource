@@ -209,6 +209,10 @@ export const Comment = ({
                 )}
                 componentId="edit_comment_component"
                 onPress={handleSaveComment}
+                isDisabled={
+                  !commentData?.data.text ||
+                  commentData?.data.text === (comment.data as Amity.ContentDataText).text
+                }
               />
             </div>
           </div>
