@@ -18,7 +18,6 @@ import { UserAvatar } from '~/v4/social/internal-components/UserAvatar/UserAvata
 import { CommentOptions } from '~/v4/social/components/CommentOptions/CommentOptions';
 import { CreateCommentParams } from '~/v4/social/components/CommentComposer/CommentComposer';
 import { CommentInput } from '~/v4/social/components/CommentComposer/CommentInput';
-import styles from './ReplyComment.module.css';
 import useCommunityPostPermission from '~/v4/social/hooks/useCommunityPostPermission';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Popover } from '~/v4/core/components/AriaPopover';
@@ -27,6 +26,7 @@ import { Button } from '~/v4/core/natives/Button';
 import { ReactionList } from '~/v4/social/components/ReactionList';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
+import styles from './ReplyComment.module.css';
 
 type ReplyCommentProps = {
   pageId?: string;
@@ -250,7 +250,11 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
                       : setDrawerData({ content: reactionList });
                   }}
                 >
-                  <Typography.Caption>{millify(comment.reactionsCount)}</Typography.Caption>
+                  <Typography.Caption
+                    className={styles.postReplyComment__secondRow__rightPane__reactionCount}
+                  >
+                    {millify(comment.reactionsCount)}
+                  </Typography.Caption>
                   <Like className={styles.postReplyComment__secondRow__rightPane__like} />
                 </Button>
               )}

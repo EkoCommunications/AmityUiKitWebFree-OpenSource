@@ -30,6 +30,7 @@ export const Popover = ({
   children,
   className,
   containerClassName,
+  placement = 'bottom right',
   ...props
 }: PopoverProps) => {
   const { isDesktop } = useResponsive();
@@ -55,7 +56,7 @@ export const Popover = ({
         <$Popover
           {...props}
           isOpen={isOpen}
-          placement={props.placement || 'bottom right'}
+          placement={placement}
           triggerRef={popoverRef}
           onOpenChange={setIsOpen}
           className={clsx(styles.popover, className)}

@@ -3,7 +3,6 @@ import { Typography, BottomSheet } from '~/v4/core/components';
 import { ModeratorBadge } from '~/v4/social/elements/ModeratorBadge';
 import { Timestamp } from '~/v4/social/elements/Timestamp';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
-import styles from './Comment.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import ReplyComment from '~/v4/icons/ReplyComment';
 import { ReplyCommentList } from '~/v4/social/components/ReplyCommentList/ReplyCommentList';
@@ -29,6 +28,7 @@ import { Button } from '~/v4/core/natives/Button';
 import { ReactionList } from '~/v4/social/components/ReactionList';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
+import styles from './Comment.module.css';
 
 const Like = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -313,7 +313,11 @@ export const Comment = ({
                       : setDrawerData({ content: reactionList });
                   }}
                 >
-                  <Typography.Caption>{millify(comment.reactionsCount)}</Typography.Caption>
+                  <Typography.Caption
+                    className={styles.postComment__secondRow__rightPane__reactionCount}
+                  >
+                    {millify(comment.reactionsCount)}
+                  </Typography.Caption>
                   <Like className={styles.postComment__secondRow__rightPane__like} />
                 </Button>
               )}
