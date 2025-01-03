@@ -248,7 +248,7 @@ export const Comment = ({
               />
             </div>
             <div className={styles.postComment__secondRow}>
-              {shouldAllowInteraction && (
+              {shouldAllowInteraction ? (
                 <div className={styles.postComment__secondRow__leftPane}>
                   <Typography.Caption className={styles.postComment__secondRow__timestamp}>
                     <Timestamp
@@ -296,6 +296,8 @@ export const Comment = ({
                     )}
                   </Popover>
                 </div>
+              ) : (
+                <div />
               )}
               {comment.reactionsCount > 0 && (
                 <Button
