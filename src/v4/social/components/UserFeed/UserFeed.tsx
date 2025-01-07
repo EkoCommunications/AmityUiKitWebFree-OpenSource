@@ -91,7 +91,15 @@ export const UserFeed = ({ pageId = '*', userId }: UserFeedProps) => {
       return <EmptyUserFeed pageId={pageId} componentId={componentId} />;
 
     return posts.map((post) => (
-      <Button key={post.postId} className={styles.userFeed__postContent}>
+      <Button
+        key={post.postId}
+        className={styles.userFeed__postContent}
+        onPress={() =>
+          AmityUserFeedComponentBehavior?.goToPostDetailPage?.({
+            postId: post.postId,
+          })
+        }
+      >
         <PostContent
           category={AmityPostCategory.GENERAL}
           pageId={pageId}
