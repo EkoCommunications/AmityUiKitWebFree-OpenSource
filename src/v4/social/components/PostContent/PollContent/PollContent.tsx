@@ -64,7 +64,7 @@ export const PollContent: FC<PollContentProps> = ({
       return processPollAnswers.slice(0, maxChoicesShown);
     }
 
-    return processPollAnswers;
+    return poll.isVoted ? processPollAnswers : poll.answers;
   }, [poll?.answers, isExpanded]) as (Amity.PollAnswer & { isTopVoted: boolean })[];
 
   const isShowMore = useMemo(
