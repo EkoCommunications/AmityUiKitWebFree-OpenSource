@@ -171,7 +171,9 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
         (moderators || []).find((moderator) => moderator.userId === post.postedUserId) != null;
 
       if (
-        community?.postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED &&
+        ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
+          .needApprovalOnPostCreation ||
+          community?.postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED) &&
         !isModerator
       ) {
         info({
