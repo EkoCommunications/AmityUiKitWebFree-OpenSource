@@ -19,9 +19,14 @@ export const calculateRemainingFromMs = (ms: number) => {
   ms %= msInMinute;
   const seconds = Math.floor(ms / msInSecond);
 
+  // Special case: 30 days or approximately 1 month
+  if (months === 1 || (months === 0 && days === 30)) {
+    return '30d';
+  }
+
   if (years > 0) parts.push(`${years} year${years > 1 ? 's' : ''}`);
   if (months > 0) parts.push(`${months} month${months > 1 ? 's' : ''}`);
-  if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
+  if (days > 0) parts.push(`${days}d`);
   if (hours > 0) parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
   if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
   if (seconds > 0) parts.push(`${seconds} second${seconds > 1 ? 's' : ''}`);
