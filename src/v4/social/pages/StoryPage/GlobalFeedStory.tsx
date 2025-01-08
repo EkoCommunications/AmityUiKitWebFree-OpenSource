@@ -150,10 +150,9 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const confirmDeleteStory = (storyId: string) => {
     confirm({
       pageId,
-      title: 'Delete this story?',
-      content:
-        'This story will be permanently deleted. You’ll no longer to see and find this story.',
-      okText: 'Delete',
+      title: 'Discard this story?',
+      content: 'The story will be permanently deleted. It cannot be undone.',
+      okText: 'Discard',
       onOk: async () => {
         onDeleteStory(storyId);
       },
