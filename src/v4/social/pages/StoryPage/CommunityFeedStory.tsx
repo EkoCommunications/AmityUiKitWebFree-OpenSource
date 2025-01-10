@@ -157,9 +157,10 @@ export const CommunityFeedStory = ({
   const confirmDeleteStory = (storyId: string) => {
     confirm({
       pageId,
-      title: 'Discard this story?',
-      content: 'The story will be permanently deleted. It cannot be undone.',
-      okText: 'Discard',
+      title: 'Delete this story?',
+      content:
+        "This story will be permanently deleted. You'll no longer to see and find this story.",
+      okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
         onDeleteStory(storyId);

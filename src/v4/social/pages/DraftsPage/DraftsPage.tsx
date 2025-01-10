@@ -149,7 +149,7 @@ export const PlainDraftStoryPage = ({
     confirm({
       pageId,
       title: 'Discard this story?',
-      content: 'The story will be permanently deleted. It cannot be undone.',
+      content: 'The story will be permanently discarded. It cannot be undone.',
       cancelText: 'Cancel',
       okText: 'Discard',
       onOk: () => {
