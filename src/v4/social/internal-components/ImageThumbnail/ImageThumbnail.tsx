@@ -42,6 +42,12 @@ export function ImageThumbnail({
 
   if (allFiles.length === 0) return null;
 
+  const getImageUrl = (file: File | Amity.File) => {
+    return 'fileUrl' in file
+      ? FileRepository.fileUrlWithSize(file.fileUrl, 'medium')
+      : URL.createObjectURL(file);
+  };
+
   return (
     allFiles && (
       <div
@@ -56,7 +62,7 @@ export function ImageThumbnail({
           >
             {uploadLoading ? (
               <>
-                <img src={URL.createObjectURL(file as File)} className={styles.thumbnail} alt="" />
+                <img src={getImageUrl(file)} className={styles.thumbnail} alt="" />
                 <div className={styles.thumbnail__overlay} />
                 <div className={styles.icon__status}>
                   <Spinner />

@@ -92,7 +92,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   const [incomingImages, setIncomingImages] = useState<File[]>([]);
   const [incomingVideos, setIncomingVideos] = useState<File[]>([]);
   const [uploadLoading, setUploadLoading] = useState(false);
-  const [uploadedImagesCount, setUploadedImagesCount] = useState<File[]>([]);
+  const [uploadedImagesCount, setUploadedImagesCount] = useState<number>(0);
 
   // Visible menu attachment
   const [isVisibleCamera, setIsVisibleCamera] = useState(false);
@@ -364,7 +364,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   };
 
   const handleImageFileChange = (file: File[]) => {
-    if (file.length + uploadedImagesCount.length > 10) {
+    if (file.length + uploadedImagesCount > 10) {
       confirm({
         pageId: pageId,
         type: 'info',
@@ -377,7 +377,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
     }
 
     if (file.length > 0) {
-      setUploadedImagesCount((prevImages) => [...prevImages, ...file]);
+      setUploadedImagesCount((prevImageCount) => prevImageCount + file.length);
       setIncomingImages(file);
     }
   };
@@ -491,6 +491,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
             onChange={({ uploaded, uploading }) => {
               setPostImages(uploaded);
               setIncomingImages(uploading);
+              setUploadedImagesCount(uploaded.length);
             }}
           />
           <VideoThumbnail
