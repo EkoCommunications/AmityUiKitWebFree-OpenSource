@@ -48,7 +48,7 @@ export const PlainDraftStoryPage = ({
   onDiscardCreateStory: () => void;
 }) => {
   const { isDesktop } = useResponsive();
-  const [isLoading, setIsLoading] = useState(false);
+
   const { openPopup, closePopup } = usePopupContext();
   const { onBack, prevPage } = useNavigation();
   const pageId = 'create_story_page';
@@ -56,7 +56,7 @@ export const PlainDraftStoryPage = ({
     pageId,
   });
 
-  const { file, setFile } = useStoryContext();
+  const { file, setFile, isStoryUploading, setIsStoryUploading } = useStoryContext();
   const { community } = useCommunityInfo(targetId);
 
   const { confirm } = useConfirmContext();
@@ -107,7 +107,7 @@ export const PlainDraftStoryPage = ({
     metadata?: Amity.Metadata;
     items?: Amity.StoryItem[];
   }) => {
-    setIsLoading(true);
+    setIsStoryUploading(true);
     if (!file) return;
     if (
       prevPage?.type === PageTypes.ViewStoryPage ||
@@ -141,7 +141,7 @@ export const PlainDraftStoryPage = ({
         });
       }
     } finally {
-      setIsLoading(false);
+      setIsStoryUploading(false);
     }
   };
 
@@ -333,7 +333,7 @@ export const PlainDraftStoryPage = ({
             community={community}
             pageId={pageId}
             onClick={() =>
-              !isLoading &&
+              !isStoryUploading &&
               onCreateStory({
                 file,
                 imageMode,

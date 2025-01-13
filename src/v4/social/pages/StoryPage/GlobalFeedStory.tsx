@@ -63,7 +63,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
   const { client, currentUserId } = useSDK();
-  const { file, setFile } = useStoryContext();
+  const { file, setFile, isStoryUploading } = useStoryContext();
   const y = useMotionValue(0);
   const motionRef = useRef<HTMLDivElement>(null);
   const dragEventTarget = useRef(new EventTarget());
@@ -225,7 +225,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
         setFile(files[0]);
       }}
     >
-      <CreateNewStoryButton pageId={pageId} />
+      <CreateNewStoryButton pageId={pageId} isDisabled={isStoryUploading} />
     </FileTrigger>
   );
 
