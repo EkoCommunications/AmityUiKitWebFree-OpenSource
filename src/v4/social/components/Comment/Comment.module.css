@@ -51,6 +51,11 @@
 .postComment__content__username {
   color: var(--asc-color-base-default);
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100vw - 7rem);
+  width: 100%;
 }
 
 .postComment__content__text {
@@ -223,4 +228,10 @@
   display: inline-block;
   width: 1.125rem;
   height: 1.125rem;
+}
+
+@media (width >= 48em) {
+  .postComment__content__username {
+    max-width: 27rem;
+  }
 }
