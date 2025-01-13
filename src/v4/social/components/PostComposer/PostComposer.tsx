@@ -18,6 +18,7 @@ import { SelectPostTargetPage } from '~/v4/social/pages/SelectPostTargetPage';
 import { PollTargetSelectionPage } from '~/v4/social/pages/PollTargetSelectionPage';
 import { StoryTargetSelectionPage } from '~/v4/social/pages/StoryTargetSelectionPage';
 import styles from './PostComposer.module.css';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 
 type PostComposerProps = {
   pageId?: string;
@@ -37,6 +38,7 @@ export function PostComposer({
   const componentId = 'post_composer';
 
   const { currentUserId } = useSDK();
+  const { goToUserProfilePage } = useNavigation();
   const { openPopup } = usePopupContext();
   const { user } = useUser({ userId: currentUserId });
   const { hasStoryPermission } = useStoryPermission(communityId);
@@ -117,9 +119,15 @@ export function PostComposer({
 
   return (
     <div className={styles.postComposer} data-qa-anchor={accessibilityId} style={themeStyles}>
-      <figure className={styles.postComposer__avatar}>
-        <Avatar avatarUrl={avatarUrl} defaultImage={<UserIcon />} />
-      </figure>
+      <Button
+        onPress={() => {
+          goToUserProfilePage(user?.userId as string);
+        }}
+      >
+        <figure className={styles.postComposer__avatar}>
+          <Avatar avatarUrl={avatarUrl} defaultImage={<UserIcon />} />
+        </figure>
+      </Button>
       <Button className={styles.postComposer__input} onPress={handlePostClick}>
         What's going on?
       </Button>
