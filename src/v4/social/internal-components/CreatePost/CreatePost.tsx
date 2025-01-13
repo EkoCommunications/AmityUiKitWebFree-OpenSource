@@ -33,6 +33,9 @@ import { PageTypes, useNavigation } from '~/v4/core/providers/NavigationProvider
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import styles from './CreatePost.module.css';
+import { useSDK } from '~/v4/core/hooks/useSDK';
+import { useUser } from '~/v4/core/hooks/objects/useUser';
+import { isAdmin } from '~/v4/utils/permissions';
 
 const useResizeObserver = ({ ref }: { ref: RefObject<HTMLDivElement> }) => {
   const [height, setHeight] = useState<number | undefined>(undefined);
@@ -68,6 +71,8 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
   const mentionRef = useRef<HTMLDivElement | null>(null);
   const drawerContentRef = useRef<HTMLDivElement>(null);
 
+  const { currentUserId } = useSDK();
+  const { user } = useUser({ userId: currentUserId });
   const { handleSubmit } = useForm();
   const { info } = useConfirmContext();
   const { isDesktop } = useResponsive();
@@ -180,7 +185,8 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
         ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
           .needApprovalOnPostCreation ||
           community?.postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED) &&
-        !isModerator
+        !isModerator &&
+        !isAdmin(user?.roles)
       ) {
         info({
           pageId,
@@ -254,47 +260,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
     return createPost(createPostParams);
   }
 
-  //TODO : Make this function works the issues is can't remove extra mention from DOM
-  // const onChange = (val: { mentioned: Mentioned[]; mentionees: Mentionees; text: string }) => {
-  //   let mentioned = val.mentioned;
-  //   let mentionees = val.mentionees;
-  //   let text = val.text;
-
-  //   if (mentioned.length > MAXIMUM_POST_MENTIONEES) {
-  //     info({
-  //       title: 'Too many users mentioned',
-  //       content: `You can mention up to ${MAXIMUM_POST_MENTIONEES} users per message.`,
-  //       okText: 'OK',
-  //     });
-
-  //     // Truncate to maximum mentions
-  //     mentioned = mentioned.slice(0, MAXIMUM_POST_MENTIONEES);
-  //     mentionees = mentionees.map((ment) => ({
-  //       ...ment,
-  //       userIds: ment.userIds?.slice(0, MAXIMUM_POST_MENTIONEES),
-  //     }));
-
-  //     const extraMentions = val.mentioned.slice(MAXIMUM_POST_MENTIONEES);
-  //     extraMentions.forEach((mention) => {
-  //       const mentionRegex = new RegExp(`@${mention.displayName}\\b`, 'g');
-  //       text = text.replace(mentionRegex, '').trim(); // Remove the mention from text
-  //     });
-
-  //     setTextValue((prev) => ({
-  //       ...prev,
-  //       mentioned,
-  //       text,
-  //       mentionees,
-  //     }));
-  //   } else {
-  //     setTextValue((prev) => ({
-  //       ...prev,
-  //       mentioned,
-  //       text,
-  //       mentionees,
-  //     }));
-  //   }
-  // };
+  //TODO : Make the function works the issues is can't remove extra mention from DOM
 
   const onChange = (val: { mentioned: Mentioned[]; mentionees: Mentionees; text: string }) => {
     setTextValue((prev) => ({

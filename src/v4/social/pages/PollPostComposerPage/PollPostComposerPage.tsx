@@ -42,6 +42,9 @@ import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { Switch } from '~/v4/core/components/AriaSwitch';
+import { useSDK } from '~/v4/core/hooks/useSDK';
+import { useUser } from '~/v4/core/hooks/objects/useUser';
+import { isAdmin } from '~/v4/utils/permissions';
 
 type PollPostComposerPageProps = {
   targetId: string | null;
@@ -84,6 +87,8 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
   const { confirm, info } = useConfirmContext();
   const { setDrawerData, removeDrawerData } = useDrawer();
   const mentionRef = useRef<HTMLDivElement | null>(null);
+  const { currentUserId } = useSDK();
+  const { user } = useUser({ userId: currentUserId });
 
   const timeNow = now(getLocalTimeZone());
   const { prependItem } = useGlobalFeedContext();
@@ -174,7 +179,8 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
         ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
           .needApprovalOnPostCreation ||
           community?.postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED) &&
-        !isModerator
+        !isModerator &&
+        !isAdmin(user?.roles)
       ) {
         info({
           pageId,
