@@ -36,7 +36,7 @@ const fetchWithTimeout = async (url: string, options: RequestInit = {}) => {
 };
 
 export const fetchPreviewMetadata = async (url: string): Promise<PreviewMetadataCacheType> => {
-  const CORS_PROXY = 'https://corsproxy.io/?';
+  const CORS_PROXY = 'https://api.cors.lol/?url=';
   const domain = findDomainName(url);
 
   try {
