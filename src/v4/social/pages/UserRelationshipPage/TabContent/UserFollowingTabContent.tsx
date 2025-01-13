@@ -20,18 +20,14 @@ export const UserFollowingTabContent: FC<UserFollowingTabContentProps> = ({
   });
 
   return (
-    <>
-      {followings && (
-        <UserRelationshipList
-          relationships={followings}
-          type={UserRelationshipPageTabs.FOLLOWING}
-          pageId={pageId}
-          componentId={componentId}
-          hasMore={hasMore}
-          loadMore={loadMore}
-          isLoading={isLoading}
-        />
-      )}
-    </>
+    <UserRelationshipList
+      relationships={followings}
+      type={UserRelationshipPageTabs.FOLLOWING}
+      pageId={pageId}
+      componentId={componentId}
+      hasMore={hasMore}
+      loadMore={loadMore}
+      isLoading={isLoading}
+    />
   );
 };

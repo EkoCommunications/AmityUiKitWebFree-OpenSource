@@ -63,6 +63,7 @@
 
   .userRelationshipPage__topBar {
     background-color: var(--asc-color-background-default);
+    border-radius: 0.5rem 0.5rem 0 0;
     position: static;
   }
 
@@ -70,7 +71,6 @@
     background-color: var(--asc-color-background-default);
     border-radius: 0.5rem 0.5rem 0 0;
     border: 1px solid var(--asc-color-base-shade4);
-    overflow: hidden;
   }
 
   .userRelationshipPage__container {

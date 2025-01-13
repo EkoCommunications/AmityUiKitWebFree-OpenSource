@@ -13,6 +13,7 @@ export default function useFollowingsCollection({
   const { items, ...rest } = useLiveCollection({
     fetcher: UserRepository.Relationship.getFollowings,
     params: {
+      limit: 20,
       userId: userId as string,
       status: status ?? undefined,
     },

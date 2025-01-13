@@ -36,7 +36,7 @@ export const UserRelationshipPage: FC<UserRelationshipPageProps> = ({ userId, se
       },
     },
     {
-      label: 'Follower',
+      label: 'Followers',
       value: UserRelationshipPageTabs.FOLLOWER,
       content: () => {
         return <UserFollowerTabContent userId={userId} />;

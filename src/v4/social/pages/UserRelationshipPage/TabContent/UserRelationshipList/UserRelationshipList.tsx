@@ -31,7 +31,7 @@ export const UserRelationshipList: React.FC<UserRelationshipListProps> = ({
   const renderSkeleton = () => {
     return (
       <div className={styles.userRelationshipList__skeletonContainer}>
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 5 }).map((_, index) => (
           <UserListSkeleton key={index} />
         ))}
       </div>
@@ -50,11 +50,9 @@ export const UserRelationshipList: React.FC<UserRelationshipListProps> = ({
     },
   });
 
-  if (!relationships) return null;
-
   return (
     <div className={styles.userRelationshipList__container}>
-      {!isLoading && relationships.length === 0 ? (
+      {!isLoading && relationships?.length === 0 ? (
         <div className={styles.userRelationshipList__emptyContainer}>
           <List className={styles.userRelationshipList__emptyIcon} />
           <Typography.Title className={styles.userRelationshipList__emptyText}>
@@ -63,14 +61,15 @@ export const UserRelationshipList: React.FC<UserRelationshipListProps> = ({
         </div>
       ) : (
         <>
-          {relationships.map((relationship) => {
+          {relationships?.map((relationship) => {
             const userId =
               relationship[type === UserRelationshipPageTabs.FOLLOWING ? 'to' : 'from'];
-            return <UserItem userId={userId} pageId={pageId} componentId={componentId} />;
+            return (
+              <UserItem key={userId} userId={userId} pageId={pageId} componentId={componentId} />
+            );
           })}
         </>
       )}
-
       {isLoading && renderSkeleton()}
       {hasMore && (
         <div
