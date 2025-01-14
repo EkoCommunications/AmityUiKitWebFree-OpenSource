@@ -2,7 +2,7 @@ import { UserRepository } from '@amityco/ts-sdk';
 import { useQuery } from '@tanstack/react-query';
 
 const useUserReportedByMe = (userId?: string) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['asc-uikit', 'UserRepository', 'isUserReportedByMe', userId],
     queryFn: () => {
       return UserRepository.isUserFlaggedByMe(userId as string);
@@ -11,8 +11,9 @@ const useUserReportedByMe = (userId?: string) => {
   });
 
   return {
-    isReportedByMe: data,
     isLoading,
+    isFetching,
+    isReportedByMe: data,
   };
 };
 

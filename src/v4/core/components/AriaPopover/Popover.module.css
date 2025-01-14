@@ -1,6 +1,5 @@
 .popover {
   outline: none;
-  min-width: 12.5rem;
   border-radius: 0.75rem;
   box-shadow: var(--asc-box-shadow-04);
   background-color: var(--asc-color-background-default);

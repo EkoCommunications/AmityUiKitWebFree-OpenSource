@@ -11,62 +11,68 @@ import styles from './UserItem.module.css';
 
 type UserItemMenuProps = {
   pageId?: string;
-  componentId?: string;
   user: Amity.User;
+  componentId?: string;
   closePopover: () => void;
 };
 
 export const UserItemMenu: FC<UserItemMenuProps> = ({
-  pageId = '*',
-  componentId = '*',
   user,
   closePopover,
+  pageId = '*',
+  componentId = '*',
 }) => {
-  const { reportUser, unReportUser } = useUserReport();
   const { blockUser } = useUserBlock();
   const { removeDrawerData } = useDrawer();
-  const { isReportedByMe } = useUserReportedByMe(user.userId);
+  const { reportUser, unReportUser } = useUserReport();
+  const { isReportedByMe, isFetching } = useUserReportedByMe(user.userId);
 
   return (
     <div className={styles.userItem__menuContainer}>
-      <>
-        <Button
-          data-qa-anchor={`${pageId}/${componentId}/report_user_button`}
-          className={styles.userItem__menuButton}
-          onPress={() => {
-            closePopover();
-            removeDrawerData();
-            if (isReportedByMe) unReportUser(user.userId);
-            else reportUser(user.userId);
-          }}
-          variant="text"
-        >
-          <Flag className={styles.userItem__menuButton__icon} />
-          <Typography.BodyBold className={styles.userItem__menuButton__label}>
-            {isReportedByMe ? 'Unreport user' : 'Report user'}
-          </Typography.BodyBold>
-        </Button>
-        <Button
-          data-qa-anchor={`${pageId}/${componentId}/block_user_button`}
-          className={styles.userItem__menuButton}
-          onPress={() => {
-            closePopover();
-            removeDrawerData();
-            blockUser({
-              pageId,
-              userId: user.userId,
-              componentId,
-              displayName: user.displayName ?? '',
-            });
-          }}
-          variant="text"
-        >
-          <BlockedUser className={styles.userItem__menuButton__icon} />
-          <Typography.BodyBold className={styles.userItem__menuButton__label}>
-            Block user
-          </Typography.BodyBold>
-        </Button>
-      </>
+      {isFetching ? (
+        Array.from({ length: 2 }).map((_, index) => (
+          <div className={styles.userItem__menuButtonSkeleton} key={index} />
+        ))
+      ) : (
+        <>
+          <Button
+            variant="text"
+            data-qa-anchor={`${pageId}/${componentId}/report_user_button`}
+            className={styles.userItem__menuButton}
+            onPress={() => {
+              closePopover();
+              removeDrawerData();
+              if (isReportedByMe) unReportUser(user.userId);
+              else reportUser(user.userId);
+            }}
+          >
+            <Flag className={styles.userItem__menuButton__icon} />
+            <Typography.BodyBold className={styles.userItem__menuButton__label}>
+              {isReportedByMe ? 'Unreport user' : 'Report user'}
+            </Typography.BodyBold>
+          </Button>
+          <Button
+            variant="text"
+            className={styles.userItem__menuButton}
+            data-qa-anchor={`${pageId}/${componentId}/block_user_button`}
+            onPress={() => {
+              closePopover();
+              removeDrawerData();
+              blockUser({
+                pageId,
+                componentId,
+                userId: user.userId,
+                displayName: user.displayName ?? '',
+              });
+            }}
+          >
+            <BlockedUser className={styles.userItem__menuButton__icon} />
+            <Typography.BodyBold className={styles.userItem__menuButton__label}>
+              Block user
+            </Typography.BodyBold>
+          </Button>
+        </>
+      )}
     </div>
   );
 };
