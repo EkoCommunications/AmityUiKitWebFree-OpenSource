@@ -199,8 +199,7 @@ interface CommunityMembersProps {
 const CommunityMembers = ({ communityId }: CommunityMembersProps) => {
   const { formatMessage } = useIntl();
 
-  const { hasMore, loadMore, loadMoreHasBeenCalled, isLoading, members } =
-    useCommunityMembersCollection(communityId);
+  const { hasMore, loadMore, members } = useCommunityMembersCollection(communityId);
 
   const community = useCommunity(communityId);
 
