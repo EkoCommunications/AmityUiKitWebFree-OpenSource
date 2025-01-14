@@ -218,7 +218,12 @@ const CommunityMembers = ({ communityId }: CommunityMembersProps) => {
       <CommunityMembersTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === MemberTabs.MEMBERS && (
-        <MemberTab community={community} hasMore={hasMore} loadMore={loadMore} members={members} />
+        <MemberTab
+          hasMore={hasMore}
+          loadMore={loadMore}
+          community={community}
+          members={members.reverse()}
+        />
       )}
 
       {activeTab === MemberTabs.MODERATORS && <ModeratorTab community={community} />}
