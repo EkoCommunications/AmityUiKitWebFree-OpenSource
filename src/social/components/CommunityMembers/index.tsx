@@ -199,8 +199,7 @@ interface CommunityMembersProps {
 const CommunityMembers = ({ communityId }: CommunityMembersProps) => {
   const { formatMessage } = useIntl();
 
-  const { hasMore, loadMore, loadMoreHasBeenCalled, isLoading, members } =
-    useCommunityMembersCollection(communityId);
+  const { hasMore, loadMore, members } = useCommunityMembersCollection(communityId);
 
   const community = useCommunity(communityId);
 
@@ -213,11 +212,18 @@ const CommunityMembers = ({ communityId }: CommunityMembersProps) => {
 
   return (
     <CommunityMembersContainer>
-      <CommunityMembersHeader>Community Members • {members.length || 0}</CommunityMembersHeader>
+      <CommunityMembersHeader>
+        Community Members • {community?.membersCount || 0}
+      </CommunityMembersHeader>
       <CommunityMembersTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === MemberTabs.MEMBERS && (
-        <MemberTab community={community} hasMore={hasMore} loadMore={loadMore} members={members} />
+        <MemberTab
+          hasMore={hasMore}
+          loadMore={loadMore}
+          community={community}
+          members={members.reverse()}
+        />
       )}
 
       {activeTab === MemberTabs.MODERATORS && <ModeratorTab community={community} />}

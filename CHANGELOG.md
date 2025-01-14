@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.11.6 (2025-01-14)
+
+
+### Bug Fixes
+
+* ASC-28295 - member count ([#844](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/issues/844)) ([bcf08a8](https://github.com/AmityCo/Amity-Social-Cloud-UIKit-Web/commit/bcf08a840e4d095aab43aee203b4da47a584a623))
+
 ### 3.11.5 (2024-12-20)
 
 ### 3.11.4 (2024-12-02)
