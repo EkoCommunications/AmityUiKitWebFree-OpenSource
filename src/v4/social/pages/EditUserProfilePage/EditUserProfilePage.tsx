@@ -15,6 +15,7 @@ import { FileRepository, UserRepository } from '@amityco/ts-sdk';
 import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 import { UnderlineInput } from '~/v4/social/internal-components/UnderlineInput';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import { ERROR_RESPONSE } from '~/v4/social/constants/errorResponse';
 
 interface EditUserProfilePageProps {
   userId: string;
@@ -30,7 +31,7 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
 
   const { themeStyles } = useAmityPage({ pageId });
   const { onBack } = useNavigation();
-  const { confirm } = useConfirmContext();
+  const { confirm, info } = useConfirmContext();
   const { user } = useUser({ userId });
 
   const [displayName, setDisplayName] = useState(user?.displayName || '');
@@ -50,7 +51,21 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
       const { data } = await FileRepository.createImage(formData);
       setNewImage(data[0]);
     } catch (error) {
-      console.error('Failed to upload image', error);
+      if (error instanceof Error && error.message.includes(ERROR_RESPONSE.IMAGE_NUDITY)) {
+        info({
+          pageId: pageId,
+          type: 'info',
+          title: 'Inappropriate image',
+          content: 'Please choose a different image to upload.',
+        });
+      } else {
+        info({
+          pageId: pageId,
+          type: 'info',
+          title: 'Failed to upload image',
+          content: 'Please try again.',
+        });
+      }
     }
   };
 
