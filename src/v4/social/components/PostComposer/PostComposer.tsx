@@ -19,6 +19,7 @@ import { PollTargetSelectionPage } from '~/v4/social/pages/PollTargetSelectionPa
 import { StoryTargetSelectionPage } from '~/v4/social/pages/StoryTargetSelectionPage';
 import styles from './PostComposer.module.css';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
 
 type PostComposerProps = {
   pageId?: string;
@@ -40,7 +41,7 @@ export function PostComposer({
   const { currentUserId } = useSDK();
   const { goToUserProfilePage } = useNavigation();
   const { openPopup } = usePopupContext();
-  const { user } = useUser({ userId: currentUserId });
+  const { user, isLoading } = useUser({ userId: currentUserId });
   const { hasStoryPermission } = useStoryPermission(communityId);
   const avatarUrl = useImage({ fileId: user?.avatarFileId, imageSize: 'small' });
   const { accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
@@ -119,15 +120,13 @@ export function PostComposer({
 
   return (
     <div className={styles.postComposer} data-qa-anchor={accessibilityId} style={themeStyles}>
-      <Button
-        onPress={() => {
-          goToUserProfilePage(user?.userId as string);
-        }}
-      >
-        <figure className={styles.postComposer__avatar}>
-          <Avatar avatarUrl={avatarUrl} defaultImage={<UserIcon />} />
-        </figure>
-      </Button>
+      <UserAvatar
+        pageId={pageId}
+        userId={user?.userId}
+        componentId={componentId}
+        className={styles.postComposer__avatar}
+        imageContainerClassName={styles.postComposer__avatar}
+      />
       <Button className={styles.postComposer__input} onPress={handlePostClick}>
         What's going on?
       </Button>

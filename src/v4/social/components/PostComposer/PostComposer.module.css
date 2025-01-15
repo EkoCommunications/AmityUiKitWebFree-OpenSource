@@ -13,6 +13,8 @@
   height: 2.5rem;
   min-width: 2.5rem;
   max-width: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--asc-color-base-shade4);
 }
 
 .postComposer__input {

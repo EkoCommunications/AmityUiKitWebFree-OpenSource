@@ -11,11 +11,8 @@ import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
 import { CommentButton } from '~/v4/social/elements/CommentButton';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import { useMutation } from '@tanstack/react-query';
-import { ReactionRepository, SubscriptionLevels } from '@amityco/ts-sdk';
+import { ReactionRepository } from '@amityco/ts-sdk';
 import { PollContent } from './PollContent/PollContent';
-
-import styles from './PostContent.module.css';
-
 import Crying from './Crying';
 import Happy from './Happy';
 import Fire from './Fire';
@@ -47,6 +44,7 @@ import { Popover } from '~/v4/core/components/AriaPopover';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import styles from './PostContent.module.css';
 
 export enum AmityPostContentComponentStyle {
   FEED = 'feed',
@@ -102,19 +100,15 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-brand-badge={showBrandBadge === true}
           data-show-target={showTarget === true}
         >
-          <Typography.BodyBold
-            renderer={({ typoClassName }) => (
-              <Button
-                className={clsx(typoClassName, styles.postTitle__text)}
-                onPress={() => onClickUser(post.creator.userId)}
-                data-qa-anchor={`${pageId}/${componentId}/username`}
-              >
-                {post.creator.displayName}
-              </Button>
-            )}
-          />
+          <Button
+            onPress={() => onClickUser(post.creator.userId)}
+            data-qa-anchor={`${pageId}/${componentId}/username`}
+          >
+            <Typography.BodyBold className={styles.postTitle__text}>
+              {post.creator.displayName}
+            </Typography.BodyBold>
+          </Button>
           {showBrandBadge ? <BrandBadge className={styles.postTitle__brandIcon} /> : null}
-
           {showTarget ? (
             <AngleRight
               data-qa-anchor={`${pageId}/${componentId}/arrow_right`}
@@ -130,19 +124,14 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-official-badge={showOfficialBadge === true}
         >
           {showPrivateBadge && <Lock className={styles.postTitle__community__privateIcon} />}
-          <Typography.BodyBold
-            renderer={({ typoClassName }) => (
-              <Button
-                data-qa-anchor={`${pageId}/${componentId}/community_name`}
-                className={clsx(typoClassName, styles.postTitle__communityText)}
-                onPress={() => {
-                  goToCommunityProfilePage(targetCommunity.communityId);
-                }}
-              >
-                {targetCommunity.displayName}
-              </Button>
-            )}
-          />
+          <Button
+            data-qa-anchor={`${pageId}/${componentId}/community_name`}
+            onPress={() => goToCommunityProfilePage(targetCommunity.communityId)}
+          >
+            <Typography.BodyBold className={styles.postTitle__communityText}>
+              {targetCommunity.displayName}
+            </Typography.BodyBold>
+          </Button>
           {showOfficialBadge && <Verified className={styles.postTitle__community__verifiedIcon} />}
         </div>
       )}
@@ -152,16 +141,11 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-brand-badge={targetUser?.isBrand === true}
           data-show-target={false}
         >
-          <Typography.BodyBold
-            renderer={({ typoClassName }) => (
-              <Button
-                className={clsx(typoClassName, styles.postTitle__text)}
-                onPress={() => onClickUser(targetUser.userId)}
-              >
-                {targetUser.displayName}
-              </Button>
-            )}
-          />
+          <Button onPress={() => onClickUser(targetUser.userId)}>
+            <Typography.BodyBold className={styles.postTitle__text}>
+              {targetUser.displayName}
+            </Typography.BodyBold>
+          </Button>
           {targetUser?.isBrand === true ? (
             <BrandBadge className={styles.postTitle__brandIcon} />
           ) : null}
