@@ -34,8 +34,8 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
   const { confirm, info } = useConfirmContext();
   const { user } = useUser({ userId });
 
-  const [displayName, setDisplayName] = useState(user?.displayName || '');
-  const [description, setDescription] = useState(user?.description || '');
+  const [displayName, setDisplayName] = useState(user?.displayName || undefined);
+  const [description, setDescription] = useState(user?.description || undefined);
   const [image, setImage] = useState<File | null>(null);
   const [newImage, setNewImage] = useState<Amity.File<'image'> | null>(null);
 
@@ -127,7 +127,10 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
 
   const isNoEditing =
     !displayName ||
-    (user?.displayName === displayName && user?.description === description && !newImage);
+    ((user?.displayName === displayName || (user?.displayName == undefined && displayName == '')) &&
+      (user?.description === description ||
+        (user?.description == undefined && description == '')) &&
+      !newImage);
 
   const onPressBackButton = () => {
     if (!isNoEditing)

@@ -27,6 +27,7 @@
   height: 100%;
   color: var(--asc-color-white);
   cursor: pointer;
+  font-size: 3.75rem;
 
   /* Typograhy.Title is now Typograhpy.TitleBold, need to be fixed  */
   font-weight: 400;
