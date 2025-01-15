@@ -59,4 +59,9 @@
   .postComposer__input[data-focus-visible] {
     outline: 1px solid var(--asc-color-primary-default);
   }
+
+  .postComposer__avatarPlaceholder {
+    background-color: var(--asc-color-primary-shade2);
+    border-radius: 50%;
+  }
 }

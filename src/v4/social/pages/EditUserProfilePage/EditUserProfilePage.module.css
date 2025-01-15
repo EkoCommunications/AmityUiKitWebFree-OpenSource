@@ -117,6 +117,10 @@
     font-size: 1.25rem;
   }
 
+  .editUserProfilePage__avatarPlaceholder {
+    font-size: 3.75rem;
+  }
+
   .editUserProfilePage__avatarContainer {
     width: 7.5rem;
     height: 7.5rem;

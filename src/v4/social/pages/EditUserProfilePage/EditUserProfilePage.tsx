@@ -172,7 +172,11 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
               className={styles.editUserProfilePage__avatar}
             />
           ) : (
-            <UserAvatar userId={userId} className={styles.editUserProfilePage__avatar} />
+            <UserAvatar
+              userId={userId}
+              className={styles.editUserProfilePage__avatar}
+              textPlaceholderClassName={styles.editUserProfilePage__avatarPlaceholder}
+            />
           )}
           <Button className={styles.editUserProfilePage__avatarOverlay} onPress={triggerFileInput}>
             <Camera className={styles.editUserProfilePage__icon} />
