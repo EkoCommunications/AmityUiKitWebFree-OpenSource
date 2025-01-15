@@ -78,7 +78,7 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
         <div className={styles.pendingPostsPage__noPendingPost}>
           <FireworkPaper className={styles.pendingPostsPage__fireworkIcon} />
           <Typography.Title className={styles.pendingPostsPage__noPendingPostText}>
-            No pending posts
+            No post to review
           </Typography.Title>
         </div>
       )}
