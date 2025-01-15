@@ -24,7 +24,7 @@ const Confirm = ({
   onCancel,
   className,
   pageId = '*',
-  okText = 'Ok',
+  okText = 'OK',
   type = 'confirm',
   componentId = '*',
   cancelText = 'Cancel',
