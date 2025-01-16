@@ -98,14 +98,14 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
             pageId={pageId}
             componentId={componentId}
             count={community.postsCount}
-            text="posts"
+            text={`post${community.postsCount === 1 ? '' : 's'}`}
           />
           <div className={styles.divider}></div>
           <CommunityInfo
             pageId={pageId}
             componentId={componentId}
             count={community.membersCount}
-            text="members"
+            text={`member${community.membersCount === 1 ? '' : 's'}`}
             onClick={() => {
               AmityCommunityProfilePageBehavior?.goToMembershipPage?.({
                 community: community,
