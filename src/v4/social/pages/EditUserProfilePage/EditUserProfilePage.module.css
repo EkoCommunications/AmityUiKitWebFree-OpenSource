@@ -23,8 +23,9 @@
 }
 
 .editUserProfilePage__avatar {
-  width: 100%;
-  height: 100%;
+  width: 7.5rem;
+  height: 7.5rem;
+  object-fit: cover;
 }
 
 .editUserProfilePage__avatarOverlay {

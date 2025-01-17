@@ -29,6 +29,7 @@
   height: auto;
   resize: none;
   overflow: hidden;
+  line-height: 1.25rem;
 }
 
 .underlineInput__value:focus {
