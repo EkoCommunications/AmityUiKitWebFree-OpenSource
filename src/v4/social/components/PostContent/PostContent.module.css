@@ -1,6 +1,6 @@
 .postContent {
+  padding: 0.75rem 1rem;
   background-color: var(--asc-color-background-default);
-  padding: 0.25rem 1rem 0.75rem;
 }
 
 .postContent__bar {
@@ -12,10 +12,8 @@
 
 .postContent__bar__userAvatar {
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  justify-content: center;
 }
 
 .postContent__bar__detail {

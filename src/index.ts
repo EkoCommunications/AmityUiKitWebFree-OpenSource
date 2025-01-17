@@ -1,6 +1,6 @@
 export { default as AmityUiKitProvider } from '~/v4/core/providers/AmityUIKitProvider';
 export { default as AmityUiKitFeed } from '~/social/components/Feed';
-export { default as AmityUiKitSocial } from '~/social/pages/Application';
+export { default as AmityUiKitSocial } from '~/v4/social/pages/Application';
 export { default as AmityUiKitChat } from '~/chat/pages/Application';
 
 // Export helper
