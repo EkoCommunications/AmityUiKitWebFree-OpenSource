@@ -10,7 +10,7 @@
   width: 2rem;
   height: 2rem;
   stroke: var(--asc-color-base-default);
-  background: var(--asc-color-base-shade4);
+  background: var(--asc-color-background-shade1);
   border-radius: 50%;
   padding: 0.25rem;
 }
