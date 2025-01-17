@@ -135,7 +135,7 @@ export const defaultConfig: DefaultConfig = {
   preferred_theme: 'default',
   theme: {
     light: {
-      primary_color: '#36486c',
+      primary_color: '#1054de',
       secondary_color: '#292b32',
       secondary_shade1_color: '#636878',
       secondary_shade2_color: '#898e9e',
@@ -152,7 +152,7 @@ export const defaultConfig: DefaultConfig = {
       base_inverse_color: '#000000',
     },
     dark: {
-      primary_color: '#1054DE',
+      primary_color: '#1054de',
       secondary_color: '#ebecef',
       secondary_shade1_color: '#a5a9b5',
       secondary_shade2_color: '#898e9e',

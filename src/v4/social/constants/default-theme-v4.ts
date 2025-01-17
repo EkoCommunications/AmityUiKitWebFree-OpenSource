@@ -3,7 +3,7 @@ export const defaultThemeV4 = {
     primary: {
       default: '#1054DE',
       shade1: '#4A82F2',
-      shade2: '#A0BDF8',
+      shade2: '#A9C4F9',
       shade3: '#D9E5FC',
       shade4: '#FFFFFF',
     },
