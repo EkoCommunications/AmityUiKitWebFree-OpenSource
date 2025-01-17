@@ -1,63 +1,59 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styles from './CommunityDescription.module.css';
+import React, { useState } from 'react';
+import Truncate from 'react-truncate-markup';
 import { Typography } from '~/v4/core/components';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button } from '~/v4/core/natives/Button';
+import { useAmityElement } from '~/v4/core/hooks/uikit';
+import styles from './CommunityDescription.module.css';
 
-interface CommunityDescriptionProps {
-  description: string;
+type CommunityDescriptionProps = {
   pageId?: string;
+  description: string;
   componentId?: string;
-}
+};
 
 export const CommunityDescription: React.FC<CommunityDescriptionProps> = ({
   pageId = '*',
   componentId = '*',
   description = '',
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [showToggle, setShowToggle] = useState(false);
-  const descriptionRef = useRef<HTMLDivElement>(null);
-
   const elementId = 'community_description';
+
+  const [isExpanded, setIsExpanded] = useState(false);
   const { themeStyles, accessibilityId, isExcluded } = useAmityElement({
     pageId,
-    componentId,
     elementId,
+    componentId,
   });
-
-  const maxLength = 180;
-
-  const truncatedText =
-    description.length > maxLength ? description.slice(0, maxLength) : description;
-
-  useEffect(() => {
-    if (descriptionRef.current) {
-      setShowToggle(description.length > maxLength);
-    }
-  }, [description]);
-
-  if (isExcluded) return null;
 
   const expandText = () => setIsExpanded(true);
 
-  if (description.length === 0) return null;
+  if (isExcluded || description.length === 0) return null;
+
   return (
-    <div data-qa-anchor={accessibilityId} style={themeStyles} className={styles.descriptionWrapper}>
-      <div
-        ref={descriptionRef}
-        className={`${styles.description} ${isExpanded ? styles.expanded : ''}`}
-      >
-        <Typography.Body className={styles.communityDescription__text}>
-          {isExpanded ? description : truncatedText}{' '}
-          {showToggle && !isExpanded && (
-            <Button onPress={expandText} className={styles.toggleButton}>
-              {' '}
-              ...See more
-            </Button>
-          )}
-        </Typography.Body>
-      </div>
+    <div
+      style={themeStyles}
+      data-qa-anchor={accessibilityId}
+      className={styles.communityDescription}
+    >
+      <Typography.Body className={styles.communityDescription__text}>
+        {isExpanded ? (
+          description
+        ) : (
+          <Truncate
+            lines={4}
+            ellipsis={
+              <>
+                ...
+                <Button className={styles.communityDescription__seeMoreButton} onPress={expandText}>
+                  See more
+                </Button>
+              </>
+            }
+          >
+            <div>{description}</div>
+          </Truncate>
+        )}
+      </Typography.Body>
     </div>
   );
 };

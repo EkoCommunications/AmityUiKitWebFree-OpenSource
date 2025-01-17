@@ -1,34 +1,13 @@
-.descriptionWrapper {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.description {
+.communityDescription {
   padding: 0.5rem 0;
-  line-height: 1.5rem;
-  word-wrap: break-word;
   word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.description.expanded {
-  overflow: visible;
-}
-
-.toggleButton {
-  background: none;
-  border: none;
-  color: var(--asc-color-primary-default);
-  cursor: pointer;
-  padding: 0;
-  font-size: inherit;
+  color: var(--asc-color-base-default);
 }
 
 .communityDescription__text {
   white-space: pre-wrap;
-  word-break: break-word;
+}
+
+.communityDescription__seeMoreButton {
+  color: var(--asc-color-primary-default);
 }
