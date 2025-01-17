@@ -156,6 +156,26 @@ export const Typography = {
       </span>
     );
   },
+
+  Headline: (props: TypographyProps) => {
+    if (isRendererProp(props)) {
+      return props.renderer({
+        typoClassName: clsx(typography['typography'], typography['typography-headline']),
+      });
+    }
+
+    const { children, className, style, ...rest } = props;
+
+    return (
+      <h1
+        className={clsx(typography['typography'], typography['typography-headline'], className)}
+        style={style}
+        {...rest}
+      >
+        {children}
+      </h1>
+    );
+  },
 };
 
 export default Typography;

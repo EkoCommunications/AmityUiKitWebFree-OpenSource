@@ -1,0 +1,19 @@
+.userVideoFeed__container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.userVideoFeed__observerTarget {
+  height: var(--asc-spacing-m1);
+  width: 100%;
+}
+
+@media (width >=48em) {
+  .userVideoFeed__container {
+    background-color: var(--asc-color-background-default);
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+  }
+}

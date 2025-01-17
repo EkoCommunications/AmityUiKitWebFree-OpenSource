@@ -4,22 +4,25 @@ import useFileUpload from '~/v4/social/hooks/useFileUpload';
 import clsx from 'clsx';
 import { CloseIcon, ExclamationCircle, Play } from '~/icons';
 import { Spinner } from '~/v4/social/internal-components/Spinner';
+import { Button } from '~/v4/core/natives/Button';
 
 interface VideoThumbnailProps {
   pageId?: string;
+  componentId?: string;
   files: File[];
   uploadedFiles: Amity.File[];
   onLoadingChange: (loading: boolean) => void;
   onChange: (data: { uploaded: Array<Amity.File>; uploading: Array<File> }) => void;
   uploadLoading: boolean;
-  onError: (isError: boolean) => void;
+  onError: (message: string) => void;
   videoThumbnail?: { file: File; videoUrl: string; thumbnail: string | undefined }[];
   removeThumbnail: (index: number) => void;
-  isErrorUpload?: boolean;
+  isErrorUpload?: string;
 }
 
 export const VideoThumbnail = ({
   pageId = '*',
+  componentId = '*',
   files,
   uploadedFiles,
   onLoadingChange,
@@ -62,29 +65,42 @@ export const VideoThumbnail = ({
           )}
         >
           {uploadLoading ? (
-            <div className={styles.icon__status}>
-              <Spinner />
-            </div>
+            <>
+              <img src={file.thumbnail} className={styles.thumbnail} alt="thumbnail-video" />
+              <div className={styles.thumbnail__overlay} />
+              <div className={styles.icon__status}>
+                <Spinner />
+              </div>
+            </>
           ) : isErrorUpload ? (
-            <div className={styles.icon__status}>
-              <ExclamationCircle />
-            </div>
+            <>
+              <Button
+                data-qa-anchor={`${pageId}/${componentId}/remove_thumbnail`}
+                type="reset"
+                className={styles.closeButton}
+                onPress={() => handleRemoveThumbnail(file.file, index)}
+              >
+                <CloseIcon className={styles.closeIcon} />
+              </Button>
+              <div className={styles.icon__status}>
+                <ExclamationCircle />
+              </div>
+            </>
           ) : (
             <>
               <img
-                data-qa-anchor={`${pageId}/*/video_thumbnail`}
+                data-qa-anchor={`${pageId}/${componentId}/video_thumbnail`}
                 className={styles.thumbnail}
                 src={file.thumbnail}
               />
-              <button
-                data-qa-anchor={`${pageId}/*/remove_thumbnail`}
+              <Button
+                data-qa-anchor={`${pageId}/${componentId}/remove_thumbnail`}
                 type="reset"
-                onClick={() => {
-                  handleRemoveThumbnail(file.file, index);
-                }}
+                className={styles.closeButton}
+                onPress={() => handleRemoveThumbnail(file.file, index)}
               >
                 <CloseIcon className={styles.closeIcon} />
-              </button>
+              </Button>
               <div className={styles.playIcon}>
                 <Play />
               </div>

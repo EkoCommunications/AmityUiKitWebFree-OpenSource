@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import File from '~/core/components/Uploaders/File';
 import useFileUpload from '~/core/hooks/useFileUpload';
 import { useShallowCompareEffect } from 'react-use';
+import { useConfirmContext } from '~/core/providers/ConfirmProvider';
 
 const StylesFileRows = styled.div<{ uploadLoading?: boolean }>`
   display: grid;
@@ -64,7 +65,7 @@ interface FilesProps {
   onChange: (data: { uploaded: Array<Amity.File>; uploading: Array<File> }) => void;
   onLoadingChange: (loading: boolean) => void;
   uploadLoading: boolean;
-  onError: (error: string) => void;
+  onError?: (error: string) => void;
   rowDataQaAnchor?: string;
 }
 
@@ -85,7 +86,22 @@ const Files = ({
     onError,
   });
 
-  const { allFiles } = useFileUploadProps;
+  const { info } = useConfirmContext();
+
+  const { allFiles, rejected, reset } = useFileUploadProps;
+
+  useEffect(() => {
+    if (rejected && rejected.length > 0) {
+      info({
+        title: 'Error',
+        content: 'There was an issue uploading file. Please try again later.',
+        onOk: () => reset(),
+        okText: 'Discard',
+        onCancel: () => reset(),
+        OkButton: undefined,
+      });
+    }
+  }, [rejected]);
 
   if (allFiles.length === 0) return null;
 

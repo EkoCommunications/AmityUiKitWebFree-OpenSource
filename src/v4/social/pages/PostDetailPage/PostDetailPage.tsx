@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useState } from 'react';
 import { Typography } from '~/v4/core/components';
 import { PostContent, PostContentSkeleton } from '~/v4/social/components/PostContent';
-import { MenuButton } from '~/v4/social/elements/MenuButton';
 import { PostMenu } from '~/v4/social/internal-components/PostMenu/PostMenu';
 import usePost from '~/v4/core/hooks/objects/usePost';
-
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { BackButton } from '~/v4/social/elements/BackButton';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
-import styles from './PostDetailPage.module.css';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import { CommentComposer } from '~/v4/social/components/CommentComposer/CommentComposer';
 import { CommentList } from '~/v4/social/components/CommentList/CommentList';
@@ -18,6 +14,9 @@ import {
   AmityPostContentComponentStyle,
 } from '~/v4/social/components/PostContent/PostContent';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import styles from './PostDetailPage.module.css';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 interface PostDetailPageProps {
   id: string;
@@ -27,18 +26,19 @@ interface PostDetailPageProps {
 
 export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps) {
   const pageId = 'post_detail_page';
-  const { post, isLoading: isPostLoading } = usePost(id);
-  const { themeStyles } = useAmityPage({
-    pageId,
-  });
-  const { onBack } = useNavigation();
+
   const [replyComment, setReplyComment] = useState<Amity.Comment | undefined>();
 
+  const { isDesktop } = useResponsive();
+  const { onBack } = useNavigation();
+  const { themeStyles } = useAmityPage({ pageId });
+  const { post, isLoading: isPostLoading } = usePost(id);
   const { setDrawerData, removeDrawerData } = useDrawer();
-
   const { community } = useCommunity({
     communityId: post?.targetType === 'community' ? post.targetId : null,
   });
+
+  const isNotJoinedCommunity = post?.targetType === 'community' && !community?.isJoined;
 
   return (
     <div className={styles.postDetailPage} style={themeStyles}>
@@ -53,10 +53,21 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
               category={category ?? AmityPostCategory.GENERAL}
               style={AmityPostContentComponentStyle.DETAIL}
               hideTarget={hideTarget}
+              disabledContent={isNotJoinedCommunity}
             />
           ) : null}
         </div>
         <div className={styles.postDetailPage__comments__divider} data-is-loading={isPostLoading} />
+        {post && isDesktop && (
+          <CommentComposer
+            pageId={pageId}
+            referenceId={post.postId}
+            referenceType={'post'}
+            replyTo={replyComment}
+            onCancelReply={() => setReplyComment(undefined)}
+            community={community}
+          />
+        )}
         <div className={styles.postDetailPage__comments}>
           {post && (
             <CommentList
@@ -81,18 +92,38 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
         >
           Post
         </Typography.Title>
-        <div className={styles.postDetailPage__topBar__menuBar}>
-          <MenuButton
-            pageId={pageId}
-            onClick={() =>
+        <Popover
+          containerClassName={styles.postDetailPage__topBar__menuBar}
+          trigger={{
+            pageId,
+            onClick: ({ closePopover }) =>
               setDrawerData({
                 content: (
-                  <PostMenu post={post} onCloseMenu={() => removeDrawerData()} pageId={pageId} />
+                  <PostMenu
+                    post={post}
+                    pageId={pageId}
+                    onPostDeleted={() => onBack()}
+                    onCloseMenu={() => {
+                      closePopover();
+                      removeDrawerData();
+                    }}
+                  />
                 ),
-              })
-            }
-          />
-        </div>
+              }),
+          }}
+        >
+          {({ closePopover }) => (
+            <PostMenu
+              post={post}
+              pageId={pageId}
+              onPostDeleted={() => onBack()}
+              onCloseMenu={() => {
+                closePopover();
+                removeDrawerData();
+              }}
+            />
+          )}
+        </Popover>
       </div>
       {post?.targetType === 'community' && !community?.isJoined ? (
         <div>
@@ -102,7 +133,8 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
           </Typography.Body>
         </div>
       ) : (
-        post && (
+        post &&
+        !isDesktop && (
           <CommentComposer
             pageId={pageId}
             referenceId={post.postId}

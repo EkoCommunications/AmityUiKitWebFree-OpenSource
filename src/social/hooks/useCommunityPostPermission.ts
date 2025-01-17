@@ -9,13 +9,13 @@ const useCommunityPostPermission = ({
   post,
   childrenPosts = [],
   community,
-  userId,
+  // userId,
 }: {
   post?: Amity.Post | null;
   childrenPosts?: Amity.Post[];
   community?: Amity.Community | null;
-  userId?: string;
 }) => {
+  const { currentUserId } = useSDK();
   const { moderators } = useCommunityModeratorsCollection(community?.communityId);
   const { client } = useSDK();
 
@@ -36,8 +36,9 @@ const useCommunityPostPermission = ({
     return true;
   }, [childrenPosts]);
 
-  const moderator = moderators.find((moderator) => moderator.userId === userId);
-  const isMyPost = post?.postedUserId === userId;
+  const moderator = moderators.find((moderator) => moderator.userId === currentUserId);
+
+  const isMyPost = post?.postedUserId === currentUserId;
   const isPostUnderReview = useMemo(() => {
     if (community?.postSetting != CommunityPostSettings.ANYONE_CAN_POST) {
       return reviewingPosts.find((reviewingPost) => reviewingPost.postId === post?.postId) != null;
@@ -88,6 +89,10 @@ const useCommunityPostPermission = ({
 
     if (!isPostUnderReview) {
       permissions.canReport = true;
+    }
+
+    if (isPostUnderReview && isModerator) {
+      permissions.canReview = true;
     }
   }
 

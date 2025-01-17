@@ -61,7 +61,7 @@ export function CommunitiesByCategoryPage({ categoryId }: CommunitiesByCategoryP
     >
       <div className={styles.communitiesByCategoryPage__navigation}>
         <div className={styles.communitiesByCategoryPage__navigationBackButton}>
-          <BackButton pageId={pageId} onPress={onBack} />
+          <BackButton pageId={pageId} onPress={() => onBack()} />
         </div>
         <div className={styles.communitiesByCategoryPage__navigationTitle}>
           <CategoryTitle pageId={pageId} categoryName={category?.name || ''} />
@@ -70,10 +70,9 @@ export function CommunitiesByCategoryPage({ categoryId }: CommunitiesByCategoryP
       {isEmpty ? (
         <EmptyCommunity pageId={pageId} />
       ) : (
-        <div>
-          {communities.map((community, index) => (
+        <div className={styles.communitiesByCategoryPage__list}>
+          {communities.map((community) => (
             <React.Fragment key={community.communityId}>
-              <CommunityRowItemDivider />
               <CommunityRowItem
                 community={community}
                 pageId={pageId}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { FeedRepository, PostRepository } from '@amityco/ts-sdk';
 import { usePaginatorApi } from '~/v4/core/hooks/usePaginator';
 import { isNonNullable } from '~/v4/helpers/utils';
@@ -24,12 +24,12 @@ const useGlobalFeed = () => {
     setScrollPosition(target.scrollTop);
   };
 
-  async function fetchMore() {
+  async function fetchMore(token: string | null) {
     try {
       setIsLoading(true);
       const newPosts = await FeedRepository.getCustomRankingGlobalFeed({
         limit: 10,
-        queryToken: queryToken || undefined,
+        queryToken: token || undefined,
       });
 
       const filteredPosts = (
@@ -92,13 +92,13 @@ const useGlobalFeed = () => {
 
   const hasMore = useMemo(() => queryToken !== null, [queryToken]);
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     setLoadMoreHasBeenCalled(true);
     if (isLoading) return;
     if (hasMore) {
-      fetchMore();
+      fetchMore(queryToken);
     }
-  };
+  }, [queryToken, hasMore, isLoading]);
 
   const fetch = () => {
     if (hasBeenFetched) return;
@@ -109,7 +109,7 @@ const useGlobalFeed = () => {
   const refetch = () => {
     setItems([]);
     setQueryToken(null);
-    fetchMore();
+    fetchMore(null);
     reset();
   };
 

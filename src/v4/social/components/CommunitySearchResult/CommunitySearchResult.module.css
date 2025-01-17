@@ -1,9 +1,10 @@
 .communitySearchResult {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
   width: 100%;
+  display: flex;
+  min-height: 20rem;
+  padding: 0.5rem 0;
+  align-items: start;
+  flex-direction: column;
   background-color: var(--asc-color-background-default);
 }
 

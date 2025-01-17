@@ -12,7 +12,8 @@ import useReaction from '~/v4/chat/hooks/useReaction';
 import useReactionByReference from '~/v4/chat/hooks/useReactionByReference';
 import FallbackReaction from '~/v4/icons/FallbackReaction';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
-
+import { CloseButton } from '~/v4/social/elements';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import styles from './ReactionList.module.css';
 
 interface ReactionListProps {
@@ -98,6 +99,7 @@ export const ReactionList = ({ pageId = '*', referenceId, referenceType }: React
     referenceId,
   );
 
+  const { closePopup } = usePopupContext();
   const [activeTab, setActiveTab] = useState('All');
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { config } = useCustomReaction();
@@ -187,6 +189,7 @@ export const ReactionList = ({ pageId = '*', referenceId, referenceType }: React
             </div>
           )}
         </div>
+        <CloseButton defaultClassName={styles.closeButton} onPress={() => closePopup()} />
       </div>
 
       <div ref={containerRef} className={styles.reactionPanel}>

@@ -65,11 +65,11 @@ export function AllCategoriesPage() {
   return (
     <div className={styles.allCategoriesPage} style={themeStyles} data-qa-anchor={accessibilityId}>
       <div className={styles.allCategoriesPage__navigation}>
-        <BackButton pageId={pageId} onPress={onBack} />
+        <BackButton pageId={pageId} onPress={() => onBack()} />
         <AllCategoriesTitle pageId={pageId} />
       </div>
       <div className={styles.allCategoriesList}>
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <React.Fragment key={category.categoryId}>
             <AllCategoryItem
               category={category}
@@ -80,7 +80,6 @@ export function AllCategoriesPage() {
                 });
               }}
             />
-            {index < categories.length - 1 && <div className={styles.allCategoriesList__divider} />}
           </React.Fragment>
         ))}
         <div

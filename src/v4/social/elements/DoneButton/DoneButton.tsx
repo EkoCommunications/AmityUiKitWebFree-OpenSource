@@ -3,6 +3,7 @@ import { Button } from '~/v4/core/natives/Button';
 import { Typography } from '~/v4/core/components';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './DoneButton.module.css';
+import clsx from 'clsx';
 
 export interface DoneButtonProps extends React.ComponentProps<typeof Button> {
   pageId?: string;
@@ -28,13 +29,11 @@ export function DoneButton({
 
   return (
     <Button
-      className={`${styles.doneButton} ${className || ''}`}
+      className={clsx(styles.doneButton, className)}
       data-qa-anchor={accessibilityId}
       {...buttonProps}
     >
-      <Typography.Body className={styles.doneButton_text}>
-        {config.done_button_text}
-      </Typography.Body>
+      <Typography.Body>{config.done_button_text}</Typography.Body>
     </Button>
   );
 }

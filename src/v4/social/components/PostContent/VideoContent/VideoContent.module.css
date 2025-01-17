@@ -4,14 +4,16 @@
   gap: 0.25rem;
   width: 100%;
   overflow: hidden;
-  background-color: var(--asc-color-black);
+  background-color: var(--asc-color-background-default);
 }
 
 .videoContent[data-videos-amount='1'] {
+  aspect-ratio: 1;
   grid-template: 'video1' / minmax(0, 1fr);
 }
 
 .videoContent[data-videos-amount='2'] {
+  aspect-ratio: 1;
   grid-template:
     'video1 video2' 50%
     'video1 video2' 50%
@@ -27,13 +29,14 @@
 
 .videoContent[data-videos-amount='4'] {
   grid-template:
-    'video1 video1 video1 video1 video1 video1' 66%
-    'video2 video2 video3 video3 video4 video4' 33%
+    'video1 video1 video1 video1 video1 video1' 75%
+    'video2 video2 video3 video3 video4 video4' 25%
     / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .videoContent__video {
   width: 100%;
+  height: 100%;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -104,4 +107,36 @@
   width: 1.5rem;
   height: 1.5rem;
   fill: var(--asc-color-secondary-shade4);
+}
+
+.videoContent__skeleton {
+  background-color: var(--asc-color-base-shade4);
+  border-radius: 0.5rem;
+  width: 100%;
+  height: 100%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.videoContent__skeleton__icon {
+  position: absolute;
+  width: 2.5rem;
+  height: 2.5rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 0.5rem;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }

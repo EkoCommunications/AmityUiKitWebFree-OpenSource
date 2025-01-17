@@ -1,17 +1,26 @@
+import clsx from 'clsx';
 import React from 'react';
-import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { IconComponent } from '~/v4/core/IconComponent';
-import { Button } from '~/v4/core/natives/Button';
-import styles from './MenuButton.module.css';
 import { EllipsisH } from '~/v4/icons/Ellipsis';
+import { Button } from '~/v4/core/natives/Button';
+import { IconComponent } from '~/v4/core/IconComponent';
+import { useAmityElement } from '~/v4/core/hooks/uikit';
+import styles from './MenuButton.module.css';
 
-export interface MenuButtonProps {
+export type MenuButtonProps = {
   pageId?: string;
+  className?: string;
   componentId?: string;
   onClick?: () => void;
-}
+  iconClassName?: string;
+};
 
-export function MenuButton({ pageId = '*', componentId = '*', onClick }: MenuButtonProps) {
+export function MenuButton({
+  onClick,
+  className,
+  pageId = '*',
+  iconClassName,
+  componentId = '*',
+}: MenuButtonProps) {
   const elementId = 'menu_button';
   const { isExcluded, accessibilityId, themeStyles, config, defaultConfig, uiReference } =
     useAmityElement({
@@ -26,13 +35,15 @@ export function MenuButton({ pageId = '*', componentId = '*', onClick }: MenuBut
     <Button
       onPress={onClick}
       data-qa-anchor={accessibilityId}
-      className={styles.menuButton__button}
+      className={clsx(styles.menuButton__button, className)}
     >
       <IconComponent
-        defaultIcon={() => <EllipsisH className={styles.menuButton} style={themeStyles} />}
-        imgIcon={() => <img src={config.icon} alt={uiReference} />}
-        defaultIconName={defaultConfig.icon}
         configIconName={config.icon}
+        defaultIconName={defaultConfig.icon}
+        imgIcon={() => <img src={config.icon} alt={uiReference} />}
+        defaultIcon={() => (
+          <EllipsisH className={clsx(styles.menuButton, iconClassName)} style={themeStyles} />
+        )}
       />
     </Button>
   );

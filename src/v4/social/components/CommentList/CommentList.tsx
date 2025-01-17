@@ -8,9 +8,9 @@ import { usePaginator } from '~/v4/core/hooks/usePaginator';
 import { CommentAd } from '~/v4/social/internal-components/CommentAd/CommentAd';
 import { CommentSkeleton } from '~/v4/social/components/Comment/CommentSkeleton';
 import styles from './CommentList.module.css';
-import useCommunityStoriesSubscription from '~/v4/social/hooks/useCommunityStoriesSubscription';
 import { Typography } from '~/v4/core/components';
-import usePostSubscription from '~/v4/core/hooks/subscriptions/usePostSubscription';
+import { useNetworkState } from 'react-use';
+import Redo from '~/v4/icons/Redo';
 
 type CommentListProps = {
   referenceId: string;
@@ -38,6 +38,7 @@ export const CommentList = ({
   shouldAllowInteraction = true,
 }: CommentListProps) => {
   const componentId = 'comment_tray_component';
+  const { online } = useNetworkState();
 
   const { themeStyles, accessibilityId } = useAmityComponent({
     componentId,
@@ -73,18 +74,14 @@ export const CommentList = ({
     },
   });
 
-  usePostSubscription({
-    postId: referenceId,
-    level: SubscriptionLevels.COMMENT,
-    shouldSubscribe: referenceType === 'post',
-  });
-
-  useCommunityStoriesSubscription({
-    targetId: referenceId,
-    // TODO: fix type it's actually have the same type but different name
-    targetType: referenceType as Amity.StoryTargetType,
-    shouldSubscribe: referenceType === 'story' && !!referenceId,
-  });
+  if (!online) {
+    return (
+      <div className={styles.noCommentsContainer}>
+        <Redo className={styles.noCommentsContainer__icon} />
+        <Typography.Body>Unable to load comments</Typography.Body>
+      </div>
+    );
+  }
 
   if (!isLoading && items.length === 0) {
     return (

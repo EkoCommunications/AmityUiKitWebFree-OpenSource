@@ -9,7 +9,12 @@ import MentionHighlightTag from '~/core/components/MentionHighlightTag';
 import { Mentioned, findChunks } from '~/helpers/utils';
 import { useCustomComponent } from '~/core/providers/CustomComponentsProvider';
 
-export const PostContent = styled.div<{ isExpanded: boolean; postMaxLines: number }>`
+export const PostContent = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isExpanded' && prop !== 'postMaxLines',
+})<{
+  isExpanded: boolean;
+  postMaxLines: number;
+}>`
   overflow-wrap: break-word;
   color: ${({ theme }) => theme.palette.neutral.main};
   white-space: pre-wrap;

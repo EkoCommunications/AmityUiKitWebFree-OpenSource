@@ -3,7 +3,6 @@ import { Timestamp } from '~/v4/social/elements/Timestamp';
 import { ReactionButton } from '~/v4/social/elements/ReactionButton';
 
 import { ModeratorBadge } from '~/v4/social/elements/ModeratorBadge';
-import { MenuButton } from '~/v4/social/elements/MenuButton';
 import { ShareButton } from '~/v4/social/elements/ShareButton';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import { Typography } from '~/v4/core/components';
@@ -12,10 +11,8 @@ import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
 import { CommentButton } from '~/v4/social/elements/CommentButton';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import { useMutation } from '@tanstack/react-query';
-import { ReactionRepository, SubscriptionLevels } from '@amityco/ts-sdk';
-
-import styles from './PostContent.module.css';
-
+import { ReactionRepository } from '@amityco/ts-sdk';
+import { PollContent } from './PollContent/PollContent';
 import Crying from './Crying';
 import Happy from './Happy';
 import Fire from './Fire';
@@ -29,7 +26,6 @@ import { ImageViewer } from '~/v4/social/internal-components/ImageViewer/ImageVi
 import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoViewer';
 import usePost from '~/v4/core/hooks/objects/usePost';
 import { PostMenu } from '~/v4/social/internal-components/PostMenu/PostMenu';
-import usePostSubscription from '~/v4/core/hooks/subscriptions/usePostSubscription';
 import { ReactionList } from '~/v4/social/components/ReactionList/ReactionList';
 import { usePostedUserInformation } from '~/v4/core/hooks/usePostedUserInformation';
 import millify from 'millify';
@@ -44,6 +40,11 @@ import clsx from 'clsx';
 import { Lock } from '~/icons';
 import Verified from '~/v4/icons/Verified';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
+import { Popover } from '~/v4/core/components/AriaPopover';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import styles from './PostContent.module.css';
 
 export enum AmityPostContentComponentStyle {
   FEED = 'feed',
@@ -99,19 +100,15 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-brand-badge={showBrandBadge === true}
           data-show-target={showTarget === true}
         >
-          <Typography.BodyBold
-            renderer={({ typoClassName }) => (
-              <Button
-                className={clsx(typoClassName, styles.postTitle__text)}
-                onPress={() => onClickUser(post.creator.userId)}
-                data-qa-anchor={`${pageId}/${componentId}/username`}
-              >
-                {post.creator.displayName}
-              </Button>
-            )}
-          />
+          <Button
+            onPress={() => onClickUser(post.creator.userId)}
+            data-qa-anchor={`${pageId}/${componentId}/username`}
+          >
+            <Typography.BodyBold className={styles.postTitle__text}>
+              {post.creator.displayName}
+            </Typography.BodyBold>
+          </Button>
           {showBrandBadge ? <BrandBadge className={styles.postTitle__brandIcon} /> : null}
-
           {showTarget ? (
             <AngleRight
               data-qa-anchor={`${pageId}/${componentId}/arrow_right`}
@@ -127,19 +124,14 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-official-badge={showOfficialBadge === true}
         >
           {showPrivateBadge && <Lock className={styles.postTitle__community__privateIcon} />}
-          <Typography.BodyBold
-            renderer={({ typoClassName }) => (
-              <Button
-                data-qa-anchor={`${pageId}/${componentId}/community_name`}
-                className={clsx(typoClassName, styles.postTitle__communityText)}
-                onPress={() => {
-                  goToCommunityProfilePage(targetCommunity.communityId);
-                }}
-              >
-                {targetCommunity.displayName}
-              </Button>
-            )}
-          />
+          <Button
+            data-qa-anchor={`${pageId}/${componentId}/community_name`}
+            onPress={() => goToCommunityProfilePage(targetCommunity.communityId)}
+          >
+            <Typography.BodyBold className={styles.postTitle__communityText}>
+              {targetCommunity.displayName}
+            </Typography.BodyBold>
+          </Button>
           {showOfficialBadge && <Verified className={styles.postTitle__community__verifiedIcon} />}
         </div>
       )}
@@ -149,16 +141,11 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-brand-badge={targetUser?.isBrand === true}
           data-show-target={false}
         >
-          <Typography.BodyBold
-            renderer={({ typoClassName }) => (
-              <Button
-                className={clsx(typoClassName, styles.postTitle__text)}
-                onPress={() => onClickUser(targetUser.userId)}
-              >
-                {targetUser.displayName}
-              </Button>
-            )}
-          />
+          <Button onPress={() => onClickUser(targetUser.userId)}>
+            <Typography.BodyBold className={styles.postTitle__text}>
+              {targetUser.displayName}
+            </Typography.BodyBold>
+          </Button>
           {targetUser?.isBrand === true ? (
             <BrandBadge className={styles.postTitle__brandIcon} />
           ) : null}
@@ -168,21 +155,29 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
   );
 };
 
-const ChildrenPostContent = ({
+export const ChildrenPostContent = ({
   pageId,
   componentId,
   post,
+  disabledContent = false,
   onImageClick,
   onVideoClick,
 }: {
   pageId?: string;
   componentId?: string;
   post: Amity.Post[];
+  disabledContent?: boolean;
   onImageClick: (imageIndex: number) => void;
   onVideoClick: (videoIndex: number) => void;
 }) => {
   return (
     <>
+      <PollContent
+        pageId={pageId}
+        componentId={componentId}
+        post={post}
+        disabled={disabledContent}
+      />
       <ImageContent
         pageId={pageId}
         componentId={componentId}
@@ -208,6 +203,8 @@ interface PostContentProps {
   hideMenu?: boolean;
   hideTarget?: boolean;
   pageId?: string;
+  disabledContent?: boolean;
+  isGlobalFeaturePost?: boolean;
 }
 
 export const PostContent = ({
@@ -219,6 +216,8 @@ export const PostContent = ({
   hideMenu = false,
   hideTarget = false,
   style,
+  disabledContent = false,
+  isGlobalFeaturePost = false,
 }: PostContentProps) => {
   const componentId = 'post_content';
   const { themeStyles, accessibilityId } = useAmityComponent({
@@ -226,6 +225,9 @@ export const PostContent = ({
     componentId,
   });
 
+  const { isDesktop } = useResponsive();
+  const { openPopup } = usePopupContext();
+  const { confirm } = useConfirmContext();
   const { post: postData } = usePost(initialPost?.postId);
   const { setDrawerData, removeDrawerData } = useDrawer();
 
@@ -255,12 +257,6 @@ export const PostContent = ({
       return initialPost;
     }
   }, [initialPost, postData]);
-
-  usePostSubscription({
-    postId: post?.postId,
-    level: SubscriptionLevels.POST,
-    shouldSubscribe: shouldSubscribe,
-  });
 
   const shouldCall = useMemo(() => post?.targetType === 'community', [post?.targetType]);
 
@@ -341,11 +337,23 @@ export const PostContent = ({
     setClickedVideoIndex(null);
   };
 
+  const onEditFeaturePost = ({ onConfirm }: { onConfirm: () => void }) => {
+    confirm({
+      title: 'Edit globally featured post?',
+      content: `The post you're editing has been featured globally. If you edit your post, it will need to be re-approved and will no longer be globally featured.`,
+      cancelText: 'Cancel',
+      okText: 'Edit',
+      onOk: onConfirm,
+    });
+  };
+
   const handleUnpinPost = async () => {};
 
   const handleEditPost = () => {};
 
   const handleDeletePost = () => {};
+
+  const isNotJoinedCommunity = !targetCommunity?.isJoined && post?.targetType === 'community';
 
   const hasLike = post?.reactions?.like > 0;
   const hasLove = post?.reactions?.love > 0;
@@ -354,6 +362,13 @@ export const PostContent = ({
   const hasCrying = post?.reactions?.crying > 0;
 
   const hasReaction = hasLike || hasLove || hasFire || hasHappy || hasCrying;
+
+  //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
+  const shouldShowConfirmEdit =
+    isGlobalFeaturePost &&
+    ((targetCommunity as Amity.Community & { needApprovalOnPostCreation?: boolean })
+      ?.needApprovalOnPostCreation ||
+      targetCommunity?.postSetting === 'ADMIN_REVIEW_POST_REQUIRED');
 
   const { isVisible } = useVisibilitySensor({
     threshold: 0.6,
@@ -415,30 +430,61 @@ export const PostContent = ({
             category === AmityPostCategory.PIN_AND_ANNOUNCEMENT) && (
             <PinBadge pageId={pageId} componentId={componentId} />
           )}
-
-          {style === AmityPostContentComponentStyle.FEED ? (
-            <div className={styles.postContent__bar__actionButton}>
-              {!hideMenu && (
-                <MenuButton
+          {style === AmityPostContentComponentStyle.FEED && (
+            <Popover
+              containerClassName={styles.postContent__bar__actionButton}
+              trigger={{
+                pageId,
+                componentId,
+                onClick: ({ closePopover }) =>
+                  setDrawerData({
+                    content: (
+                      <PostMenu
+                        post={post}
+                        pageId={pageId}
+                        componentId={componentId}
+                        onPostDeleted={onPostDeleted}
+                        onConfirmEditPost={
+                          shouldShowConfirmEdit
+                            ? ({ onConfirm }) => {
+                                closePopover();
+                                removeDrawerData();
+                                onEditFeaturePost({ onConfirm });
+                              }
+                            : undefined
+                        }
+                        onCloseMenu={() => {
+                          closePopover();
+                          removeDrawerData();
+                        }}
+                      />
+                    ),
+                  }),
+              }}
+            >
+              {({ closePopover }) => (
+                <PostMenu
+                  post={post}
                   pageId={pageId}
                   componentId={componentId}
-                  onClick={() =>
-                    setDrawerData({
-                      content: (
-                        <PostMenu
-                          post={post}
-                          onCloseMenu={() => removeDrawerData()}
-                          pageId={pageId}
-                          componentId={componentId}
-                          onPostDeleted={onPostDeleted}
-                        />
-                      ),
-                    })
+                  onPostDeleted={onPostDeleted}
+                  onConfirmEditPost={
+                    shouldShowConfirmEdit
+                      ? ({ onConfirm }) => {
+                          closePopover();
+                          removeDrawerData();
+                          onEditFeaturePost({ onConfirm });
+                        }
+                      : undefined
                   }
+                  onCloseMenu={() => {
+                    closePopover();
+                    removeDrawerData();
+                  }}
                 />
               )}
-            </div>
-          ) : null}
+            </Popover>
+          )}
         </div>
       </div>
       <div className={styles.postContent__content_and_reactions}>
@@ -457,6 +503,7 @@ export const PostContent = ({
               post={post}
               onImageClick={openImageViewer}
               onVideoClick={openVideoViewer}
+              disabledContent={isNotJoinedCommunity || disabledContent}
             />
           ) : null}
         </div>
@@ -464,17 +511,14 @@ export const PostContent = ({
           <div className={styles.postContent__reactions_and_comments}>
             <div
               className={styles.postContent__reactionsBar}
-              onClick={() =>
-                setDrawerData({
-                  content: (
-                    <ReactionList
-                      pageId={pageId}
-                      referenceId={post.postId}
-                      referenceType={'post'}
-                    />
-                  ),
-                })
-              }
+              onClick={() => {
+                const reactionList = (
+                  <ReactionList pageId={pageId} referenceId={post.postId} referenceType={'post'} />
+                );
+                isDesktop
+                  ? openPopup({ view: 'desktop', children: reactionList })
+                  : setDrawerData({ content: reactionList });
+              }}
             >
               {hasReaction ? (
                 <div className={styles.postContent__reactionsBar__reactions}>
@@ -513,7 +557,7 @@ export const PostContent = ({
             </Typography.Caption>
           </div>
         ) : null}
-        {!targetCommunity?.isJoined && page.type === PageTypes.CommunityProfilePage ? (
+        {isNotJoinedCommunity ? (
           <>
             <Typography.Body className={styles.postContent__notMember}>
               Join community to interact with all posts

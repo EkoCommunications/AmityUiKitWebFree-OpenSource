@@ -25,3 +25,15 @@
   display: flex;
   justify-content: space-around;
 }
+
+@media (width >= 48em) {
+  .mediaAttachment__wrapMedia,
+  .mediaAttachment__wrapMedia_2items {
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .mediaAttachment__swipeDown {
+    display: none;
+  }
+}

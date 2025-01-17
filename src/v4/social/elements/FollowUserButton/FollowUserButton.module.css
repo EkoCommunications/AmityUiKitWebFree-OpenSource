@@ -1,0 +1,26 @@
+.followUserButton {
+  width: 100%;
+  background-color: var(--asc-color-primary-default);
+  position: relative;
+  padding: 0.63rem 1rem;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+}
+
+.followUserButton__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.followUserButton__icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--asc-color-white);
+}
+
+.followUserButton__text {
+  color: var(--asc-color-white);
+}

@@ -8,7 +8,7 @@ export const ReactionListError = () => {
   return (
     <div className={styles.reactionCustomStateContainer} data-qa-anchor="reaction_list">
       <div className={styles.reactionState}>
-        <Redo />
+        <Redo className={styles.retryIcon} />
         <Typography.Body>
           <FormattedMessage id="livechat.reaction.errorOnload" />
         </Typography.Body>

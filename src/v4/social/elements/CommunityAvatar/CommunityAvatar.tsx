@@ -4,14 +4,14 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './CommunityAvatar.module.css';
 import clsx from 'clsx';
 
-const CommunityAvatarSvg = (props: React.SVGProps<SVGSVGElement>) => (
+const CommunityAvatarSvg = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="64"
-    height="64"
+    width="100%"
+    height="100%"
     viewBox="0 0 64 64"
     fill="none"
-    className={styles.communityAvatar__placeholder}
+    className={clsx(styles.communityAvatar__placeholder, className)}
     {...props}
   >
     <rect width="64" height="64" rx="32" className={styles.communityAvatar__placeholder__rect} />
@@ -46,7 +46,7 @@ export function CommunityAvatar({
 
   if (isExcluded) return null;
 
-  if (avatarFile == null) return <CommunityAvatarSvg style={themeStyles} />;
+  if (avatarFile == null) return <CommunityAvatarSvg style={themeStyles} className={className} />;
 
   return (
     <object
@@ -56,7 +56,7 @@ export function CommunityAvatar({
       data-qa-anchor={accessibilityId}
       className={clsx(styles.communityAvatar__image, className)}
     >
-      <CommunityAvatarSvg />
+      <CommunityAvatarSvg className={className} />
     </object>
   );
 }

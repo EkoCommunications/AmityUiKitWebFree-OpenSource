@@ -8,14 +8,12 @@ export type ClickableAreaProps<T extends 'span' | 'div'> = Omit<
   'elementType'
 > & {
   elementType: 'span' | 'div';
-  key?: string;
   children: ReactNode;
   className?: string;
   style?: React.CSSProperties;
 };
 
 export function ClickableArea<T extends 'span' | 'div'>({
-  key,
   className,
   style,
   ...props
@@ -23,7 +21,6 @@ export function ClickableArea<T extends 'span' | 'div'>({
   {
     className: string | undefined;
     ref: React.MutableRefObject<HTMLButtonElement | null>;
-    key: string | undefined;
   } & DOMAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > {
@@ -33,7 +30,7 @@ export function ClickableArea<T extends 'span' | 'div'>({
 
   const element = createElement(
     props.elementType,
-    { ...buttonProps, className: clsx(styles.clickableArea, className), ref, key, style },
+    { ...buttonProps, className: clsx(styles.clickableArea, className), ref, style },
     children,
   );
 

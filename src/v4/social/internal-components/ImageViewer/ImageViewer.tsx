@@ -1,98 +1,88 @@
 import React, { useState } from 'react';
 import useImage from '~/core/hooks/useImage';
-import usePostByIds from '~/social/hooks/usePostByIds';
+import { useKeyPressEvent } from 'react-use';
+import { Button } from '~/v4/core/natives/Button';
+import { Typography } from '~/v4/core/components';
+import ChevronRight from '~/v4/icons/ChevronRight';
+import useSwiper from '~/v4/social/hooks/useSwiper';
+import usePost from '~/v4/core/hooks/objects/usePost';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { ClearButton } from '~/v4/social/elements/ClearButton';
-
 import styles from './ImageViewer.module.css';
 
-const AngleRight = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    width="6"
-    height="9"
-    viewBox="0 0 6 9"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path d="M5.13281 4.71094L1.71094 8.17969C1.59375 8.29688 1.40625 8.29688 1.3125 8.17969L0.84375 7.71094C0.726562 7.59375 0.726562 7.42969 0.84375 7.3125L3.60938 4.5L0.84375 1.71094C0.726562 1.59375 0.726562 1.40625 0.84375 1.3125L1.3125 0.84375C1.40625 0.726562 1.59375 0.726562 1.71094 0.84375L5.13281 4.3125C5.25 4.42969 5.25 4.59375 5.13281 4.71094Z" />
-  </svg>
-);
+//TODO: After SDK update getPostChildren should be used instead of usePost
 
-interface ImageViewerProps {
+type ImageViewerProps = {
   pageId?: string;
-  componentId?: string;
-  elementId?: string;
-  post: Amity.Post;
-  initialImageIndex: number;
   onClose(): void;
-}
+  post: Amity.Post;
+  elementId?: string;
+  componentId?: string;
+  initialImageIndex: number;
+};
 
 export function ImageViewer({
-  pageId = '*',
-  componentId = '*',
-  elementId = '*',
   post,
-  initialImageIndex,
   onClose,
+  pageId = '*',
+  elementId = '*',
+  componentId = '*',
+  initialImageIndex,
 }: ImageViewerProps) {
-  const { themeStyles } = useAmityElement({ pageId, componentId, elementId });
+  useKeyPressEvent('Escape', onClose);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
-
-  const posts = usePostByIds(post?.children || []);
-
-  const imagePosts = posts.filter((post) => post.dataType === 'image');
-
-  const selectedPost = imagePosts[selectedImageIndex];
-
-  const imageUrl = useImage({ fileId: selectedPost?.data?.fileId });
-  const hasNext = selectedImageIndex < imagePosts.length - 1;
-  const hasPrev = selectedImageIndex > 0;
+  const { themeStyles, accessibilityId } = useAmityElement({ pageId, componentId, elementId });
+  const { post: imagePost } = usePost(post?.children[selectedImageIndex]);
+  const imageUrl = useImage({ fileId: imagePost?.data?.fileId });
 
   const next = () => {
-    if (!hasNext) {
-      return;
-    }
-    setSelectedImageIndex((prev) => prev + 1);
+    if (hasNext) setSelectedImageIndex((prev) => prev + 1);
   };
 
   const prev = () => {
-    if (!hasPrev) {
-      return;
-    }
-    setSelectedImageIndex((prev) => prev - 1);
+    if (hasPrev) setSelectedImageIndex((prev) => prev - 1);
   };
 
+  const hasNext = selectedImageIndex < post?.children.length - 1;
+  const hasPrev = selectedImageIndex > 0;
+
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwiper({ next, prev });
+
   return (
-    <div style={themeStyles}>
-      <div className={styles.modal} onClick={onClose}>
-        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-          <img src={imageUrl} alt={selectedPost?.data?.fileId || ''} className={styles.fullImage} />
-          <div className={styles.overlayPanel}>
-            {hasPrev && (
-              <div className={styles.overlayPanel__prev} onClick={prev}>
-                <AngleRight className={styles.overlayPanel__prevButton} />
-              </div>
-            )}
-            <div className={styles.overlayPanel__middle} />
-            {hasNext && (
-              <div className={styles.overlayPanel__next} onClick={next}>
-                <AngleRight className={styles.overlayPanel__nextButton} />
-              </div>
-            )}
-          </div>
-          <span className={styles.closeButton}>
-            <ClearButton
-              pageId={pageId}
-              componentId={componentId}
-              defaultClassName={styles.imageViewer__clearButton}
-              imgClassName={styles.imageViewer__clearButton__img}
-              onPress={onClose}
-            />
-          </span>
-        </div>
-      </div>
+    <div style={themeStyles} data-qa-anchor={accessibilityId} className={styles.imageViewer__modal}>
+      <span className={styles.imageViewer__close}>
+        <ClearButton
+          pageId={pageId}
+          onPress={onClose}
+          componentId={componentId}
+          defaultClassName={styles.imageViewer__closeButton}
+          imgClassName={styles.imageViewer__closeButton__img}
+        />
+      </span>
+      {post?.children.length > 1 && (
+        <Typography.Title className={styles.imageViewer__count}>
+          {selectedImageIndex + 1} / {post?.children.length}
+        </Typography.Title>
+      )}
+      {hasPrev && (
+        <Button className={styles.imageViewer__prev} onPress={prev}>
+          <ChevronRight className={styles.imageViewer__prevButton} />
+        </Button>
+      )}
+      <img
+        src={imageUrl}
+        alt={imageUrl || ''}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+        onTouchStart={handleTouchStart}
+        className={styles.imageViewer__fullImage}
+      />
+      {hasNext && (
+        <Button className={styles.imageViewer__next} onPress={next}>
+          <ChevronRight className={styles.imageViewer__nextButton} />
+        </Button>
+      )}
     </div>
   );
 }

@@ -12,7 +12,7 @@
 .storyButton svg {
   width: 2rem;
   height: 1.75rem;
-  fill: var(--asc-color-base-inverse);
+  fill: var(--asc-color-white);
 }
 
 .desktopOnly {

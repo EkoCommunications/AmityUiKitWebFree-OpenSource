@@ -144,6 +144,7 @@
   padding: 0.5rem 1rem;
   background-color: var(--asc-color-background-default);
   color: var(--asc-color-base-default);
+  justify-content: start;
 }
 
 .userMentionItem__item[data-is-selected='true'],

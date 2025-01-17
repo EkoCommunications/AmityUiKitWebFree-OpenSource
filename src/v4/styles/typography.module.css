@@ -36,7 +36,7 @@
 }
 
 .typography-caption {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1.125rem; /* 138.462% */
@@ -47,4 +47,10 @@
   font-weight: var(--asc-text-font-weight-bold);
   font-size: var(--asc-text-font-size-xs);
   line-height: var(--asc-line-height-xs);
+}
+
+.typography-headline {
+  font-size: var(--asc-text-font-size-xl);
+  line-height: var(--asc-line-height-xxl);
+  font-weight: var(--asc-text-font-weight-headline);
 }

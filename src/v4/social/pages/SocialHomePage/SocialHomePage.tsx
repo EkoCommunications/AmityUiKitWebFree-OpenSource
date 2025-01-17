@@ -12,12 +12,8 @@ import { CreatePostMenu } from '~/v4/social/components/CreatePostMenu';
 import { useGlobalFeedContext } from '~/v4/social/providers/GlobalFeedProvider';
 import { Explore } from './Explore';
 import { ExploreProvider } from '~/v4/social/providers/ExploreProvider';
-
-export enum HomePageTab {
-  Newsfeed = 'Newsfeed',
-  Explore = 'Explore',
-  MyCommunities = 'My communities',
-}
+import { HomePageTab } from '~/v4/social/constants/HomePageTab';
+import { useLayoutContext } from '~/v4/social/providers/LayoutProvider';
 
 export function SocialHomePage() {
   const pageId = 'social_home_page';
@@ -27,7 +23,7 @@ export function SocialHomePage() {
 
   const { scrollPosition, onScroll } = useGlobalFeedContext();
 
-  const [activeTab, setActiveTab] = useState(HomePageTab.Newsfeed);
+  const { activeTab, setActiveTab } = useLayoutContext();
 
   const [isShowCreatePostMenu, setIsShowCreatePostMenu] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +40,10 @@ export function SocialHomePage() {
 
   const handleClickButton = () => {
     setIsShowCreatePostMenu((prev) => !prev);
+  };
+
+  const handleClickCreateCommunity = () => {
+    //
   };
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement, UIEvent>) => {

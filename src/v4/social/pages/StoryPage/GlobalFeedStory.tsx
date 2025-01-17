@@ -21,7 +21,6 @@ import { CreateNewStoryButton } from '~/v4/social/elements/CreateNewStoryButton'
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { FileTrigger } from 'react-aria-components';
 import { useMotionValue, motion } from 'framer-motion';
-import useCommunityStoriesSubscription from '~/v4/social/hooks/useCommunityStoriesSubscription';
 
 import styles from './StoryPage.module.css';
 
@@ -64,12 +63,13 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
   const { client, currentUserId } = useSDK();
-  const { file, setFile } = useStoryContext();
+  const { file, setFile, isStoryUploading } = useStoryContext();
   const y = useMotionValue(0);
   const motionRef = useRef<HTMLDivElement>(null);
   const dragEventTarget = useRef(new EventTarget());
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [lastSeenIndex, setLastSeenIndex] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -90,6 +90,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
             ...props,
             onClose: () => onClose(targetId),
             onClickCommunity: () => onClickCommunity(targetId),
+            onDeleteStory: () => onDeleteStory(props.story.story?.storyId as string),
           });
 
         return {
@@ -126,8 +127,27 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
     setCurrentIndex((prevIndex) => prevIndex - 1);
   };
 
-  const confirmDeleteStory = (storyId: string) => {
+  const onDeleteStory = async (storyId: string) => {
     const isLastStory = currentIndex === stories.length - 1;
+
+    await StoryRepository.softDeleteStory(storyId);
+    notification.success({
+      content: 'Story deleted',
+    });
+    if (stories.length === 1) {
+      // If it's the only story, close the ViewStory screen
+      onChangePage?.();
+    } else if (isLastStory) {
+      // If it's the last story, move to the previous one
+      previousStory();
+    } else {
+      // For any other case (including first story), stay on the same index
+      // The next story will automatically take its place
+      setCurrentIndex((prevIndex) => prevIndex);
+    }
+  };
+
+  const confirmDeleteStory = (storyId: string) => {
     confirm({
       pageId,
       title: 'Delete this story?',
@@ -135,21 +155,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
         'This story will be permanently deleted. You’ll no longer to see and find this story.',
       okText: 'Delete',
       onOk: async () => {
-        await StoryRepository.softDeleteStory(storyId);
-        notification.success({
-          content: 'Story deleted',
-        });
-        if (stories.length === 1) {
-          // If it's the only story, close the ViewStory screen
-          onChangePage?.();
-        } else if (isLastStory) {
-          // If it's the last story, move to the previous one
-          previousStory();
-        } else {
-          // For any other case (including first story), stay on the same index
-          // The next story will automatically take its place
-          setCurrentIndex((prevIndex) => prevIndex);
-        }
+        onDeleteStory(storyId);
       },
     });
   };
@@ -219,7 +225,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
         setFile(files[0]);
       }}
     >
-      <CreateNewStoryButton pageId={pageId} />
+      <CreateNewStoryButton pageId={pageId} isDisabled={isStoryUploading} />
     </FileTrigger>
   );
 
@@ -298,14 +304,16 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
 
   useEffect(() => {
     if (stories.filter(isStory).every((story) => story?.isSeen)) return;
+    if (lastSeenIndex !== 0) return;
     const firstUnseenStoryIndex = stories.findIndex((story) =>
       isStory(story) ? !story?.isSeen : false,
     );
 
     if (firstUnseenStoryIndex !== -1) {
+      setLastSeenIndex(firstUnseenStoryIndex);
       setCurrentIndex(firstUnseenStoryIndex);
     }
-  }, []);
+  }, [stories]);
 
   useEffect(() => {
     if (!file) return;
@@ -318,11 +326,6 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
       'globalFeed',
     );
   }, [file, goToDraftStoryPage, targetId]);
-
-  useCommunityStoriesSubscription({
-    targetId,
-    targetType: 'community',
-  });
 
   if (!stories || stories.length === 0) return null;
 

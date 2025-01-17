@@ -1,6 +1,6 @@
 {
   "name": "@amityco/ui-kit-open-source",
-  "version": "4.0.0-beta.18",
+  "version": "4.0.2",
   "engines": {
     "node": ">=20",
     "pnpm": "9"
@@ -39,12 +39,12 @@
     "tsc": "tsc"
   },
   "peerDependencies": {
-    "@amityco/ts-sdk": "^6.32.0",
+    "@amityco/ts-sdk": ">=6.33.0",
     "react": ">=17.0.2",
     "react-dom": ">=17.0.2"
   },
   "devDependencies": {
-    "@amityco/ts-sdk": "6.32.0",
+    "@amityco/ts-sdk": "^6.33.0",
     "@eslint/js": "^9.4.0",
     "@storybook/addon-a11y": "^7.6.7",
     "@storybook/addon-actions": "^7.6.7",
@@ -105,14 +105,11 @@
     "vite-tsconfig-paths": "^4.2.3"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.3.4",
+    "@internationalized/date": "^3.6.0",
     "@lexical/link": "^0.18.0",
     "@lexical/react": "^0.18.0",
-    "@radix-ui/react-tabs": "^1.0.4",
     "@tanstack/react-query": "^5.28.14",
     "clsx": "^2.1.0",
     "colorthief": "^2.4.0",
@@ -132,7 +129,7 @@
     "react-hook-form": "^7.49.2",
     "react-infinite-scroll-component": "^6.1.0",
     "react-insta-stories": "^2.6.2",
-    "react-intl": "^6.5.5",
+    "react-intl": "^6.8.7",
     "react-loading-skeleton": "^3.3.1",
     "react-mentions": "^4.4.10",
     "react-modal-sheet": "^2.2.0",

@@ -1,26 +1,25 @@
 import React from 'react';
-import { Button } from '~/v4/core/natives/Button';
+import { Button, ButtonProps } from '~/v4/core/components/AriaButton';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
-import styles from './CommunityJoinButton.module.css';
 import { IconComponent } from '~/v4/core/IconComponent';
 import { Plus as PlusIcon } from '~/v4/icons/Plus';
 import clsx from 'clsx';
-import { Typography } from '~/v4/core/components/Typography';
 
-interface CommunityJoinButtonProps {
+type CommunityJoinButtonProps = ButtonProps & {
   pageId?: string;
+  className?: string;
   componentId?: string;
   onClick?: () => void;
-  className?: string;
   defaultClassName?: string;
-}
+};
 
 export const CommunityJoinButton = ({
-  pageId = '*',
-  componentId = '*',
   onClick,
   className,
+  pageId = '*',
   defaultClassName,
+  componentId = '*',
+  ...props
 }: CommunityJoinButtonProps) => {
   const elementId = 'community_join_button';
   const { config, themeStyles, accessibilityId, isExcluded, uiReference, defaultConfig } =
@@ -34,20 +33,24 @@ export const CommunityJoinButton = ({
 
   return (
     <Button
-      data-qa-anchor={accessibilityId}
+      size="small"
+      variant="fill"
+      color="primary"
+      onPress={onClick}
       style={themeStyles}
-      onPress={() => onClick?.()}
-      className={clsx(styles.communityJoinButton, className)}
+      className={className}
+      data-qa-anchor={accessibilityId}
+      icon={({ className }) => (
+        <IconComponent
+          configIconName={config.icon}
+          defaultIconName={defaultConfig.icon}
+          imgIcon={() => <img src={config.icon} alt={uiReference} />}
+          defaultIcon={() => <PlusIcon className={clsx(className, defaultClassName)} />}
+        />
+      )}
+      {...props}
     >
-      <IconComponent
-        defaultIcon={() => <PlusIcon className={clsx(styles.joinButton, defaultClassName)} />}
-        imgIcon={() => <img src={config.icon} alt={uiReference} />}
-        defaultIconName={defaultConfig.icon}
-        configIconName={config.icon}
-      />
-      <Typography.CaptionBold className={styles.communityJoinButton__text}>
-        {config.text}
-      </Typography.CaptionBold>
+      {config.text}
     </Button>
   );
 };

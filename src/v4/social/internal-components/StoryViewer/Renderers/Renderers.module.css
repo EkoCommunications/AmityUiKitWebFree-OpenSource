@@ -296,3 +296,19 @@
 .imageFill {
   object-fit: cover;
 }
+
+.fadeTransition {
+  transition: 'opacity 0.2s ease-in-out';
+}
+
+.visible {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.commentTrayHeader {
+  color: var(--asc-color-base-default);
+}

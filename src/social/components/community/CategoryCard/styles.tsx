@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-export const Container = styled.div<{ backgroundImage?: string }>`
+export const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'backgroundImage',
+})<{ backgroundImage?: string }>`
   min-width: 160px;
   min-height: 150px;
   cursor: pointer;

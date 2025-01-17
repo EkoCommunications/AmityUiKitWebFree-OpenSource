@@ -12,17 +12,20 @@ import Footer from '~/v4/social/internal-components/StoryViewer/Renderers/Wrappe
 import Header from '~/v4/social/internal-components/StoryViewer/Renderers/Wrappers/Header';
 import { BottomSheet } from '~/v4/core/components/BottomSheet';
 import { Typography } from '~/v4/core/components';
-import useCommunityMembersCollection from '~/v4/social/hooks/collections/useCommunityMembersCollection';
 import useSDK from '~/v4/core/hooks/useSDK';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { LIKE_REACTION_KEY } from '~/v4/social/constants/reactions';
-import { checkStoryPermission, formatTimeAgo, isAdmin, isModerator } from '~/v4/social/utils';
+import { checkStoryPermission, formatTimeAgo } from '~/v4/social/utils';
 import { Button } from '~/v4/core/natives/Button';
+
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 import styles from './Renderers.module.css';
 import clsx from 'clsx';
 
 import { StoryProgressBar } from '~/v4/social/elements/StoryProgressBar/StoryProgressBar';
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 
 export const renderer: CustomRenderer = ({
   story: {
@@ -41,7 +44,11 @@ export const renderer: CustomRenderer = ({
   config,
   onClose,
   onClickCommunity,
+  onDeleteStory,
 }) => {
+  const { isDesktop } = useResponsive();
+  const { openPopup, closePopup } = usePopupContext();
+
   const { formatMessage } = useIntl();
   const [loaded, setLoaded] = useState(false);
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false);
@@ -54,6 +61,19 @@ export const renderer: CustomRenderer = ({
 
   const isLiked = !!(story && story.myReactions && story.myReactions.includes(LIKE_REACTION_KEY));
   const reactionsCount = story?.reactionsCount || 0;
+
+  const [isVisible, setIsVisible] = useState(true);
+  const [currentUrl, setCurrentUrl] = useState(url);
+
+  useEffect(() => {
+    if (url !== currentUrl) {
+      setIsVisible(false);
+      setTimeout(() => {
+        setCurrentUrl(url);
+        setIsVisible(true);
+      }, 200);
+    }
+  }, [url]);
 
   const {
     storyId,
@@ -68,23 +88,11 @@ export const renderer: CustomRenderer = ({
     items,
   } = story as Amity.Story;
 
-  const { members } = useCommunityMembersCollection({
-    queryParams: {
-      communityId: community?.communityId as string,
-    },
-    shouldCall: !!community?.communityId,
-  });
-  const member = members?.find((member) => member.userId === client?.userId);
-  const isMember = member != null;
-
   const { user } = useUser({ userId: client?.userId });
+  const { hasStoryPermission } = useStoryPermission(community?.communityId);
 
   const isOfficial = community?.isOfficial || false;
   const isCreator = creator?.userId === user?.userId;
-  const isGlobalAdmin = isAdmin(user?.roles);
-  const isModeratorUser = isModerator(user?.roles);
-  const haveStoryPermission =
-    isGlobalAdmin || isModeratorUser || checkStoryPermission(client, community?.communityId);
 
   const heading = useMemo(
     () => <div data-qa-anchor="community_display_name">{community?.displayName}</div>,
@@ -210,11 +218,73 @@ export const renderer: CustomRenderer = ({
     }
   }, [dragEventTarget]);
 
+  const renderCommentTray = () => (
+    <CommentTray
+      referenceId={storyId}
+      referenceType="story"
+      community={community as Amity.Community}
+      shouldAllowCreation={community?.allowCommentInStory}
+      shouldAllowInteraction={!!community?.isJoined}
+    />
+  );
+
+  const renderMenuButton = useCallback(
+    (closePopover?: () => void) => {
+      return (
+        <>
+          {actions?.map((bottomSheetAction) => (
+            <Button
+              key={bottomSheetAction.name}
+              className={styles.actionButton}
+              onPress={() => {
+                closePopover?.();
+                closeBottomSheet();
+                bottomSheetAction?.action();
+              }}
+            >
+              {bottomSheetAction?.icon && bottomSheetAction.icon}
+              <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
+            </Button>
+          ))}
+        </>
+      );
+    },
+    [actions],
+  );
+
+  const onClickCommentButton = useCallback(() => {
+    if (isDesktop) {
+      pause();
+      openPopup({
+        pageId: 'story_page',
+        componentId: 'comment_tray_component',
+        header: (
+          <Typography.Heading className={styles.commentTrayHeader}>Comments</Typography.Heading>
+        ),
+        children: renderCommentTray(),
+        isDismissable: false,
+        onClose: () => {
+          closePopup();
+          play();
+        },
+      });
+    } else {
+      openCommentSheet();
+    }
+  }, []);
+
+  const onClickMenuButton = useCallback((openPopover) => {
+    if (isDesktop) {
+      pause();
+      openPopover();
+    } else openBottomSheet();
+  }, []);
+
   return (
     <div
       className={styles.rendererContainer}
       style={{
-        background: backgroundGradient,
+        background: !isVisible ? 'black' : backgroundGradient,
       }}
     >
       <StoryProgressBar
@@ -230,15 +300,16 @@ export const renderer: CustomRenderer = ({
         heading={heading}
         subheading={subheading}
         isHaveActions={actions?.length > 0}
-        haveStoryPermission={haveStoryPermission}
+        haveStoryPermission={hasStoryPermission}
         isOfficial={isOfficial}
         isPaused={isPaused}
         onPlay={play}
         onPause={pause}
-        onAction={openBottomSheet}
+        onAction={onClickMenuButton}
         onClickCommunity={() => onClickCommunity?.()}
         onClose={handleOnClose}
         addStoryButton={addStoryButton}
+        actionButton={renderMenuButton}
       />
 
       <div
@@ -249,10 +320,18 @@ export const renderer: CustomRenderer = ({
       >
         <img
           ref={imageRef}
-          className={clsx(styles.storyImage, {
-            [styles.imageFit]: data.imageDisplayMode === 'fit',
-            [styles.imageFill]: data.imageDisplayMode === 'fill',
-          })}
+          className={clsx(
+            styles.storyImage,
+            {
+              [styles.imageFit]: data.imageDisplayMode === 'fit',
+              [styles.imageFill]: data.imageDisplayMode === 'fill',
+            },
+            styles.fadeTransition,
+            {
+              [styles.visible]: isVisible,
+              [styles.hidden]: !isVisible,
+            },
+          )}
           data-qa-anchor="image_view"
           src={url ?? (story?.data.fileData as string)}
           onLoad={imageLoaded}
@@ -270,16 +349,7 @@ export const renderer: CustomRenderer = ({
         mountPoint={document.getElementById(targetRootId) as HTMLElement}
         detent="content-height"
       >
-        {actions?.map((bottomSheetAction) => (
-          <Button
-            key={bottomSheetAction.name}
-            className={styles.actionButton}
-            onPress={() => bottomSheetAction?.action()}
-          >
-            {bottomSheetAction?.icon && bottomSheetAction.icon}
-            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
-          </Button>
-        ))}
+        {renderMenuButton()}
       </BottomSheet>
 
       <BottomSheet
@@ -290,13 +360,7 @@ export const renderer: CustomRenderer = ({
         detent="full-height"
         headerTitle={formatMessage({ id: 'storyViewer.commentSheet.title' })}
       >
-        <CommentTray
-          referenceId={storyId}
-          referenceType="story"
-          community={community as Amity.Community}
-          shouldAllowCreation={community?.allowCommentInStory}
-          shouldAllowInteraction={isMember}
-        />
+        {renderCommentTray()}
       </BottomSheet>
 
       {items?.[0]?.data?.url && (
@@ -329,10 +393,13 @@ export const renderer: CustomRenderer = ({
         reactionsCount={reactionsCount}
         isLiked={isLiked}
         myReactions={myReactions}
-        onClickComment={openCommentSheet}
+        onClickComment={onClickCommentButton}
         // Only story-creator and moderator of the community should be able to see impression count.
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
-        isMember={isMember}
+        isMember={!!community?.isJoined}
+        onPlay={play}
+        onPause={pause}
+        onDeleteStory={onDeleteStory}
       />
     </div>
   );

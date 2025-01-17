@@ -74,7 +74,7 @@ export const CommentComposer = ({
     metadata: {},
   });
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: async ({ params }: { params: CreateCommentParams }) => {
       const parentId = replyTo ? replyTo.commentId : undefined;
 
@@ -173,7 +173,7 @@ export const CommentComposer = ({
         </div>
         <Button
           data-qa-anchor={`${pageId}/${componentId}/comment_composer_post`}
-          isDisabled={!textValue?.data?.text}
+          isDisabled={!textValue?.data?.text || isPending}
           className={styles.commentComposer__button}
           onPressStart={() => mutateAsync({ params: textValue })}
         >

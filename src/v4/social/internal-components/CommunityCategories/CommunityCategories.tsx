@@ -1,29 +1,32 @@
+import clsx from 'clsx';
 import React from 'react';
 import useCategoriesByIds from '~/v4/social/hooks/useCategoriesByIds';
-
-import styles from './CommunityCategories.module.css';
 import { CommunityCategory } from '~/v4/social/elements/CommunityCategory/CommunityCategory';
-import clsx from 'clsx';
+import styles from './CommunityCategories.module.css';
 
-export const CommunityCategories = ({
-  community,
-  pageId = '*',
-  componentId = '*',
-  onClick,
-  minCategoryCharacters,
-  maxCategoryCharacters,
-  maxCategoriesLength,
-  truncate = false,
-}: {
-  community: Amity.Community;
+type CommunityCategoriesProps = {
   pageId?: string;
+  truncate?: boolean;
+  className?: string;
   componentId?: string;
-  onClick?: (categoryId: string) => void;
+  community: Amity.Community;
+  maxCategoriesLength?: number;
   minCategoryCharacters?: number;
   maxCategoryCharacters?: number;
-  maxCategoriesLength?: number;
-  truncate?: boolean;
-}) => {
+  onClick?: (categoryId: string) => void;
+};
+
+export const CommunityCategories = ({
+  onClick,
+  community,
+  className,
+  pageId = '*',
+  componentId = '*',
+  truncate = false,
+  maxCategoriesLength,
+  maxCategoryCharacters,
+  minCategoryCharacters,
+}: CommunityCategoriesProps) => {
   const categories = useCategoriesByIds(community.categoryIds);
 
   const overflowCategoriesLength =
@@ -34,9 +37,11 @@ export const CommunityCategories = ({
       ? Math.min(categories.length, maxCategoriesLength)
       : categories.length;
 
+  if (categories.length === 0) return null;
+
   return (
     <div
-      className={styles.communityCategories}
+      className={clsx(styles.communityCategories, className)}
       style={
         {
           '--asc-community-categories-length':
@@ -46,15 +51,15 @@ export const CommunityCategories = ({
     >
       {categories.slice(0, categoriesLength).map((category) => (
         <CommunityCategory
-          key={category.categoryId}
           pageId={pageId}
+          truncate={truncate}
+          key={category.categoryId}
           componentId={componentId}
           categoryName={category.name}
           minCharacters={minCategoryCharacters}
           maxCharacters={maxCategoryCharacters}
-          truncate={truncate}
-          className={styles.communityCategories__categoryChip}
           onClick={() => onClick?.(category.categoryId)}
+          className={styles.communityCategories__categoryChip}
         />
       ))}
       {overflowCategoriesLength > 0 && (

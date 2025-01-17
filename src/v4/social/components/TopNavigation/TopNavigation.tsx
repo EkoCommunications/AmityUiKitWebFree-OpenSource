@@ -5,7 +5,8 @@ import { HeaderLabel } from '~/v4/social/elements/HeaderLabel';
 import styles from './TopNavigation.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { HomePageTab } from '~/v4/social/pages/SocialHomePage/SocialHomePage';
+import { HomePageTab } from '~/v4/social/constants/HomePageTab';
+import { AmityCommunitySetupPageMode } from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
 
 export interface TopNavigationProps {
   pageId?: string;
@@ -19,7 +20,8 @@ export function TopNavigation({
   onClickPostCreationButton,
 }: TopNavigationProps) {
   const componentId = 'top_navigation';
-  const { goToSocialGlobalSearchPage, goToMyCommunitiesSearchPage } = useNavigation();
+  const { goToSocialGlobalSearchPage, goToMyCommunitiesSearchPage, goToCreateCommunityPage } =
+    useNavigation();
   const { isExcluded, themeStyles } = useAmityComponent({
     pageId,
     componentId,
@@ -54,7 +56,13 @@ export function TopNavigation({
           <PostCreationButton
             pageId={pageId}
             componentId={componentId}
-            onClick={onClickPostCreationButton}
+            onClick={() =>
+              selectedTab == HomePageTab.MyCommunities
+                ? goToCreateCommunityPage?.({
+                    mode: AmityCommunitySetupPageMode.CREATE,
+                  })
+                : onClickPostCreationButton?.()
+            }
           />
         )}
       </div>

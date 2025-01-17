@@ -1,28 +1,26 @@
+import { Input } from 'react-aria-components';
 import React, { useEffect, useState } from 'react';
+import { useAmityComponent } from '~/v4/core/hooks/uikit';
+import { SearchIcon } from '~/v4/social/elements/SearchIcon';
 import { ClearButton } from '~/v4/social/elements/ClearButton';
 import { CancelButton } from '~/v4/social/elements/CancelButton';
-import { SearchIcon } from '~/v4/social/elements/SearchIcon';
-
-import styles from './TopSearchBar.module.css';
-import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { Input } from 'react-aria-components';
+import styles from './TopSearchBar.module.css';
 
-export interface TopSearchBarProps {
+export type TopSearchBarProps = {
   pageId?: string;
+  onFocus?: () => void;
   search: (keyword: string) => void;
-}
+};
 
-export function TopSearchBar({ pageId = '*', search }: TopSearchBarProps) {
+export function TopSearchBar({ pageId = '*', search, onFocus }: TopSearchBarProps) {
   const componentId = 'top_search_bar';
+  const { onBack } = useNavigation();
+  const [searchValue, setSearchValue] = useState('');
   const { config, isExcluded, themeStyles, accessibilityId } = useAmityComponent({
     pageId,
     componentId,
   });
-
-  const { onBack } = useNavigation();
-
-  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
     search(searchValue);
@@ -31,7 +29,7 @@ export function TopSearchBar({ pageId = '*', search }: TopSearchBarProps) {
   if (isExcluded) return null;
 
   return (
-    <div className={styles.topSearchBar} style={themeStyles}>
+    <div className={styles.topSearchBar} style={themeStyles} data-qa-anchor={accessibilityId}>
       <div className={styles.topSearchBar__inputBar}>
         <SearchIcon
           pageId={pageId}
@@ -40,26 +38,29 @@ export function TopSearchBar({ pageId = '*', search }: TopSearchBarProps) {
           imgClassName={styles.topSearchBar__searchIcon_img}
         />
         <Input
-          className={styles.topSearchBar__textInput}
           type="text"
+          onFocus={onFocus}
           value={searchValue}
           placeholder={config.text}
+          className={styles.topSearchBar__textInput}
           onChange={(ev) => setSearchValue(ev.target.value)}
-          data-qa-anchor={accessibilityId}
         />
         {searchValue != '' ? (
           <ClearButton
             pageId={pageId}
             componentId={componentId}
-            defaultClassName={styles.topSearchBar__clearButton}
+            buttonClassName={styles.topSearchBar__clearButton}
             imgClassName={styles.topSearchBar__clearButton__img}
+            defaultClassName={styles.topSearchBar__clearButton__default}
             onPress={() => {
               setSearchValue('');
             }}
           />
         ) : null}
       </div>
-      <CancelButton pageId={pageId} componentId={componentId} onPress={() => onBack()} />
+      <div className={styles.topSearchBar__cancelButton}>
+        <CancelButton pageId={pageId} componentId={componentId} onPress={() => onBack()} />
+      </div>
     </div>
   );
 }

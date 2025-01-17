@@ -15,6 +15,9 @@ import { Button } from '~/v4/core/natives/Button';
 
 import styles from './StoryTargetSelectionPage.module.css';
 import { useStoryContext } from '~/v4/social/providers/StoryProvider';
+import { Typography } from '~/v4/core/components';
+import { CommunitySmallListSekeleton } from '~/v4/core/components/CommunitySmallListSekeleton/CommunitySmallListSekeleton';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 export function StoryTargetSelectionPage() {
   const pageId = 'select_story_target_page';
@@ -22,6 +25,7 @@ export function StoryTargetSelectionPage() {
     pageId,
   });
   const { onBack } = useNavigation();
+  const { closePopup } = usePopupContext();
   const { communities, hasMore, loadMore, isLoading } = useCommunitiesCollection({
     queryParams: { sortBy: 'displayName', limit: 20, membership: 'member' },
   });
@@ -40,11 +44,21 @@ export function StoryTargetSelectionPage() {
     }
   };
 
+  const renderSkeleton = () => {
+    return (
+      <div className={styles.selectStoryTargetPage__skeletonContainer}>
+        {Array.from({ length: 7 }).map((_, index) => {
+          return <CommunitySmallListSekeleton key={index} />;
+        })}
+      </div>
+    );
+  };
+
   const renderCommunity = communities.map((community) => {
     return (
       <FileTrigger key={community.communityId} onSelect={handleFileSelect}>
         <Button onPress={() => handleOnClickCommunity(community.communityId)}>
-          <div className={styles.selectStoryTargetPage__myCommunities}>
+          <div className={styles.selectStoryTargetPage__communityItem_container}>
             <div className={styles.selectStoryTargetPage__communityAvatar}>
               <CommunityAvatar pageId={pageId} community={community} />
             </div>
@@ -79,6 +93,8 @@ export function StoryTargetSelectionPage() {
             : { type: 'video', url: URL.createObjectURL(file!) },
         storyType: 'globalFeed',
       });
+
+      closePopup();
     }
   }, [file]);
 
@@ -88,15 +104,18 @@ export function StoryTargetSelectionPage() {
         <CloseButton
           imgClassName={styles.selectStoryTargetPage__closeButton}
           pageId={pageId}
-          onPress={onBack}
+          onPress={() => onBack()}
         />
         <Title pageId={pageId} titleClassName={styles.selectStoryTargetPage__title} />
         <div />
       </div>
-      <div className={styles.selectStoryTargetPage__line} />
-      <div className={styles.selectStoryTargetPage__myCommunities}>My Communities</div>
+
+      <Typography.Body className={styles.selectStoryTargetPage__myCommunities_text}>
+        My Communities
+      </Typography.Body>
       <div className={styles.selectStoryTargetPage__myCommunities__container}>
         {renderCommunity}
+        {isLoading && renderSkeleton()}
       </div>
       <div ref={(node) => setIntersectionNode(node)} />
     </div>

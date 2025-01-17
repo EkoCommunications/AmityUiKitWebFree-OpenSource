@@ -1,111 +1,109 @@
-import React, { useMemo } from 'react';
-
-import { useImage } from '~/v4/core/hooks/useImage';
+import React, { useEffect, useState } from 'react';
+import { Button } from '~/v4/core/natives/Button';
 import { Typography } from '~/v4/core/components';
+import { useImage } from '~/v4/core/hooks/useImage';
+import usePost from '~/v4/core/hooks/objects/usePost';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './ImageContent.module.css';
-import usePost from '~/v4/core/hooks/objects/usePost';
-import { Button } from '~/v4/core/natives/Button';
 
-interface ImageContentProps {
+const ImageThumbnail = ({
+  fileId,
+  placeholder,
+}: {
+  fileId: string;
+  placeholder: React.ReactNode;
+}) => {
+  const imageUrl = useImage({ fileId });
+
+  return (
+    <>
+      {!imageUrl ? (
+        placeholder
+      ) : (
+        <img loading="lazy" className={styles.imageContent__img} src={imageUrl} alt={fileId} />
+      )}
+    </>
+  );
+};
+
+type ImageProps = {
+  postId: string;
   pageId?: string;
   componentId?: string;
-  elementId?: string;
-  post: Amity.Post<'image'>;
-  onImageClick: (imageIndex: number) => void;
-}
-
-const ImageThumbnail = ({ fileId }: { fileId: string }) => {
-  const imageUrl = useImage({
-    fileId,
-  });
-
-  return <img loading="lazy" className={styles.imageContent__img} src={imageUrl} alt={fileId} />;
+  isLastImage: boolean;
+  imageLeftCount: number;
+  onImageClick: () => void;
 };
 
 const Image = ({
-  pageId = '*',
-  componentId = '*',
   postId,
-  index,
-  imageLeftCount,
-  postAmount,
+  isLastImage,
+  pageId = '*',
   onImageClick,
-}: {
-  pageId?: string;
-  componentId?: string;
-  postId: string;
-  index: number;
-  imageLeftCount: number;
-  postAmount: number;
-  onImageClick: () => void;
-}) => {
+  imageLeftCount,
+  componentId = '*',
+}: ImageProps) => {
   const { post: imagePost, isLoading } = usePost(postId);
 
-  if (isLoading) {
-    return null;
-  }
+  if (isLoading) return null;
 
   return (
     <Button
-      data-qa-anchor={`${pageId}/${componentId}/post_image`}
-      key={imagePost.postId}
-      className={styles.imageContent__imgContainer}
       onPress={() => onImageClick()}
+      className={styles.imageContent__imgContainer}
+      data-qa-anchor={`${pageId}/${componentId}/post_image`}
     >
-      <ImageThumbnail fileId={imagePost.data.fileId} />
-      {imageLeftCount > 0 && index === postAmount - 1 && (
+      <ImageThumbnail
+        fileId={imagePost.data.fileId}
+        placeholder={<div className={styles.imageContent__skeleton}></div>}
+      />
+      {imageLeftCount > 0 && isLastImage && (
         <Typography.Heading className={styles.imageContent__imgCover}>
-          + {imageLeftCount}
+          + {imageLeftCount + 1}
         </Typography.Heading>
       )}
     </Button>
   );
 };
 
+type ImageContentProps = {
+  pageId?: string;
+  elementId?: string;
+  componentId?: string;
+  post: Amity.Post<'image'>;
+  onImageClick: (imageIndex: number) => void;
+};
+
 export const ImageContent = ({
-  pageId = '*',
-  componentId = '*',
-  elementId = '*',
   post,
-  onImageClick = () => {},
+  pageId = '*',
+  onImageClick,
+  elementId = '*',
+  componentId = '*',
 }: ImageContentProps) => {
-  const { themeStyles } = useAmityElement({
-    pageId,
-    componentId,
-    elementId,
-  });
+  const { post: childPost, isLoading } = usePost(post.children?.[0]);
+  const { themeStyles } = useAmityElement({ pageId, componentId, elementId });
 
   const first4Images = post.children.slice(0, 4);
-
   const imageLeftCount = Math.max(0, post.children.length - 4);
 
-  const { post: childPost, isLoading } = usePost(post.children?.[0]);
-
-  if (isLoading) {
-    return null;
-  }
-
-  if (childPost?.dataType !== 'image') {
-    return null;
-  }
+  if (isLoading || childPost?.dataType !== 'image') return null;
 
   return (
     <div
-      className={styles.imageContent}
       style={themeStyles}
+      className={styles.imageContent}
       data-images-amount={Math.min(post.children.length, 4)}
     >
       {first4Images.map((postId: string, index: number) => (
         <Image
-          pageId={pageId}
-          componentId={componentId}
           key={postId}
           postId={postId}
-          index={index}
+          pageId={pageId}
+          componentId={componentId}
           imageLeftCount={imageLeftCount}
-          postAmount={post.children.length}
           onImageClick={() => onImageClick(index)}
+          isLastImage={index === first4Images.length - 1}
         />
       ))}
     </div>
