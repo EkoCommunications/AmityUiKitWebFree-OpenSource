@@ -146,16 +146,18 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
             componentId={componentId}
           />
         </Button>
-        <UserName
-          name={user.displayName ?? user.userId}
-          pageId={pageId}
-          componentId={componentId}
-        />
-        {user.isBrand && (
-          <div className={styles.userProfileHeader__badge__container}>
-            <UserOfficialBadge className={styles.userProfileHeader__badge} />
-          </div>
-        )}
+        <div className={styles.userProfileHeader__displayName}>
+          <UserName
+            name={user.displayName ?? user.userId}
+            pageId={pageId}
+            componentId={componentId}
+          />
+          {user.isBrand && (
+            <div className={styles.userProfileHeader__badge__container}>
+              <UserOfficialBadge className={styles.userProfileHeader__badge} />
+            </div>
+          )}
+        </div>
       </div>
 
       <UserDescription description={user.description} pageId={pageId} componentId={componentId} />

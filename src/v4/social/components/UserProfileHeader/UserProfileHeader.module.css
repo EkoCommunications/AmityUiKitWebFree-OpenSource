@@ -5,8 +5,15 @@
 
 .userProfileHeader__header {
   display: flex;
+  align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+.userProfileHeader__displayName {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .userProfileHeader__avatar {
@@ -28,8 +35,8 @@
 }
 
 .userProfileHeader__badge {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .userProfileHeader__description {
