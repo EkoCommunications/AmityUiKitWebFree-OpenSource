@@ -1,8 +1,17 @@
 .createPost {
-  position: relative;
-  display: block;
-  background-color: var(--asc-color-background-default);
   height: 100%;
+  position: relative;
+  background-color: var(--asc-color-background-default);
+}
+
+.createPost__form {
+  overflow-y: scroll;
+  max-height: calc(100% - 6.75rem);
+}
+
+.createPost__form[data-from-media='false'] {
+  overflow-y: scroll;
+  max-height: calc(100% - 14.875rem);
 }
 
 .createPost__topBar {
@@ -13,14 +22,79 @@
   padding: var(--asc-spacing-m1);
 }
 
-.createPost__status {
+.createPost__formContent {
+  max-height: auto;
+  min-height: auto;
+}
+
+.createPost__formContent .createPost__input {
+  padding: 1rem;
+}
+
+.createPost__formContent .createPost__placeholder {
+  left: 1rem;
+  top: 4.8rem;
+}
+
+.createPost__mentionContainer {
+  display: none;
+}
+
+.createPost__attachment {
+  display: none;
+}
+
+.createPost__ctaWrapper {
+  display: none;
+}
+
+.createPost__cta {
+  display: none;
+}
+
+.createPost__mention {
+  left: 0;
+  width: 100%;
+  position: absolute;
+  overflow-y: scroll;
+  max-height: 12.5rem;
+  bottom: var(--asc-mention-bottom, 0);
+  background-color: var(--asc-color-background-default);
+}
+
+.createPost__mention::-webkit-scrollbar {
+  display: none;
+}
+
+.createPost__attachmentDrawer {
+  display: block;
+}
+
+.createPost__attachmentDrawer__content {
+  top: 0;
+  left: 0;
+  width: 100%;
+  outline: none;
+  position: absolute;
+}
+
+.createPost__notificationWrapper {
+  bottom: 6rem;
+  position: relative;
+}
+
+.createPost__notificationWrapper[data-item-position='false'] {
+  bottom: 11rem;
+  position: relative;
+}
+
+.createPost__notification {
   width: calc(100% - 2rem);
   position: absolute;
-  bottom: 0;
+  bottom: 15rem;
   left: 1rem;
   display: flex;
   justify-content: start;
-  padding: unset;
   font-size: var(--asc-text-font-size-md);
   gap: 0.75rem;
   margin: 0 auto 1rem;
@@ -28,58 +102,40 @@
   box-shadow: var(--asc-box-shadow-03);
   background-color: var(--asc-color-secondary-default);
   color: var(--asc-color-background-default);
+  padding: 1rem;
 }
 
-.createPost_infoIcon {
+.createPost__status[data-show-detail-media-attachment='1'] {
+  bottom: 6rem;
+}
+
+.createPost__status[data-show-detail-media-attachment='2'] {
+  bottom: 12rem;
+}
+
+.createPost__status[data-show-detail-media-attachment='3'] {
+  bottom: 15rem;
+}
+
+.createPost__notification[data-show-detail-media-attachment='1'] {
+  bottom: 6rem;
+}
+
+.createPost__notification[data-show-detail-media-attachment='2'] {
+  bottom: 12rem;
+}
+
+.createPost__notification[data-show-detail-media-attachment='3'] {
+  bottom: 15rem;
+}
+
+.createPost_notificationIcon {
   width: 1.5rem;
   height: 1.5rem;
   fill: var(--asc-color-background-default);
 }
 
-.createPost__notiWrap {
-  position: relative;
-  bottom: 6rem;
-}
-
-.createPost__notiWrap[data-item-position='false'] {
-  position: relative;
-  bottom: 11rem;
-}
-
-.createPost__formMediaAttachment {
-  max-height: calc(100% - 6.75rem); /* for form scroll */
-  overflow-y: scroll;
-}
-
-.createPost__formMediaAttachment[data-from-media='false'] {
-  max-height: calc(
-    100% - 14.875rem
-  ); /* 290px including file button for open detail media attachment */
-
-  overflow-y: scroll;
-}
-
-/* vaul */
-
-.drawer__content {
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  outline: none;
-}
-
-.mentionTextInput_item {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  max-height: 12.5rem;
-  overflow-y: scroll;
-  background-color: var(--asc-color-background-default);
-  bottom: var(--asc-mention-bottom, 0);
-}
-
-.drawerContentContainer {
+.createPost__attachmentDrawer__contentContainer {
   position: absolute;
   box-shadow: var(--asc-box-shadow-04);
   border-top-left-radius: 1.25rem;
@@ -91,19 +147,103 @@
   background-color: var(--asc-color-background-default);
 }
 
-.drawerContentContainer[data-show-detail-media-attachment='false'] {
-  padding: 0.5rem 1rem;
+.createPost__attachmentDrawer__contentContainer[data-show-detail-media-attachment='false'] {
+  padding: 0.5rem 2rem;
   bottom: -0.4rem;
   margin-top: 0.75rem;
 }
 
-.drawerContentContainer[data-show-detail-media-attachment='true'] {
+.createPost__attachmentDrawer__contentContainer[data-show-detail-media-attachment='true'] {
   bottom: -0.9rem;
   margin-top: -1rem;
-  padding-bottom: 2rem;
-  padding-top: 0.75rem;
+  padding: 0.75rem 1rem 2rem;
 }
 
-.mentionTextInput_item::-webkit-scrollbar {
-  display: none;
+@media (width >= 48em) {
+  .createPost {
+    width: 30rem;
+    position: static;
+    border-radius: 0.75rem;
+  }
+
+  .createPost__form,
+  .createPost__form[data-from-media='false'] {
+    overflow-y: auto;
+    max-height: 100%;
+  }
+
+  .createPost__topBar {
+    display: none;
+  }
+
+  .createPost__formContent {
+    overflow-y: auto;
+    max-height: 50vh;
+    min-height: 13rem;
+    position: relative;
+  }
+
+  .createPost__formContent .createPost__input {
+    padding: 1rem 1.5rem;
+  }
+
+  .createPost__formContent .createPost__placeholder {
+    top: 1rem;
+    left: 1.5rem;
+  }
+
+  .createPost__attachment {
+    gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    background-color: var(--asc-color-background-default);
+  }
+
+  .createPost__ctaWrapper {
+    display: block;
+    padding: 1rem 1.5rem;
+  }
+
+  .createPost__cta {
+    width: 100%;
+    display: block;
+  }
+
+  .createPost__mentionContainer {
+    z-index: 9999;
+    display: block;
+    width: 16.25rem;
+    height: 16.5rem;
+    position: relative;
+    overflow-y: scroll;
+    border-radius: 0.5rem;
+    box-shadow: var(--asc-box-shadow-04);
+    background-color: var(--asc-color-background-default);
+  }
+
+  .createPost__mention {
+    display: none;
+  }
+
+  .createPost__attachmentDrawer {
+    display: none;
+  }
+
+  .createPost__notificationWrapper,
+  .createPost__notificationWrapper[data-item-position='false'] {
+    top: 2rem;
+    height: 3rem;
+    width: 30rem;
+    z-index: 9999;
+    bottom: unset;
+    position: absolute;
+  }
+
+  .createPost__notification {
+    left: 50%;
+    width: 22rem;
+    bottom: unset;
+    transform: translateX(-50%);
+  }
 }

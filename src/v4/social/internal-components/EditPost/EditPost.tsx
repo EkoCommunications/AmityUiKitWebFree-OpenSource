@@ -23,9 +23,15 @@ import { useGlobalFeedContext } from '~/v4/social/providers/GlobalFeedProvider';
 import { arraysContainSameElements } from '~/v4/social/utils/arraysContainSameElements';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { Mentioned, Mentionees } from '~/v4/helpers/utils';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { MAXIMUM_POST_CHARACTERS } from '~/v4/social/constants';
+import { ERROR_RESPONSE } from '~/v4/social/constants/errorResponse';
 
 export function EditPost({ post }: AmityPostComposerEditOptions) {
   const pageId = 'post_composer_page';
+  const { isDesktop } = useResponsive();
+  const { closePopup } = usePopupContext();
   const { themeStyles } = useAmityPage({
     pageId,
   });
@@ -33,6 +39,7 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
   const { onBack } = useNavigation();
   const { confirm } = useConfirmContext();
   const { updateItem } = useGlobalFeedContext();
+  const { info } = useConfirmContext();
 
   const [textValue, setTextValue] = useState<CreatePostParams>({
     text: post.data.text ?? '',
@@ -46,6 +53,9 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
     ],
   });
 
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [postErrorText, setPostErrorText] = useState<string | undefined>();
+
   const [postImages, setPostImages] = useState<Amity.File[]>([]);
   const [postVideos, setPostVideos] = useState<Amity.File[]>([]);
 
@@ -54,17 +64,42 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
 
   const mentionRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const useMutateUpdatePost = () =>
     useMutation({
       mutationFn: async (params: Parameters<typeof PostRepository.editPost>[0]) => {
         return await PostRepository.editPost(post.postId, params);
       },
       onSuccess: (response) => {
-        onBack();
+        isDesktop ? closePopup() : onBack();
         updateItem(response.data);
       },
       onError: (error) => {
-        console.error('Failed to edit post', error);
+        if (error.message.includes(ERROR_RESPONSE.CONTAIN_BLOCKED_WORD)) {
+          setPostErrorText("Your post wasn't posted because it contains a blocked word.");
+          return;
+        } else if (error.message.includes(ERROR_RESPONSE.NOT_INCLUDE_WHITELIST_LINK)) {
+          setPostErrorText(
+            "Your post wasn't posted because it contains a link that’s not allowed.",
+          );
+          return;
+        } else {
+          setPostErrorText('Failed to post.');
+          return;
+        }
       },
     });
 
@@ -95,6 +130,10 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
   };
 
   const onSave = () => {
+    if (textValue.text?.length && textValue.text.length > MAXIMUM_POST_CHARACTERS) {
+      setPostErrorText('You have reached maximum 50,000 characters in a post.');
+      return;
+    }
     const attachmentsImage = postImages.map((item: Amity.Post<'image'>) => {
       return {
         fileId: item.data.fileId,
@@ -146,52 +185,69 @@ export function EditPost({ post }: AmityPostComposerEditOptions) {
 
   return (
     <div className={styles.editPost} style={themeStyles}>
-      <form onSubmit={handleSubmit(onSave)} className={styles.editPost__formMediaAttachment}>
+      <form onSubmit={handleSubmit(onSave)} className={styles.editPost__form}>
         <div className={styles.editPost__topBar}>
           <CloseButton pageId={pageId} onPress={onClickClose} />
           <EditPostTitle pageId={pageId} />
           <EditPostButton
+            variant="text"
             pageId={pageId}
-            type="submit"
-            onPress={() => handleSubmit(onSave)}
             isDisabled={
+              !isOnline ||
               (post.data.text == textValue.text && !isImageChanged && !isVideoChanged) ||
               !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0)
             }
           />
         </div>
-        <PostTextField
-          pageId={pageId}
-          communityId={post.targetType === 'community' ? post.targetId : undefined}
-          onChange={onChange}
-          mentionContainer={mentionRef.current}
-          dataValue={{
-            data: { text: post.data.text },
-            metadata: {
-              mentioned: post.metadata?.mentioned || [],
-            },
-            mentionees: post.mentionees,
-          }}
-        />
-
-        <Thumbnail pageId={pageId} postMedia={postImages} onRemove={handleRemoveThumbnailImage} />
-        <Thumbnail postMedia={postVideos} onRemove={handleRemoveThumbnailVideo} />
-
-        <div ref={mentionRef} className={styles.mentionTextInput_item} />
-        <div className={styles.editPost__notiWrap}>
-          {isPending && (
+        <div className={styles.editPost__formContent}>
+          <PostTextField
+            pageId={pageId}
+            onChange={onChange}
+            className={styles.editPost__input}
+            placeholderClassName={styles.editPost__placeholder}
+            mentionContainer={isDesktop ? null : mentionRef.current}
+            mentionContainerClassName={styles.editPost__mentionContainer}
+            communityId={post.targetType === 'community' ? post.targetId : undefined}
+            dataValue={{
+              mentionees: post.mentionees,
+              data: { text: post.data.text },
+              metadata: { mentioned: post.metadata?.mentioned || [] },
+            }}
+          />
+          <Thumbnail pageId={pageId} postMedia={postImages} onRemove={handleRemoveThumbnailImage} />
+          <Thumbnail postMedia={postVideos} onRemove={handleRemoveThumbnailVideo} />
+        </div>
+        <div className={styles.editPost__ctaWrapper}>
+          <EditPostButton
+            variant="fill"
+            pageId={pageId}
+            className={styles.editPost__cta}
+            onPress={() => handleSubmit(onSave)}
+            isDisabled={
+              (post.data.text == textValue.text && !isImageChanged && !isVideoChanged) ||
+              !(textValue.text.length > 0 || postImages.length > 0 || postVideos.length > 0) ||
+              isPending
+            }
+          />
+        </div>
+        <div ref={mentionRef} className={styles.editPost__mention} />
+        <div className={styles.editPost__notificationContainer}>
+          {(isPending || !isOnline) && (
             <Notification
-              content="Posting..."
               icon={<Spinner />}
-              className={styles.editPost__status}
+              content={isOnline ? 'Posting...' : 'Waiting for network...'}
+              className={styles.editPost__notification}
             />
           )}
-          {isError && (
+          {postErrorText && (
             <Notification
-              content="Failed to edit post"
-              icon={<ExclamationCircle className={styles.editPost_infoIcon} />}
-              className={styles.editPost__status}
               duration={3000}
+              content={postErrorText || 'Failed to post.'}
+              className={styles.editPost__notification}
+              icon={<ExclamationCircle className={styles.editPost__notificationIcon} />}
+              onClose={() => {
+                setPostErrorText(undefined);
+              }}
             />
           )}
         </div>

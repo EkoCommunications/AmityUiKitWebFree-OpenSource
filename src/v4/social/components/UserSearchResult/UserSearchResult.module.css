@@ -1,9 +1,12 @@
 .userSearchResult {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
   width: 100%;
+  display: flex;
+  min-height: 20rem;
+  padding: 0.5rem 0;
+  overflow: hidden scroll;
+  align-items: start;
+  scrollbar-width: none;
+  flex-direction: column;
+  -ms-overflow-style: none;
   background-color: var(--asc-color-background-default);
-  overflow-x: hidden;
 }

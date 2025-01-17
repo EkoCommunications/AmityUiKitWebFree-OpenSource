@@ -7,11 +7,6 @@
   width: 100%;
 }
 
-.global_feed__postSkeletonContainer {
-  padding-top: 0.75rem;
-  padding-left: 1rem;
-}
-
 .global_feed__pullToRefresh {
   height: var(--asc-pull-to-refresh-height);
   display: flex;
@@ -37,22 +32,6 @@
   animation-duration: 1000ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-}
-
-.global_feed__divider {
-  background-color: var(--asc-color-base-shade4);
-  height: 0.5rem;
-  width: 100%;
-}
-
-.global_feed__divider + .global_feed__divider {
-  display: none;
-}
-
-.global_feed__post__divider {
-  width: 100%;
-  background-color: var(--asc-color-base-shade4);
-  height: 0.0625rem;
 }
 
 .global_feed__post__reactionBar {
@@ -90,5 +69,12 @@
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (width >= 48em) {
+  .global_feed__postContainer {
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
   }
 }

@@ -1,0 +1,12 @@
+.userDescription__description {
+  color: var(--asc-color-base-default);
+  word-break: break-word;
+}
+
+.userDescription__description__text {
+  white-space: pre-wrap;
+}
+
+.userDescription__seeMore__button {
+  color: var(--asc-color-primary-default);
+}

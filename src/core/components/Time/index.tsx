@@ -12,11 +12,17 @@ export interface TimeProps {
 }
 
 const Time = ({ className, date = Date.now() }: TimeProps) => {
+  const isValidDate = !isNaN(date) && new Date(date).getTime() > 0;
   const delta = Date.now() - date;
 
   return (
     <DateContainer className={className}>
-      {delta < DAY ? <TimeAgo date={date} /> : <FormattedDate value={date} />}
+      {isValidDate &&
+        (delta < DAY ? (
+          <TimeAgo date={new Date(date)} />
+        ) : (
+          <FormattedDate value={new Date(date)} />
+        ))}
     </DateContainer>
   );
 };

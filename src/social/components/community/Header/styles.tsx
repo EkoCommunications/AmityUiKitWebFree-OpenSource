@@ -8,9 +8,9 @@ interface CommunityHeaderContainerProps {
   isActive?: boolean;
 }
 
-export const CommunityHeaderContainer = styled.a.attrs(
-  (props) => props,
-)<CommunityHeaderContainerProps>`
+export const CommunityHeaderContainer = styled.a.withConfig({
+  shouldForwardProp: (prop) => !['loading', 'isActive'].includes(prop),
+})<CommunityHeaderContainerProps>`
   display: grid;
   grid-template-areas: 'avatar title' 'avatar children';
   grid-template-columns: min-content auto;

@@ -31,7 +31,7 @@
   --asc-color-white: #fff;
   --asc-color-primary-default: #1054de;
   --asc-color-primary-shade1: #4a82f2;
-  --asc-color-primary-shade2: #a0bdf8;
+  --asc-color-primary-shade2: #a9c4f9;
   --asc-color-primary-shade3: #d9e5fc;
   --asc-color-primary-shade4: #fff;
   --asc-color-base-inverse: #000;
@@ -54,6 +54,9 @@
   --asc-color-background-shade1: #f6f7f8;
   --asc-color-background-transparent-black: #00000080;
   --asc-color-background-transparent-white: #fffc;
+  --asc-color-primary-background-hover: #0d47ba;
+  --asc-color-primary-background-pressed: #0b3997;
+  --asc-color-primary-background-disabled: #d9e5fc;
 
   /* Font */
   --asc-text-global-font-family: inter, -apple-system, blinkmacsystemfont, arial, sans-serif;
@@ -77,6 +80,7 @@
   --asc-text-font-weight-normal: 400;
   --asc-text-font-weight-medium: 500;
   --asc-text-font-weight-bold: 600;
+  --asc-text-font-weight-headline: 700;
   --asc-text-font-weight-black: 900;
 
   /* Line Heights */
@@ -128,7 +132,7 @@
     --asc-color-white: #fff;
     --asc-color-primary-default: #1054de;
     --asc-color-primary-shade1: #4a82f2;
-    --asc-color-primary-shade2: #a0bdf8;
+    --asc-color-primary-shade2: #a9c4f9;
     --asc-color-primary-shade3: #d9e5fc;
     --asc-color-primary-shade4: #fff;
     --asc-color-base-inverse: #000;
@@ -151,6 +155,9 @@
     --asc-color-background-shade1: #f6f7f8;
     --asc-color-background-transparent-black: #00000080;
     --asc-color-background-transparent-white: #fffc;
+    --asc-color-primary-background-hover: #0d47ba;
+    --asc-color-primary-background-pressed: #0b3997;
+    --asc-color-primary-background-disabled: #d9e5fc;
   }
 }
 
@@ -160,7 +167,7 @@
     --asc-color-white: #fff;
     --asc-color-primary-default: #1054de;
     --asc-color-primary-shade1: #4a82f2;
-    --asc-color-primary-shade2: #a0bdf8;
+    --asc-color-primary-shade2: #a9c4f9;
     --asc-color-primary-shade3: #d9e5fc;
     --asc-color-primary-shade4: #fff;
     --asc-color-base-inverse: #fff;
@@ -183,6 +190,9 @@
     --asc-color-background-shade1: #40434e;
     --asc-color-background-transparent-black: #00000080;
     --asc-color-background-transparent-white: #fffc;
+    --asc-color-primary-background-hover: #0d47ba;
+    --asc-color-primary-background-pressed: #0b3997;
+    --asc-color-primary-background-disabled: #d9e5fc;
   }
 }
 
@@ -191,4 +201,16 @@
   [vaul-drawer][vaul-drawer-direction='bottom']::after {
     height: unset;
   }
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  pointer-events: auto !important;
 }

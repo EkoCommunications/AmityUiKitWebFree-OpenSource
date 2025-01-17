@@ -1,32 +1,28 @@
 import React from 'react';
+import { Title } from '~/v4/social/elements/Title/Title';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
+import { AmityCommunitySetupPageMode } from '~/v4/social/pages';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { ExploreEmptyImage } from '~/v4/social/elements/ExploreEmptyImage';
 import { Description } from '~/v4/social/elements/Description/Description';
 import { ExploreCreateCommunity } from '~/v4/social/elements/ExploreCreateCommunity/ExploreCreateCommunity';
-import { ExploreEmptyImage } from '~/v4/social/elements/ExploreEmptyImage';
-import { Title } from '~/v4/social/elements/Title/Title';
-
 import styles from './ExploreCommunityEmpty.module.css';
 
-interface ExploreCommunityEmptyProps {
+type ExploreCommunityEmptyProps = {
   pageId?: string;
-}
+};
 
 export function ExploreCommunityEmpty({ pageId = '*' }: ExploreCommunityEmptyProps) {
   const componentId = 'explore_community_empty';
 
-  const { goToCommunityCreatePage } = useNavigation();
-
-  const { themeStyles, accessibilityId } = useAmityComponent({
-    componentId,
-    pageId,
-  });
+  const { goToCreateCommunityPage } = useNavigation();
+  const { themeStyles, accessibilityId } = useAmityComponent({ componentId, pageId });
 
   return (
     <div
-      className={styles.exploreCommunityEmpty}
       style={themeStyles}
       data-qa-anchor={accessibilityId}
+      className={styles.exploreCommunityEmpty}
     >
       <ExploreEmptyImage pageId={pageId} componentId={componentId} />
       <div className={styles.exploreCommunityEmpty__text}>
@@ -36,7 +32,7 @@ export function ExploreCommunityEmpty({ pageId = '*' }: ExploreCommunityEmptyPro
       <ExploreCreateCommunity
         pageId={pageId}
         componentId={componentId}
-        onClick={goToCommunityCreatePage}
+        onClick={() => goToCreateCommunityPage?.({ mode: AmityCommunitySetupPageMode.CREATE })}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PostComposerPage } from './PostComposerPage';
+import { Mode, PostComposerPage } from './PostComposerPage';
 
 export default {
   title: 'v4-social/pages/PostComposerPage',
@@ -7,6 +7,13 @@ export default {
 
 export const PostComposerPageStories = {
   render: () => {
-    return <PostComposerPage />;
+    return (
+      <PostComposerPage
+        targetId={null}
+        targetType="user"
+        mode={Mode.CREATE}
+        community={undefined}
+      />
+    );
   },
 };

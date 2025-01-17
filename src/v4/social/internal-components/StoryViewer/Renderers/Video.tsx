@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, Children } from 'react';
 import Truncate from 'react-truncate-markup';
 import {
   CustomRenderer,
@@ -14,11 +14,14 @@ import useCommunityMembersCollection from '~/v4/social/hooks/collections/useComm
 import useSDK from '~/v4/core/hooks/useSDK';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { LIKE_REACTION_KEY } from '~/v4/social/constants/reactions';
-import { checkStoryPermission, formatTimeAgo, isAdmin, isModerator } from '~/v4/social/utils';
+import { checkStoryPermission, formatTimeAgo } from '~/v4/social/utils';
 import { StoryProgressBar } from '~/v4/social/elements/StoryProgressBar/StoryProgressBar';
 import clsx from 'clsx';
 import rendererStyles from './Renderers.module.css';
 import { Action } from 'react-insta-stories/dist/interfaces';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 
 const useAudioControl = () => {
   const [muted, setMuted] = useState(false);
@@ -93,7 +96,10 @@ export const renderer: CustomRenderer = ({
   messageHandler,
   onClose,
   onClickCommunity,
+  onDeleteStory,
 }) => {
+  const { isDesktop } = useResponsive();
+  const { openPopup, closePopup } = usePopupContext();
   const [loaded, setLoaded] = useState(false);
   const { loader } = config;
   const { client } = useSDK();
@@ -135,10 +141,7 @@ export const renderer: CustomRenderer = ({
 
   const isOfficial = community?.isOfficial || false;
   const isCreator = creator?.userId === user?.userId;
-  const isGlobalAdmin = isAdmin(user?.roles);
-  const isModeratorUser = isModerator(user?.roles);
-  const haveStoryPermission =
-    isGlobalAdmin || isModeratorUser || checkStoryPermission(client, community?.communityId);
+  const { hasStoryPermission } = useStoryPermission(community?.communityId);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -221,6 +224,70 @@ export const renderer: CustomRenderer = ({
   // @ts-ignore
   const videoDuration = Math.round(story?.videoData?.attributes.metadata.video.duration * 1000);
 
+  const renderCommentTray = () => (
+    <CommentTray
+      referenceId={storyId}
+      referenceType="story"
+      community={community as Amity.Community}
+      shouldAllowCreation={community?.allowCommentInStory}
+      shouldAllowInteraction={isMember}
+    />
+  );
+
+  const renderMenuButton = useCallback(
+    (closePopover?: () => void) => {
+      return (
+        <>
+          {actions?.map((bottomSheetAction) => (
+            <Button
+              key={bottomSheetAction.name}
+              className={rendererStyles.actionButton}
+              onPress={() => {
+                closePopover?.();
+                closeBottomSheet();
+                bottomSheetAction?.action();
+              }}
+            >
+              {bottomSheetAction?.icon && bottomSheetAction.icon}
+              <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
+            </Button>
+          ))}
+        </>
+      );
+    },
+    [actions],
+  );
+
+  const onClickCommentButton = useCallback(() => {
+    if (isDesktop) {
+      pause();
+      openPopup({
+        pageId: 'story_page',
+        componentId: 'comment_tray_component',
+        header: (
+          <Typography.Heading className={rendererStyles.commentTrayHeader}>
+            Comments
+          </Typography.Heading>
+        ),
+        children: renderCommentTray(),
+        isDismissable: false,
+        onClose: () => {
+          closePopup();
+          play();
+        },
+      });
+    } else {
+      openCommentSheet();
+    }
+  }, [action]);
+
+  const onClickMenuButton = useCallback((openPopover) => {
+    if (isDesktop) {
+      pause();
+      openPopover();
+    } else openBottomSheet();
+  }, []);
+
   return (
     <div className={clsx(rendererStyles.rendererContainer)}>
       <StoryProgressBar
@@ -251,17 +318,18 @@ export const renderer: CustomRenderer = ({
           )
         }
         isHaveActions={actions?.length > 0}
-        haveStoryPermission={haveStoryPermission}
+        haveStoryPermission={hasStoryPermission}
         isOfficial={isOfficial}
         isPaused={isPaused}
         onPlay={play}
         onPause={pause}
         onMute={mute}
         onUnmute={unmute}
-        onAction={openBottomSheet}
+        onAction={onClickMenuButton}
         onClickCommunity={() => onClickCommunity?.()}
         onClose={onClose}
         addStoryButton={addStoryButton}
+        actionButton={renderMenuButton}
       />
       <video
         data-qa-anchor="video_view"
@@ -293,16 +361,7 @@ export const renderer: CustomRenderer = ({
         mountPoint={document.getElementById('asc-uikit-stories-viewer') as HTMLElement}
         detent="content-height"
       >
-        {actions?.map((bottomSheetAction) => (
-          <Button
-            key={bottomSheetAction.name}
-            className={clsx(rendererStyles.actionButton)}
-            onPress={bottomSheetAction?.action}
-          >
-            {bottomSheetAction?.icon}
-            <Typography.BodyBold>{bottomSheetAction.name}</Typography.BodyBold>
-          </Button>
-        ))}
+        {renderMenuButton()}
       </BottomSheet>
       <BottomSheet
         rootId="asc-uikit-stories-viewer"
@@ -311,13 +370,7 @@ export const renderer: CustomRenderer = ({
         mountPoint={document.getElementById('asc-uikit-stories-viewer') as HTMLElement}
         detent="full-height"
       >
-        <CommentTray
-          referenceId={storyId}
-          referenceType="story"
-          community={community as Amity.Community}
-          shouldAllowCreation={community?.allowCommentInStory}
-          shouldAllowInteraction={isMember}
-        />
+        {renderCommentTray()}
       </BottomSheet>
       {items?.[0]?.data?.url && (
         <div className={clsx(rendererStyles.hyperLinkContainer)}>
@@ -347,10 +400,13 @@ export const renderer: CustomRenderer = ({
         commentsCount={commentsCount}
         reactionsCount={totalLikes}
         isLiked={isLiked}
-        onClickComment={openCommentSheet}
+        onClickComment={onClickCommentButton}
         myReactions={myReactions}
         showImpression={isCreator || checkStoryPermission(client, community?.communityId)}
         isMember={isMember}
+        onPlay={play}
+        onPause={pause}
+        onDeleteStory={onDeleteStory}
       />
     </div>
   );

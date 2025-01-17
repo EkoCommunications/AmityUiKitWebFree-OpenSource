@@ -21,7 +21,7 @@
 .postDetailPage__topBar {
   display: grid;
   grid-template-columns: min-content 1fr min-content;
-  padding-inline: 0.75rem 1rem;
+  padding-inline: 1rem;
   height: 3.625rem;
   align-items: center;
   gap: 0.5rem;
@@ -109,5 +109,16 @@
 
   100% {
     opacity: 0.6;
+  }
+}
+
+@media (width >= 48em) {
+  .postDetailPage {
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+  }
+
+  .postDetailPage__topBar {
+    border-radius: 0.5rem;
   }
 }

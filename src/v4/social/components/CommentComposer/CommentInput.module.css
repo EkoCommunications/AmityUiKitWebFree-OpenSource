@@ -8,7 +8,6 @@
 }
 
 .editorParagraph {
-  height: 100%;
   width: 100%;
   color: var(--asc-color-base-default);
   line-height: var(--asc-line-height-md);
@@ -28,6 +27,12 @@
   height: max-content;
   max-height: calc(var(--asc-line-height-md) * var(--asc-max-lines));
   overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.editorEditableContent::-webkit-scrollbar {
+  display: none;
 }
 
 .editorContainer :focus {
@@ -36,8 +41,8 @@
 }
 
 .editorLink {
-  color: var(--asc-color-primary-shade1);
   text-decoration: none;
+  color: var(--asc-color-primary-default);
 }
 
 .commentInput__mentionInterceptor {

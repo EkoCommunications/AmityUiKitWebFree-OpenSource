@@ -41,6 +41,7 @@ export const InnerContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+  pointer-events: none;
 `;
 
 export const GridContainer = styled.div`
@@ -55,7 +56,7 @@ export const GridContainer = styled.div`
     'left image right';
 
   width: 100%;
-  height: 100%;
+  height: 90%;
 
   padding: 2rem 1rem 2rem 1rem;
 
@@ -84,6 +85,8 @@ export const Frame = styled.div`
   top: 0;
   left: 0;
 
+  pointer-events: auto;
+
   @media (min-width: 768px) {
     position: unset;
     top: unset;
@@ -109,6 +112,7 @@ const InvisibleButton = styled.button`
   cursor: pointer;
   font-size: 24px;
   color: inherit;
+  pointer-events: auto;
 
   &:hover {
     color: ${({ theme }) => theme.palette.neutral.shade4};
@@ -143,4 +147,5 @@ export const CloseButton = styled(BaseCloseButton)`
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: auto;
 `;

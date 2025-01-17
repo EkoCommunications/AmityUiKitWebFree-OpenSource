@@ -3,6 +3,11 @@ import { AmityStoryMediaType } from '~/v4/social/pages/DraftsPage/DraftsPage';
 import { Mode } from '~/v4/social/pages/PostComposerPage/PostComposerPage';
 import { NavigationContext as NavigationContextV3 } from '~/social/providers/NavigationProvider';
 import { AmityPostCategory } from '~/v4/social/components/PostContent/PostContent';
+import { UserRelationshipPageTabs } from '~/v4/social/pages/UserRelationshipPage/UserRelationshipPage';
+import {
+  AmityCommunitySetupPageMode,
+  MemberCommunitySetup,
+} from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
 
 export enum PageTypes {
   Explore = 'explore',
@@ -16,16 +21,30 @@ export enum PageTypes {
   SocialHomePage = 'SocialHomePage',
   PostDetailPage = 'PostDetailPage',
   CommunityProfilePage = 'CommunityProfilePage',
+  CommunitySetupPage = 'CommunitySetupPage',
   UserProfilePage = 'UserProfilePage',
+  EditUserProfilePage = 'EditUserProfilePage',
+  UserRelationshipPage = 'UserRelationshipPage',
+  BlockedUsersPage = 'BlockedUsersPage',
+  UserPendingFollowRequestPage = 'UserPendingFollowRequestPage',
   SocialGlobalSearchPage = 'SocialGlobalSearchPage',
   SelectPostTargetPage = 'SelectPostTargetPage',
   DraftPage = 'DraftPage',
   PostComposerPage = 'PostComposerPage',
   MyCommunitiesSearchPage = 'MyCommunitiesSearchPage',
   StoryTargetSelectionPage = 'StoryTargetSelectionPage',
+  PollTargetSelectionPage = 'PollTargetSelectionPage',
   AllCategoriesPage = 'AllCategoriesPage',
   CommunitiesByCategoryPage = 'CommunitiesByCategoryPage',
+  CommunityAddCategoryPage = 'CommunityAddCategoryPage',
+  CommunityAddMemberPage = 'CommunityAddMemberPage',
+  CommunitySettingPage = 'CommunitySettingPage',
+  CommunityPostPermissionPage = 'CommunityPostPermissionPage',
+  CommunityStorySettingPage = 'CommunityStorySettingPage',
+  PendingPostsPage = 'PendingPostsPage',
+  CommunityMembershipPage = 'CommunityMembershipPage',
   CommunityCreatePage = 'CommunityCreatePage',
+  PollPostComposerPage = 'PollPostComposerPage',
 }
 
 type Page =
@@ -78,8 +97,15 @@ type Page =
         category?: AmityPostCategory;
       };
     }
-  | { type: PageTypes.CommunityProfilePage; context: { communityId: string } }
+  | { type: PageTypes.CommunityProfilePage; context: { communityId: string; page?: number } }
   | { type: PageTypes.UserProfilePage; context: { userId: string; communityId?: string } }
+  | { type: PageTypes.EditUserProfilePage; context: { userId: string } }
+  | {
+      type: PageTypes.UserRelationshipPage;
+      context: { userId: string; selectedTab: UserRelationshipPageTabs };
+    }
+  | { type: PageTypes.UserPendingFollowRequestPage; context: { userId: string } }
+  | { type: PageTypes.BlockedUsersPage }
   | { type: PageTypes.SocialHomePage; context: { communityId?: string } }
   | { type: PageTypes.SocialGlobalSearchPage; context: { tab?: string } }
   | { type: PageTypes.MyCommunitiesSearchPage; context: { communityId?: string } }
@@ -117,28 +143,94 @@ type Page =
       };
     }
   | {
-      type: PageTypes.CommunityCreatePage;
+      type: PageTypes.CommunitySetupPage;
+      context: {
+        mode: AmityCommunitySetupPageMode;
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.CommunityAddCategoryPage;
+      context: {
+        categories?: Amity.Category[];
+      };
+    }
+  | {
+      type: PageTypes.PollPostComposerPage;
+      context: {
+        targetId: string | null;
+        targetType: 'community' | 'user';
+      };
+    }
+  | {
+      type: PageTypes.CommunityAddMemberPage;
+      context: {
+        members?: MemberCommunitySetup[];
+        communityId?: string;
+        onAddedAction?: (userId: string[]) => void;
+      };
+    }
+  | {
+      type: PageTypes.CommunitySettingPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.CommunityPostPermissionPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.CommunityStorySettingPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.PendingPostsPage;
+      context: {
+        communityId: string;
+      };
+    }
+  | {
+      type: PageTypes.CommunityMembershipPage;
+      context: {
+        community: Amity.Community;
+      };
+    }
+  | {
+      type: PageTypes.PollTargetSelectionPage;
     };
 
 type ContextValue = {
   page: Page;
+  prevPage?: Page;
   onChangePage: (type: string) => void;
   onClickCategory: (categoryId: string) => void;
   onClickCommunity: (communityId: string) => void;
   onClickUser: (userId: string, pageType?: string) => void;
   onCommunityCreated: (communityId: string) => void;
   onEditCommunity: (communityId: string, tab?: string) => void;
-  onEditUser: (userId: string) => void;
   onMessageUser: (userId: string) => void;
-  onBack: () => void;
+  onBack: (page?: number) => void;
   goToUserProfilePage: (userId: string) => void;
+  goToEditUserPage: (userId: string) => void;
+  goToUserRelationshipPage: (userId: string, selectedTab: UserRelationshipPageTabs) => void;
+  goToPendingFollowRequestPage: () => void;
+  goToBlockedUsersPage: () => void;
   goToPostDetailPage: (postId: string, hideTarget?: boolean, category?: AmityPostCategory) => void;
-  goToCommunityProfilePage: (communityId: string) => void;
+  goToCommunityProfilePage: (communityId: string, page?: number) => void;
   goToSocialGlobalSearchPage: (tab?: string) => void;
   goToMyCommunitiesSearchPage: () => void;
   goToSelectPostTargetPage: () => void;
+  goToSelectPollPostTargetPage: () => void;
   goToStoryTargetSelectionPage: () => void;
-  goToCommunityCreatePage: () => void;
+  goToPollPostComposerPage: (context: {
+    targetId: string | null;
+    targetType: 'community' | 'user';
+  }) => void;
   goToDraftStoryPage: (
     targetId: string,
     targetType: string,
@@ -179,6 +271,24 @@ type ContextValue = {
   goToSocialHomePage: () => void;
   goToAllCategoriesPage: () => void;
   goToCommunitiesByCategoryPage: (context: { categoryId: string }) => void;
+  goToCreateCommunityPage?: (context: { mode: AmityCommunitySetupPageMode }) => void;
+
+  goToAddCategoryPage?: (context: { categories?: Amity.Category[] }) => void;
+  goToAddMemberPage?: (context: {
+    members?: MemberCommunitySetup[];
+    communityId?: string;
+    onAddedAction?: (userId: string[]) => void;
+  }) => void;
+  goToCommunitySettingPage?: (community: Amity.Community) => void;
+  goToEditCommunityPage?: (context: {
+    mode: AmityCommunitySetupPageMode;
+    community: Amity.Community;
+  }) => void;
+  goToMembershipPage?: (community: Amity.Community) => void;
+  goToPostPermissionPage?: (community: Amity.Community) => void;
+  goToStorySettingPage?: (community: Amity.Community) => void;
+  goToPendingPostPage?: (communityId: string) => void;
+
   //V3 functions
   onClickStory: (
     storyId: string,
@@ -195,9 +305,12 @@ let defaultValue: ContextValue = {
   onClickUser: (userId: string) => {},
   onCommunityCreated: (communityId: string) => {},
   onEditCommunity: (communityId: string) => {},
-  onEditUser: (userId: string) => {},
   onMessageUser: (userId: string) => {},
   goToUserProfilePage: (userId: string) => {},
+  goToEditUserPage: (userId: string) => {},
+  goToUserRelationshipPage: (userId: string, selectedTab: UserRelationshipPageTabs) => {},
+  goToPendingFollowRequestPage: () => {},
+  goToBlockedUsersPage: () => {},
   goToPostDetailPage: (postId: string, hideTarget?: boolean, category?: AmityPostCategory) => {},
   goToViewStoryPage: (context: {
     targetId: string;
@@ -210,19 +323,30 @@ let defaultValue: ContextValue = {
     mediaType: AmityStoryMediaType,
     storyType: 'communityFeed' | 'globalFeed',
   ) => {},
-  goToCommunityProfilePage: (communityId: string) => {},
+  goToCommunityProfilePage: (communityId: string, page?: number) => {},
   goToSocialGlobalSearchPage: (tab?: string) => {},
   goToSelectPostTargetPage: () => {},
   goToStoryTargetSelectionPage: () => {},
-  goToCommunityCreatePage: () => {},
+  goToSelectPollPostTargetPage: () => {},
+  goToPollPostComposerPage: () => {},
   goToPostComposerPage: () => {},
   goToStoryCreationPage: () => {},
   goToSocialHomePage: () => {},
   goToMyCommunitiesSearchPage: () => {},
   goToAllCategoriesPage: () => {},
   goToCommunitiesByCategoryPage: (context: { categoryId: string }) => {},
+  goToCreateCommunityPage: () => {},
+  goToAddCategoryPage: () => {},
+  goToAddMemberPage: () => {},
+  goToCommunitySettingPage: (community: Amity.Community) => {},
+  goToEditCommunityPage: () => {},
+  goToMembershipPage: (community: Amity.Community) => {},
+  goToPostPermissionPage: (community: Amity.Community) => {},
+  goToStorySettingPage: (community: Amity.Community) => {},
+  goToPendingPostPage: (communityId: string) => {},
+
   setNavigationBlocker: () => {},
-  onBack: () => {},
+  onBack: (page?: number) => {},
   //V3 functions
   onClickStory: (
     storyId: string,
@@ -246,19 +370,27 @@ if (process.env.NODE_ENV !== 'production') {
       console.log(`NavigationContext onCommunityCreated(${communityId})`),
     onEditCommunity: (communityId) =>
       console.log(`NavigationContext onEditCommunity({${communityId})`),
-    onEditUser: (userId) => console.log(`NavigationContext onEditUser(${userId})`),
     onMessageUser: (userId) => console.log(`NavigationContext onMessageUser(${userId})`),
-    onBack: () => console.log('NavigationContext onBack()'),
+    onBack: (page?: number) => console.log(`NavigationContext onBack(${page})`),
     goToUserProfilePage: (userId) =>
       console.log(`NavigationContext goToUserProfilePage(${userId})`),
+    goToEditUserPage: (userId) => console.log(`NavigationContext goToEditUserPage(${userId})`),
+    goToUserRelationshipPage: (userId, selectedTab) =>
+      console.log(`NavigationContext goToUserRelationshipPage(${userId}, ${selectedTab})`),
+    goToPendingFollowRequestPage: () =>
+      console.log(`NavigationContext goToPendingFollowRequestPage()`),
+    goToBlockedUsersPage: () => console.log(`NavigationContext goToBlockedUsersPage()`),
     goToPostDetailPage: (postId, hideTarget, category) =>
       console.log(`NavigationContext goToPostDetailPage(${postId} ${hideTarget} ${category})`),
-    goToCommunityProfilePage: (communityId) =>
-      console.log(`NavigationContext goToCommunityProfilePage(${communityId})`),
+    goToCommunityProfilePage: (communityId, page) =>
+      console.log(`NavigationContext goToCommunityProfilePage(${communityId} ${page})`),
     goToSocialGlobalSearchPage: (tab) =>
       console.log(`NavigationContext goToSocialGlobalSearchPage(${tab})`),
     goToSelectPostTargetPage: () => console.log('NavigationContext goToTargetPage()'),
-    goToCommunityCreatePage: () => console.log('NavigationContext goToCommunityCreatePage()'),
+    goToSelectPollPostTargetPage: () =>
+      console.log(`NavigationContext goToSelectPollPostTargetPage()`),
+    goToPollPostComposerPage: (context) =>
+      console.log(`NavigationContext goToPollPostComposerPage(${context})`),
     goToStoryTargetSelectionPage: () =>
       console.log('NavigationContext goToStoryTargetSelectionPage()'),
     goToDraftStoryPage: (data) => console.log(`NavigationContext goToDraftStoryPage()`),
@@ -270,6 +402,12 @@ if (process.env.NODE_ENV !== 'production') {
     goToAllCategoriesPage: () => console.log('NavigationContext goToAllCategoriesPage()'),
     goToCommunitiesByCategoryPage: (context) =>
       console.log(`NavigationContext goToCommunitiesByCategoryPage(${context})`),
+    goToCreateCommunityPage: () => console.log('NavigationContext goToCreateCommunityPage()'),
+    goToEditCommunityPage: () => console.log('NavigationContext goToEditCommunityPage()'),
+    goToAddCategoryPage: () => console.log('NavigationContext goToAddCategoryPage()'),
+    goToAddMemberPage: () => console.log('NavigationContext goToAddMemberPage()'),
+    goToCommunitySettingPage: (community) =>
+      console.log(`NavigationContext goToCommunitySettingPage(${community})`),
 
     //V3 functions
     onClickStory: (storyId, storyType, targetIds) =>
@@ -316,12 +454,18 @@ interface NavigationProviderProps {
   ) => void;
   goToAllCategoriesPage?: () => void;
   goToCommunitiesByCategoryPage?: (context: { categoryId: string }) => void;
+  goToCreateCommunityPage?: (context: { mode: AmityCommunitySetupPageMode }) => void;
+  goToEditCommunityPage?: (context: {
+    mode: AmityCommunitySetupPageMode;
+    community: Amity.Community;
+  }) => void;
+
   onCommunityCreated?: (communityId: string) => void;
   goToCommunityCreatePage?: () => void;
   onEditCommunity?: (communityId: string, options?: { tab?: string }) => void;
   onEditUser?: (userId: string) => void;
   onMessageUser?: (userId: string) => void;
-  onBack?: () => void;
+  onBack?: (page?: number) => void;
   //V3 functions
   onClickStory?: (
     storyId: string,
@@ -347,6 +491,7 @@ export default function NavigationProvider({
     { type: PageTypes.SocialHomePage, context: { communityId: undefined } },
   ]);
   const currentPage = useMemo(() => pages[pages.length - 1], [pages]);
+  const prevPage = useMemo(() => pages[pages.length - 2], [pages]);
   const [navigationBlocker, setNavigationBlocker] = useState<
     | {
         title: ReactNode;
@@ -363,8 +508,15 @@ export default function NavigationProvider({
     setPages((prevState) => [...prevState, newPage]);
   }, []);
 
-  const popPage = () => {
-    setPages((prevState) => (prevState.length > 1 ? prevState.slice(0, -1) : prevState));
+  const popPage = (page?: number) => {
+    setPages((prevState) => {
+      const pagesToRemove = page && page > 0 ? page : 1;
+
+      if (prevState.length > pagesToRemove) {
+        return prevState.slice(0, -pagesToRemove);
+      }
+      return prevState;
+    });
   };
 
   const onChangePage = onChangePageProp
@@ -409,7 +561,7 @@ export default function NavigationProvider({
   const handleCommunityCreated = useCallback(
     (communityId) => {
       const next = {
-        type: PageTypes.CommunityFeed,
+        type: PageTypes.CommunityProfilePage,
         communityId,
         isNewCommunity: true,
       };
@@ -471,6 +623,60 @@ export default function NavigationProvider({
     [onChangePage, onEditUser, pushPage],
   );
 
+  const goToEditUserPage = useCallback(
+    (userId) => {
+      const next = {
+        type: PageTypes.EditUserProfilePage,
+        context: {
+          userId,
+        },
+      };
+
+      if (onChangePage) return onChangePage(next);
+      if (onEditUser) return onEditUser(userId);
+
+      pushPage(next);
+    },
+    [onChangePage, onEditUser, pushPage],
+  );
+
+  const goToUserRelationshipPage = useCallback(
+    (userId, selectedTab) => {
+      const next = {
+        type: PageTypes.UserRelationshipPage,
+        context: {
+          userId,
+          selectedTab,
+        },
+      };
+
+      if (onChangePage) return onChangePage(next);
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToPendingFollowRequestPage = useCallback(() => {
+    const next = {
+      type: PageTypes.UserPendingFollowRequestPage,
+    };
+
+    if (onChangePage) return onChangePage(next);
+
+    pushPage(next);
+  }, [onChangePage, pushPage]);
+
+  const goToBlockedUsersPage = useCallback(() => {
+    const next = {
+      type: PageTypes.BlockedUsersPage,
+    };
+
+    if (onChangePage) return onChangePage(next);
+
+    pushPage(next);
+  }, [onChangePage, pushPage]);
+
   const handleEditCommunity = useCallback(
     (communityId, tab) => {
       const next = {
@@ -502,12 +708,15 @@ export default function NavigationProvider({
     [onChangePage, onMessageUser],
   );
 
-  const handleBack = useCallback(() => {
-    if (onBack) {
-      onBack();
-    }
-    popPage();
-  }, [onChangePage, onBack, popPage]);
+  const handleBack = useCallback(
+    (page?: number) => {
+      if (onBack) {
+        onBack(page);
+      }
+      popPage(page);
+    },
+    [onChangePage, onBack, popPage],
+  );
 
   const goToViewStoryPage = useCallback(
     ({ targetId, storyType, targetType }) => {
@@ -556,11 +765,12 @@ export default function NavigationProvider({
   );
 
   const goToCommunityProfilePage = useCallback(
-    (communityId) => {
+    (communityId, page = 1) => {
       const next = {
         type: PageTypes.CommunityProfilePage,
         context: {
           communityId,
+          page,
         },
       };
 
@@ -568,15 +778,6 @@ export default function NavigationProvider({
     },
     [onChangePage, pushPage],
   );
-
-  const goToCommunityCreatePage = useCallback(() => {
-    const next = {
-      type: PageTypes.CommunityCreatePage,
-      context: {},
-    };
-
-    pushPage(next);
-  }, [onChangePage, pushPage]);
 
   const goToSocialGlobalSearchPage = useCallback(
     (tab?: string) => {
@@ -600,6 +801,14 @@ export default function NavigationProvider({
   const goToStoryTargetSelectionPage = useCallback(() => {
     const next = {
       type: PageTypes.StoryTargetSelectionPage,
+    };
+
+    pushPage(next);
+  }, [onChangePage, pushPage]);
+
+  const goToSelectPollPostTargetPage = useCallback(() => {
+    const next = {
+      type: PageTypes.PollTargetSelectionPage,
     };
 
     pushPage(next);
@@ -668,6 +877,32 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToCreateCommunityPage = useCallback(() => {
+    const next = {
+      type: PageTypes.CommunitySetupPage,
+      context: {
+        mode: AmityCommunitySetupPageMode.CREATE,
+      },
+    };
+
+    pushPage(next);
+  }, [onChangePage, pushPage]);
+
+  const goToEditCommunityPage = useCallback(
+    ({ mode, community }) => {
+      const next = {
+        type: PageTypes.CommunitySetupPage,
+        context: {
+          mode,
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   const goToMyCommunitiesSearchPage = useCallback(() => {
     const next = {
       type: PageTypes.MyCommunitiesSearchPage,
@@ -698,6 +933,36 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToAddCategoryPage = useCallback(
+    ({ categories }) => {
+      const next = {
+        type: PageTypes.CommunityAddCategoryPage,
+        context: {
+          categories,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToAddMemberPage = useCallback(
+    ({ member, communityId, onAddedAction }) => {
+      const next = {
+        type: PageTypes.CommunityAddMemberPage,
+        context: {
+          member,
+          communityId,
+          onAddedAction,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   const handleClickStory = useCallback(
     (targetId, storyType, targetIds) => {
       const next = {
@@ -716,26 +981,113 @@ export default function NavigationProvider({
     [onChangePage, pushPage],
   );
 
+  const goToCommunitySettingPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunitySettingPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToPostPermissionPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunityPostPermissionPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToStorySettingPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunityStorySettingPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToPendingPostPage = useCallback(
+    (communityId) => {
+      const next = {
+        type: PageTypes.PendingPostsPage,
+        context: {
+          communityId,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToMembershipPage = useCallback(
+    (community) => {
+      const next = {
+        type: PageTypes.CommunityMembershipPage,
+        context: {
+          community,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
+  const goToPollPostComposerPage = useCallback(
+    ({ targetId, targetType }) => {
+      const next = {
+        type: PageTypes.PollPostComposerPage,
+        context: {
+          targetId,
+          targetType,
+        },
+      };
+
+      pushPage(next);
+    },
+    [onChangePage, pushPage],
+  );
+
   return (
     <NavigationContext.Provider
       value={{
         page: currentPage,
+        prevPage,
         onChangePage: handleChangePage,
         onClickCategory: handleClickCategory,
         onClickCommunity: handleClickCommunity,
         onClickUser: handleClickUser,
         onCommunityCreated: handleCommunityCreated,
         onEditCommunity: handleEditCommunity,
-        onEditUser: handleEditUser,
         onMessageUser: handleMessageUser,
         onBack: handleBack,
         goToUserProfilePage,
         goToPostDetailPage,
+        goToEditUserPage,
         goToSocialGlobalSearchPage,
         goToCommunityProfilePage,
         goToViewStoryPage,
         goToSelectPostTargetPage,
         goToStoryTargetSelectionPage,
+        goToSelectPollPostTargetPage,
         goToStoryCreationPage,
         goToDraftStoryPage,
         goToPostComposerPage,
@@ -743,8 +1095,20 @@ export default function NavigationProvider({
         goToMyCommunitiesSearchPage,
         goToAllCategoriesPage,
         goToCommunitiesByCategoryPage,
-        goToCommunityCreatePage,
+        goToCreateCommunityPage,
+        goToEditCommunityPage,
+        goToAddCategoryPage,
+        goToAddMemberPage,
+        goToCommunitySettingPage,
+        goToPostPermissionPage,
+        goToStorySettingPage,
+        goToPendingPostPage,
+        goToMembershipPage,
+        goToPollPostComposerPage,
         setNavigationBlocker,
+        goToUserRelationshipPage,
+        goToPendingFollowRequestPage,
+        goToBlockedUsersPage,
         onClickStory: handleClickStory,
       }}
     >

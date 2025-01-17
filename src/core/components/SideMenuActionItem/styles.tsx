@@ -34,7 +34,9 @@ export const ButtonActionItem = styled(SecondaryButton)`
   width: 100%;
 `;
 
-export const AnchorActionItem = styled.a<{ active?: boolean }>`
+export const AnchorActionItem = styled.a.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active?: boolean }>`
   cursor: pointer;
   border-radius: 4px;
   ${actionItemContainerStyles}
@@ -47,7 +49,9 @@ export const AnchorActionItem = styled.a<{ active?: boolean }>`
     `};
 `;
 
-export const IconWrapper = styled.div<{ active?: boolean }>`
+export const IconWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active?: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 4px;

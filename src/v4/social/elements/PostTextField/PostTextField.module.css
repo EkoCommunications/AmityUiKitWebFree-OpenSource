@@ -2,7 +2,7 @@
   color: #999;
   overflow: hidden;
   position: absolute;
-  top: 4.5rem;
+  top: 4.3rem;
   left: 1rem;
   user-select: none;
   pointer-events: none;
@@ -39,12 +39,8 @@
 }
 
 .editorLink {
-  color: var(--asc-color-primary-shade1);
   text-decoration: none;
-}
-
-.editorLink:hover {
-  text-decoration: underline;
+  color: var(--asc-color-primary-default);
 }
 
 .postTextField__mentionInterceptor {

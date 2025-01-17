@@ -7,6 +7,7 @@ export default function usePostsCollection({
   targetType,
   targetId,
   feedType,
+  dataTypes,
   limit = QUERY_LIMIT,
 }: Partial<Parameters<typeof PostRepository.getPosts>[0]>) {
   const { items, ...rest } = useLiveCollection({
@@ -15,6 +16,7 @@ export default function usePostsCollection({
       targetType,
       targetId: targetId as string,
       feedType,
+      dataTypes,
       limit,
     },
     shouldCall: !!targetId && !!targetType,

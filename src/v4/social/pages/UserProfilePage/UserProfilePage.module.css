@@ -1,0 +1,96 @@
+.userProfilePage {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+  background-color: var(--asc-color-background-default);
+}
+
+.userProfilePage__container {
+  flex: 1;
+  margin-top: 3.62rem;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.userProfilePage__container::-webkit-scrollbar {
+  display: none;
+}
+
+.userProfilePage__topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 3.625rem;
+  padding-inline: 0.75rem 1rem;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.userProfilePage__displayName {
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.userProfilePage__displayName[data-show='true'] {
+  opacity: 1;
+}
+
+.userProfilePage__feedTabs {
+  background-color: var(--asc-color-background-default);
+  position: sticky;
+  top: -0.125rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.25rem;
+  border-bottom: 1px solid var(--asc-color-base-shade4);
+  padding: 0 1rem;
+  z-index: 1;
+}
+
+.userProfilePage__floatingButton {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.userProfilePage__createPostHeader {
+  color: var(--asc-color-base-default);
+}
+
+@media (width >=48em) {
+  .userProfilePage {
+    background-color: transparent;
+  }
+
+  .userProfilePage__topBar {
+    background-color: var(--asc-color-background-default);
+    position: static;
+  }
+
+  .userProfilePage__topSection {
+    background-color: var(--asc-color-background-default);
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .userProfilePage__displayName {
+    display: none;
+  }
+
+  .userProfilePage__container {
+    margin-top: 0;
+  }
+
+  .userProfilePage__feedTabs {
+    position: static;
+  }
+
+  .userProfilePage__floatingButton {
+    display: none;
+  }
+}

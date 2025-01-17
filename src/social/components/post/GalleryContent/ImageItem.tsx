@@ -8,6 +8,7 @@ interface ThumbnailProps {
 export const Thumbnail = ({ item }: ThumbnailProps) => {
   return (
     <Image
+      key={item?.data.fileId}
       fileId={item?.data.fileId}
       data-qa-anchor="post-gallery-content-image-thumbnail-item"
       mediaFit="cover"

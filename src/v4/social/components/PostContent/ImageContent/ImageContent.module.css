@@ -22,8 +22,8 @@
 .imageContent[data-images-amount='3'] {
   aspect-ratio: 1;
   grid-template:
-    'image1 image1 image1 image1' 66%
-    'image2 image2 image3 image3' 33%
+    'image1 image1 image1 image1' 60%
+    'image2 image2 image3 image3' 40%
     / 25% 25% 25% 25%;
 }
 
@@ -73,4 +73,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.imageContent__skeleton {
+  background-color: var(--asc-color-base-shade4);
+  border-radius: 0.5rem;
+  width: 100%;
+  height: 100%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }

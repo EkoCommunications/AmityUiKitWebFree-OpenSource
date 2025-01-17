@@ -110,6 +110,7 @@ export function MentionPlugin<TData, TNode extends TextNode>({
   $createNode,
   menuRenderFn,
   commandPriority,
+  anchorClassName,
 }: {
   suggestions: TData[];
   getSuggestionId: (suggestion: TData) => string;
@@ -117,6 +118,7 @@ export function MentionPlugin<TData, TNode extends TextNode>({
   $createNode: (data: TData, key?: NodeKey) => TNode;
   menuRenderFn: MenuRenderFn<MentionTypeaheadOption<TData>>;
   commandPriority: CommandListenerPriority;
+  anchorClassName?: string;
 }) {
   const [editor] = useLexicalComposerContext();
 
@@ -162,6 +164,7 @@ export function MentionPlugin<TData, TNode extends TextNode>({
 
   return (
     <LexicalTypeaheadMenuPlugin
+      anchorClassName={anchorClassName}
       onQueryChange={onQueryChange}
       onSelectOption={onSelectOption}
       triggerFn={checkForMentionMatch}

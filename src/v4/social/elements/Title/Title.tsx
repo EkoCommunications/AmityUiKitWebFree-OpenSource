@@ -1,14 +1,14 @@
+import clsx from 'clsx';
 import React from 'react';
-import styles from './Title.module.css';
 import { Typography } from '~/v4/core/components';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
-import clsx from 'clsx';
+import styles from './Title.module.css';
 
-interface TitleProps {
+type TitleProps = {
   pageId?: string;
   componentId?: string;
   titleClassName?: string;
-}
+};
 
 export function Title({ pageId = '*', componentId = '*', titleClassName }: TitleProps) {
   const elementId = 'title';
@@ -22,9 +22,9 @@ export function Title({ pageId = '*', componentId = '*', titleClassName }: Title
 
   return (
     <Typography.Title
-      className={clsx(styles.title, titleClassName)}
       style={themeStyles}
       data-qa-anchor={accessibilityId}
+      className={clsx(styles.title, titleClassName)}
     >
       {config.text}
     </Typography.Title>

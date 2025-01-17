@@ -3,7 +3,6 @@
   margin: 0 auto;
   background-color: var(--asc-color-background-default);
   overflow: hidden;
-  box-shadow: 0 0.0625rem 0.1875rem rgb(0 0 0 / 10%);
 }
 
 .communityProfileSkeleton__headerImage {
@@ -95,4 +94,11 @@
 .communityProfileSkeleton__avatar,
 .communityProfileSkeleton__username {
   animation: pulse 1.5s ease-in-out infinite;
+}
+
+@media (width >= 48em) {
+  .communityProfileSkeleton__container {
+    border-radius: 0.5rem;
+    border: 1px solid var(--asc-color-base-shade4);
+  }
 }

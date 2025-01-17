@@ -37,7 +37,7 @@ export const ReplyCommentList = ({
   };
 
   return (
-    <div>
+    <div className={styles.replyCommentList}>
       {isLoading && <CommentSkeleton numberOfSkeletons={3} />}
       {comments.map((comment) => {
         return (

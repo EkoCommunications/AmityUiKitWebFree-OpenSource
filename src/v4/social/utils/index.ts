@@ -229,3 +229,56 @@ export function canCreatePostCommunity(
 
   return false;
 }
+
+export const checkEditCommunityPermission = (
+  client: Amity.Client | null | undefined,
+  communityId?: string,
+) => {
+  if (!client) {
+    return false;
+  }
+  if (communityId) {
+    const communityPermission = client
+      .hasPermission(Permissions.EditCommunityPermission)
+      .community(communityId);
+    return communityPermission;
+  }
+
+  return false;
+};
+
+export const checkReviewPostPermission = (
+  client: Amity.Client | null | undefined,
+  communityId?: string,
+) => {
+  if (!client) {
+    return false;
+  }
+
+  if (communityId) {
+    const communityPermission = client
+      .hasPermission(Permissions.ReviewCommunityPost)
+      .community(communityId);
+    return communityPermission;
+  }
+
+  return false;
+};
+
+export const checkDeleteCommunityPermission = (
+  client: Amity.Client | null | undefined,
+  communityId?: string,
+) => {
+  if (!client) {
+    return false;
+  }
+
+  if (communityId) {
+    const communityPermission = client
+      .hasPermission(Permissions.DeleteCommunityPermission)
+      .community(communityId);
+    return communityPermission;
+  }
+
+  return false;
+};

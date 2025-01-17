@@ -1,10 +1,14 @@
 .userItem {
-  display: grid;
-  grid-template-columns: 3.75rem minmax(0, 1fr);
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  gap: 1rem;
   width: 100%;
+  display: grid;
   cursor: pointer;
+  padding: 0.5rem 0;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+}
+
+.userItem[data-focus-visible] {
+  background-color: var(--asc-color-base-shade4);
 }
 
 .userItem__leftPane {

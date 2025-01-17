@@ -20,7 +20,6 @@ type CommunityRowItemProps<TShowJoinButton extends boolean | undefined> = {
   pageId?: string;
   componentId?: string;
   elementId?: string;
-  key?: string;
   order?: number;
   minCategoryCharacters?: number;
   maxCategoryCharacters?: number;
@@ -46,7 +45,6 @@ const formatOrder = (order: number) => {
 };
 
 export const CommunityRowItem = <T extends boolean | undefined>({
-  key,
   pageId = '*',
   componentId = '*',
   elementId = '*',
@@ -67,7 +65,7 @@ export const CommunityRowItem = <T extends boolean | undefined>({
 
   return (
     <ClickableArea
-      key={key}
+      key={community.communityId}
       elementType="div"
       className={styles.communityRowItem}
       onPress={() => onClick(community.communityId)}

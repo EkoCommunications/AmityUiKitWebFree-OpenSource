@@ -4,15 +4,11 @@ import { FileTrigger } from 'react-aria-components';
 import { StoryRing } from '~/v4/social/elements/StoryRing/StoryRing';
 import clsx from 'clsx';
 import { useGetActiveStoriesByTarget } from '~/v4/social/hooks/useGetActiveStories';
-import useSDK from '~/v4/core/hooks/useSDK';
-import { useUser } from '~/v4/core/hooks/objects/useUser';
-import { isAdmin } from '~/v4/utils/permissions';
-import { checkStoryPermission } from '~/v4/social/utils';
 import { useCommunityInfo } from '~/v4/social/hooks/useCommunityInfo';
 import { CreateNewStoryButton } from '~/v4/social/elements/CreateNewStoryButton';
 import { CommunityAvatar } from '~/v4/social/elements/CommunityAvatar';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
-
+import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 import styles from './StoryTabCommunity.module.css';
 
 const ErrorIcon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -49,27 +45,20 @@ export const StoryTabCommunityFeed: React.FC<StoryTabCommunityFeedProps> = ({
   onFileChange,
   onStoryClick,
 }) => {
-  const { isExcluded, accessibilityId, themeStyles } = useAmityComponent({
-    pageId,
-    componentId,
-  });
-
+  const { community } = useCommunityInfo(communityId);
+  const { hasStoryPermission } = useStoryPermission(communityId);
+  const { isExcluded, accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
   const { stories } = useGetActiveStoriesByTarget({
     targetId: communityId,
     targetType: 'community',
     options: { orderBy: 'asc', sortBy: 'createdAt' },
   });
 
-  const { community } = useCommunityInfo(communityId);
-
-  const { currentUserId, client } = useSDK();
-  const { user } = useUser({ userId: currentUserId });
-  const isGlobalAdmin = isAdmin(user?.roles);
-  const hasStoryPermission = isGlobalAdmin || checkStoryPermission(client, communityId);
   const hasStories = stories?.length > 0;
-  const hasUnSeen = stories.some((story) => !story?.isSeen);
-  const uploading = stories.some((story) => story?.syncState === 'syncing');
-  const isErrored = stories.some((story) => story?.syncState === 'error');
+  const storiesWithoutAds = stories.filter((story) => !(story as Amity.Ad).adId) as Amity.Story[];
+  const hasUnSeen = storiesWithoutAds.some((story) => !story?.isSeen);
+  const uploading = storiesWithoutAds.some((story) => story?.syncState === 'syncing');
+  const isErrored = storiesWithoutAds.some((story) => story?.syncState === 'error');
 
   const handleOnClick = () => {
     if (Array.isArray(stories) && stories.length === 0) return;

@@ -1,6 +1,6 @@
 export { default as AmityUiKitProvider } from '~/v4/core/providers/AmityUIKitProvider';
 export { default as AmityUiKitFeed } from '~/social/components/Feed';
-export { default as AmityUiKitSocial } from '~/social/pages/Application';
+export { default as AmityUiKitSocial } from '~/v4/social/pages/Application';
 export { default as AmityUiKitChat } from '~/chat/pages/Application';
 
 // Export helper
@@ -57,6 +57,8 @@ export {
   SelectPostTargetPage as AmityPostTargetSelectionPage,
   PostComposerPage as AmityPostComposerPage,
   CommunityProfilePage as AmityCommunityProfilePage,
+  UserProfilePage as AmityUserProfilePage,
+  EditUserProfilePage as AmityEditUserProfilePage,
 } from '~/v4/social/pages';
 
 export {
@@ -80,4 +82,4 @@ export {
   CommunityPinnedPost as AmityCommunityPinnedPostComponent,
 } from '~/v4/social/components/';
 
-export { HomePageTab as AmitySocialHomePageTab } from '~/v4/social/pages/SocialHomePage';
+export { HomePageTab as AmitySocialHomePageTab } from '~/v4/social/constants/HomePageTab';

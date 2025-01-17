@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-
-import styles from './RecommendedCommunities.module.css';
+import clsx from 'clsx';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { CommunityJoinButton } from '~/v4/social/elements/CommunityJoinButton/CommunityJoinButton';
 import { CommunityMembersCount } from '~/v4/social/elements/CommunityMembersCount/CommunityMembersCount';
@@ -16,22 +15,24 @@ import { useExplore } from '~/v4/social/providers/ExploreProvider';
 import { CommunityJoinedButton } from '~/v4/social/elements/CommunityJoinedButton/CommunityJoinedButton';
 import { useCommunityActions } from '~/v4/social/hooks/useCommunityActions';
 import { ClickableArea } from '~/v4/core/natives/ClickableArea/ClickableArea';
+import { Carousel } from '~/v4/core/components/Carousel';
+import styles from './RecommendedCommunities.module.css';
 
-interface RecommendedCommunityCardProps {
-  community: Amity.Community;
+type RecommendedCommunityCardProps = {
   pageId: string;
   componentId: string;
+  community: Amity.Community;
   onClick: (communityId: string) => void;
   onCategoryClick?: (categoryId: string) => void;
   onJoinButtonClick: (communityId: string) => void;
   onLeaveButtonClick: (communityId: string) => void;
-}
+};
 
 const RecommendedCommunityCard = ({
   pageId,
-  componentId,
-  community,
   onClick,
+  community,
+  componentId,
   onCategoryClick,
   onJoinButtonClick,
   onLeaveButtonClick,
@@ -47,12 +48,12 @@ const RecommendedCommunityCard = ({
       className={styles.recommendedCommunityCard}
       onPress={() => onClick(community.communityId)}
     >
-      <div className={styles.recommendedCommunityCard__image}>
+      <div className={styles.recommendedCommunityCard__imageWrapper}>
         <CommunityCardImage
           pageId={pageId}
-          componentId={componentId}
           imgSrc={avatarUrl}
-          className={styles.recommendedCommunityCard__img}
+          componentId={componentId}
+          className={styles.recommendedCommunityCard__image}
         />
       </div>
       <div className={styles.recommendedCommunityCard__content}>
@@ -72,13 +73,13 @@ const RecommendedCommunityCard = ({
         <div className={styles.recommendedCommunityCard__bottom}>
           <div className={styles.recommendedCommunityCard__content__left}>
             <CommunityCategories
-              pageId={pageId}
-              componentId={componentId}
-              community={community}
-              onClick={onCategoryClick}
               truncate
-              maxCategoryCharacters={5}
+              pageId={pageId}
+              community={community}
               maxCategoriesLength={2}
+              componentId={componentId}
+              onClick={onCategoryClick}
+              maxCategoryCharacters={5}
             />
             <CommunityMembersCount
               pageId={pageId}
@@ -141,38 +142,38 @@ export const RecommendedCommunities = ({ pageId = '*' }: RecommendedCommunitiesP
 
   const handleLeaveButtonClick = (communityId: string) => leaveCommunity(communityId);
 
-  if (isLoading) {
-    return (
-      <div className={styles.recommendedCommunities}>
-        {Array.from({ length: 4 }).map((_, index) => (
-          <RecommendedCommunityCardSkeleton key={index} />
-        ))}
-      </div>
-    );
-  }
-
-  if (recommendedCommunities.length === 0) {
-    return null;
-  }
-
   return (
-    <div
-      style={themeStyles}
-      data-qa-anchor={accessibilityId}
-      className={styles.recommendedCommunities}
+    <Carousel
+      scrollOffset={400}
+      iconClassName={styles.recommendedCommunityCard__arrowIcon}
+      isHidden={isLoading || recommendedCommunities.length < 3}
+      leftArrowClassName={clsx(styles.recommendedCommunityCard__arrow, styles.left)}
+      rightArrowClassName={clsx(styles.recommendedCommunityCard__arrow, styles.right)}
     >
-      {recommendedCommunities.map((community) => (
-        <RecommendedCommunityCard
-          key={community.communityId}
-          community={community}
-          pageId={pageId}
-          componentId={componentId}
-          onClick={(communityId) => goToCommunityProfilePage(communityId)}
-          onCategoryClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
-          onJoinButtonClick={handleJoinButtonClick}
-          onLeaveButtonClick={handleLeaveButtonClick}
-        />
-      ))}
-    </div>
+      <div
+        style={themeStyles}
+        data-qa-anchor={accessibilityId}
+        className={styles.recommendedCommunities}
+      >
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <RecommendedCommunityCardSkeleton key={index} />
+            ))
+          : recommendedCommunities.length === 0
+            ? null
+            : recommendedCommunities.map((community) => (
+                <RecommendedCommunityCard
+                  pageId={pageId}
+                  community={community}
+                  componentId={componentId}
+                  key={community.communityId}
+                  onJoinButtonClick={handleJoinButtonClick}
+                  onLeaveButtonClick={handleLeaveButtonClick}
+                  onClick={(communityId) => goToCommunityProfilePage(communityId)}
+                  onCategoryClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
+                />
+              ))}
+      </div>
+    </Carousel>
   );
 };

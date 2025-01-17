@@ -15,6 +15,11 @@
   cursor: not-allowed;
 }
 
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .primary {
   background-color: var(--asc-color-primary-default);
   color: var(--asc-color-white);
@@ -22,7 +27,7 @@
 }
 
 .primary:hover:not(.disabled) {
-  background-color: var(--asc-color-primary-50);
+  background-color: var(--asc-color-primary-shade1);
 }
 
 .secondary {

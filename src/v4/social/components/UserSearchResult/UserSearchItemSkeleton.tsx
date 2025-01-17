@@ -42,12 +42,6 @@ export const UserSearchItemSkeleton = ({
             styles.userSearchItemSkeleton__animation,
           )}
         />
-        <div
-          className={clsx(
-            styles.userSearchItemSkeleton__information__subtitle,
-            styles.userSearchItemSkeleton__animation,
-          )}
-        />
       </div>
     </div>
   );

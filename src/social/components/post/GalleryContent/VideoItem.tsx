@@ -13,6 +13,7 @@ interface ThumbnailProps {
 export const Thumbnail = ({ item, showPlayIcon, showVideoDuration }: ThumbnailProps) => {
   return (
     <VideoThumbnail
+      key={item?.data.thumbnailFileId}
       fileId={item?.data.thumbnailFileId}
       showPlayIcon={showPlayIcon}
       videoFileId={showVideoDuration && item?.data.videoFileId.original}

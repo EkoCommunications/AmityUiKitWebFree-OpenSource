@@ -38,7 +38,7 @@
 
 .tabItem[data-active='true'] {
   color: var(--asc-color-primary-default);
-  border-bottom: 1px solid var(--asc-color-primary-default);
+  border-bottom: 2px solid var(--asc-color-primary-default);
 }
 
 .reactionEmoji {
@@ -49,7 +49,7 @@
 
 .userList {
   display: flex;
-  gap: var(--asc-spacing-s1);
+  gap: 0;
   width: 100%;
   flex-direction: column;
 }
@@ -61,7 +61,6 @@
   background: var(--asc-color-background-default);
   border-radius: var(--asc-border-radius-sm);
   width: 100%;
-  border-bottom: 1px solid var(--asc-color-base-shade4);
 }
 
 .userDetailsContainer {
@@ -126,6 +125,10 @@
   color: var(--asc-color-base-shade1);
 }
 
+.userDetailsName {
+  color: var(--asc-color-base-default);
+}
+
 @keyframes skeleton-pulse {
   0% {
     opacity: 0.6;
@@ -156,6 +159,42 @@
 }
 
 .avatar {
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.closeButton {
+  display: none;
+  margin-bottom: 0.5rem;
+  fill: var(--asc-color-base-shade3);
+}
+
+.retryIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--asc-color-base-shade3);
+}
+
+@media only screen and (width >= 48em) {
+  .reactionListContainer {
+    width: 30rem;
+  }
+
+  .tabListContainer {
+    padding: 1rem 1rem 0;
+    border-bottom: 1px solid var(--asc-color-base-shade4);
+  }
+
+  .tabList {
+    border-bottom: none;
+  }
+
+  .closeButton {
+    display: block;
+  }
+
+  .reactionPanel {
+    padding: 0 1rem;
+    min-height: 28rem;
+  }
 }

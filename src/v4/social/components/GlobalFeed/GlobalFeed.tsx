@@ -11,6 +11,8 @@ import {
 } from '~/v4/social/components/PostContent/PostContent';
 import { ClickableArea } from '~/v4/core/natives/ClickableArea';
 import styles from './GlobalFeed.module.css';
+import { Divider } from '~/v4/social/elements/Divider';
+import useGlobalPinnedPostsCollection from '~/v4/social/hooks/collections/useGlobalPinnedPostsCollection';
 
 interface GlobalFeedProps {
   pageId?: string;
@@ -38,6 +40,9 @@ export const GlobalFeed = ({
     componentId,
   });
 
+  const { globalFeaturedPosts, isLoading: isGlobalFeaturedPostsLoading } =
+    useGlobalPinnedPostsCollection();
+
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
 
   const { AmityGlobalFeedComponentBehavior } = usePageBehavior();
@@ -49,7 +54,12 @@ export const GlobalFeed = ({
     },
   });
 
-  if (items.length === 0 && !isLoading) {
+  if (
+    !isLoading &&
+    items.length === 0 &&
+    !isGlobalFeaturedPostsLoading &&
+    globalFeaturedPosts?.length === 0
+  ) {
     return <EmptyNewsfeed pageId={pageId} />;
   }
 
@@ -66,9 +76,41 @@ export const GlobalFeed = ({
 
   return (
     <div className={styles.global_feed} style={themeStyles} data-qa-anchor={accessibilityId}>
+      {globalFeaturedPosts?.map((item) => (
+        <React.Fragment key={item.post.postId}>
+          <ClickableArea
+            elementType="div"
+            className={styles.global_feed__postContainer}
+            onPress={() =>
+              AmityGlobalFeedComponentBehavior?.goToPostDetailPage?.({
+                hideTarget: true,
+                postId: item?.post?.postId,
+                category: AmityPostCategory.ANNOUNCEMENT,
+              })
+            }
+          >
+            <PostContent
+              pageId={pageId}
+              post={item.post}
+              category={AmityPostCategory.ANNOUNCEMENT}
+              style={AmityPostContentComponentStyle.FEED}
+              isGlobalFeaturePost={true}
+              onPostDeleted={() => onPostDeleted?.(item?.post)}
+              onClick={() => {
+                AmityGlobalFeedComponentBehavior?.goToPostDetailPage?.({
+                  hideTarget: true,
+                  postId: item?.post?.postId,
+                  category: AmityPostCategory.ANNOUNCEMENT,
+                });
+              }}
+            />
+          </ClickableArea>
+          <Divider />
+        </React.Fragment>
+      ))}
       {items.map((item, index) => (
         <React.Fragment key={getItemKey(item, items[Math.max(0, index - 1)])}>
-          {index !== 0 ? <div className={styles.global_feed__divider} /> : null}
+          <Divider isShown={index !== 0} />
           {isAmityAd(item) ? (
             <PostAd ad={item} />
           ) : (
@@ -93,14 +135,12 @@ export const GlobalFeed = ({
           )}
         </React.Fragment>
       ))}
-      {items.length > 0 ? <div className={styles.global_feed__divider} /> : null}
+      <Divider isShown={items.length > 0} />
       {isLoading
-        ? Array.from({ length: 2 }).map((_, index) => (
+        ? Array.from({ length: 5 }).map((_, index) => (
             <div key={index}>
-              <div className={styles.global_feed__postSkeletonContainer}>
-                <PostContentSkeleton />
-              </div>
-              {index !== 1 ? <div className={styles.global_feed__divider} /> : null}
+              <PostContentSkeleton />
+              <Divider isShown={index !== 5} />
             </div>
           ))
         : null}

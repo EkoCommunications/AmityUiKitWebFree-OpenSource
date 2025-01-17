@@ -1,42 +1,33 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
-import { CommentComposer } from '~/v4/social/components/CommentComposer';
 import { CommentList } from '~/v4/social/components/CommentList';
-
+import { CommentComposer } from '~/v4/social/components/CommentComposer';
 import styles from './CommentTray.module.css';
 
-interface CommentTrayProps {
-  referenceType: Amity.CommentReferenceType;
+type CommentTrayProps = {
+  pageId?: string;
   referenceId: string;
   community: Amity.Community;
-  shouldAllowInteraction: boolean;
   shouldAllowCreation?: boolean;
-  pageId?: string;
-}
+  shouldAllowInteraction: boolean;
+  referenceType: Amity.CommentReferenceType;
+};
 
 export const CommentTray = ({
+  referenceId,
   pageId = '*',
   referenceType,
-  referenceId,
-  community = {} as Amity.Community,
-  shouldAllowInteraction = true,
   shouldAllowCreation = true,
+  shouldAllowInteraction = true,
+  community = {} as Amity.Community,
 }: CommentTrayProps) => {
   const componentId = 'comment_tray_component';
-  const { accessibilityId, themeStyles } = useAmityComponent({
-    pageId,
-    componentId,
-  });
 
   const [replyTo, setReplyTo] = useState<Amity.Comment | null>(null);
+  const { accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
 
-  const onClickReply = (comment: Amity.Comment) => {
-    setReplyTo(comment);
-  };
-
-  const onCancelReply = () => {
-    setReplyTo(null);
-  };
+  const onCancelReply = useCallback(() => () => setReplyTo(null), []);
+  const onClickReply = useCallback(() => (comment: Amity.Comment) => setReplyTo(comment), []);
 
   return (
     <div
@@ -46,22 +37,24 @@ export const CommentTray = ({
     >
       <div className={styles.commentListContainer}>
         <CommentList
-          pageId={pageId}
-          referenceId={referenceId}
-          referenceType={referenceType}
-          community={community}
           includeDeleted
+          pageId={pageId}
+          community={community}
+          referenceId={referenceId}
           onClickReply={onClickReply}
+          referenceType={referenceType}
           shouldAllowInteraction={shouldAllowInteraction}
         />
       </div>
-      <CommentComposer
-        referenceId={referenceId}
-        referenceType={referenceType}
-        onCancelReply={onCancelReply}
-        replyTo={replyTo as Amity.Comment}
-        shouldAllowCreation={shouldAllowCreation}
-      />
+      {shouldAllowInteraction && (
+        <CommentComposer
+          referenceId={referenceId}
+          onCancelReply={onCancelReply}
+          referenceType={referenceType}
+          replyTo={replyTo as Amity.Comment}
+          shouldAllowCreation={shouldAllowCreation}
+        />
+      )}
     </div>
   );
 };

@@ -8,14 +8,24 @@ interface NotificationProps {
   content: ReactNode;
   icon?: ReactNode;
   duration?: number;
+  isShowAttributes?: string | boolean;
+  onClose?: () => void;
 }
 
-export const Notification = ({ className, content, icon, duration }: NotificationProps) => {
+export const Notification = ({
+  className,
+  content,
+  icon,
+  duration,
+  isShowAttributes,
+  onClose,
+}: NotificationProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   if (duration) {
     setTimeout(() => {
       setIsVisible(false);
+      onClose?.();
     }, duration);
   }
 
@@ -23,7 +33,10 @@ export const Notification = ({ className, content, icon, duration }: Notificatio
 
   return (
     isVisible && (
-      <div className={clsx(styles.notificationContainer, className)}>
+      <div
+        data-show-detail-media-attachment={isShowAttributes}
+        className={clsx(styles.notificationContainer, className)}
+      >
         <div className={clsx(styles.icon__container)}>{icon}</div> {content}
       </div>
     )

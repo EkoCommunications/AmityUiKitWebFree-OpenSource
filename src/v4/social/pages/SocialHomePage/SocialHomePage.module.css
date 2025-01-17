@@ -53,3 +53,18 @@
   top: 3.25rem;
   width: 12.5rem;
 }
+
+@media (width >= 48em) {
+  .socialHomePage {
+    background-color: transparent;
+  }
+
+  .socialHomePage__topBar {
+    display: none;
+  }
+
+  .socialHomePage__contents {
+    top: 0;
+    height: 100%;
+  }
+}

@@ -4,11 +4,11 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button, ButtonProps } from '~/v4/core/natives/Button';
 import styles from './CancelButton.module.css';
 
-interface CancelButtonProps {
+type CancelButtonProps = {
   pageId?: string;
   componentId?: string;
   onPress?: ButtonProps['onPress'];
-}
+};
 
 export const CancelButton = ({
   pageId = '*',
@@ -26,10 +26,10 @@ export const CancelButton = ({
 
   return (
     <Button
-      data-qa-anchor={accessibilityId}
-      className={styles.cancelButton}
-      style={themeStyles}
       onPress={onPress}
+      style={themeStyles}
+      className={styles.cancelButton}
+      data-qa-anchor={accessibilityId}
     >
       <Typography.Body>{config.text}</Typography.Body>
     </Button>

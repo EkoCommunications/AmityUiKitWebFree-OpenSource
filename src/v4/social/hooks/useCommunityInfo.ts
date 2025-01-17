@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CommunityRepository } from '@amityco/ts-sdk';
-import useCommunityPermission from '~/social/hooks/useCommunityPermission';
-import usePostsCollection from '~/social/hooks/collections/usePostsCollection';
+import useCommunityPermission from '~/v4/social/hooks/useCommunityPermission';
+import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
 import { useImage } from '~/v4/core/hooks/useImage';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import useCategoriesByIds from '~/v4/social/hooks/useCategoriesByIds';

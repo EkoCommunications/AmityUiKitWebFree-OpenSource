@@ -26,7 +26,6 @@ import { FileTrigger } from 'react-aria-components';
 import styles from './StoryPage.module.css';
 import { useGetActiveStoriesByTarget } from '~/v4/social/hooks/useGetActiveStories';
 import { useMotionValue, motion } from 'framer-motion';
-import useCommunityStoriesSubscription from '~/v4/social/hooks/useCommunityStoriesSubscription';
 import useSDK from '~/v4/core/hooks/useSDK';
 
 interface CommunityFeedStoryProps {
@@ -103,6 +102,7 @@ export const CommunityFeedStory = ({
             ...props,
             onClose: () => onClose(communityId),
             onClickCommunity: () => onClickCommunity(communityId),
+            onDeleteStory: () => onDeleteStory(props.story.story?.storyId as string),
           });
 
         return {
@@ -142,6 +142,18 @@ export const CommunityFeedStory = ({
     setCurrentIndex(currentIndex - 1);
   };
 
+  const onDeleteStory = async (storyId: string) => {
+    await StoryRepository.softDeleteStory(storyId);
+    if (currentIndex === 0) {
+      onClose(communityId);
+    } else {
+      setCurrentIndex(currentIndex - 1);
+    }
+    notification.success({
+      content: 'Story deleted',
+    });
+  };
+
   const confirmDeleteStory = (storyId: string) => {
     confirm({
       pageId,
@@ -151,15 +163,7 @@ export const CommunityFeedStory = ({
       okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
-        await StoryRepository.softDeleteStory(storyId);
-        if (currentIndex === 0) {
-          onClose(communityId);
-        } else {
-          setCurrentIndex(currentIndex - 1);
-        }
-        notification.success({
-          content: 'Story deleted',
-        });
+        onDeleteStory(storyId);
       },
     });
   };
@@ -260,6 +264,7 @@ export const CommunityFeedStory = ({
               }
             : null,
         ].filter(isNonNullable),
+        onDeleteStory,
         onCreateStory,
         discardStory,
         addStoryButton,
@@ -306,11 +311,6 @@ export const CommunityFeedStory = ({
       setCurrentIndex(firstUnseenStoryIndex);
     }
   }, []);
-
-  useCommunityStoriesSubscription({
-    targetId: communityId,
-    targetType: 'community',
-  });
 
   if (file) {
     goToDraftStoryPage(

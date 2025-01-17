@@ -22,7 +22,7 @@ const ViewStoryPage: React.FC<AmityViewStoryPageProps> = ({ type, targetId }) =>
         pageId={pageId}
         communityId={targetId}
         onBack={onBack}
-        onClose={(communityId) => onClickCommunity(communityId)}
+        onClose={() => onBack()}
         onSwipeDown={(communityId) => onClickCommunity(communityId)}
         onClickCommunity={(communityId) => onClickCommunity(communityId)}
         goToDraftStoryPage={(targetId, targetType, mediaType, storyType) =>
@@ -48,7 +48,10 @@ const ViewStoryPage: React.FC<AmityViewStoryPageProps> = ({ type, targetId }) =>
         goToDraftStoryPage={(targetId, targetType, mediaType, storyType) =>
           goToDraftStoryPage(targetId, targetType, mediaType, storyType)
         }
-        onClickCommunity={(targetId) => onClickCommunity(targetId)}
+        onClickCommunity={(targetId) => {
+          onBack();
+          onClickCommunity(targetId);
+        }}
       />
     );
 

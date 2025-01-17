@@ -4,3 +4,9 @@
   line-height: 1.375rem;
   color: var(--asc-color-base-default);
 }
+
+@media (width >= 48em) {
+  .editPostTitle {
+    font-size: 1.25rem;
+  }
+}

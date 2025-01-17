@@ -125,3 +125,28 @@
 .infoIcon {
   fill: var(--asc-color-base-shade3);
 }
+
+@media (width >= 48em) {
+  .container {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem 1rem;
+    border: 1px solid var(--asc-color-base-shade4);
+    background-color: var(--asc-color-background-default);
+  }
+
+  .innerContainer {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .footer {
+    width: auto;
+    margin-top: 0;
+    border-radius: 0.5rem;
+  }
+
+  .footer__left {
+    width: 100%;
+  }
+}

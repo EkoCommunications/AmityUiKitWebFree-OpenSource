@@ -30,7 +30,9 @@ export const SideMenuItemContainer = styled(SecondaryButton)`
         `}
 `;
 
-export const IconWrapper = styled.div<{ active?: boolean }>`
+export const IconWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active?: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -38,6 +40,7 @@ export const IconWrapper = styled.div<{ active?: boolean }>`
   align-items: center;
   justify-content: center;
   margin-right: 8px;
+
   ${({ active, theme }) =>
     active
       ? css`

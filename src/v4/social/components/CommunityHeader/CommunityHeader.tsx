@@ -2,11 +2,10 @@ import React from 'react';
 import styles from './CommunityHeader.module.css';
 import { StoryTab } from '~/v4/social/components/StoryTab';
 import { CommunityPendingPost } from '~/v4/social/elements/CommunityPendingPost';
-import { CommunityProfileTab } from '~/v4/social/elements/CommunityProfileTab';
 import { CommunityCover } from '~/v4/social/elements/CommunityCover';
 import { CommunityJoinButton } from '~/v4/social/elements/CommunityJoinButton';
 import { useCommunityInfo } from '~/v4/social/hooks/useCommunityInfo';
-import { useCommunityTabContext } from '~/v4/core/providers/CommunityTabProvider';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { CommunityVerifyBadge } from '~/v4/social/elements/CommunityVerifyBadge';
 import { CommunityDescription } from '~/v4/social/elements/CommunityDescription';
@@ -14,46 +13,66 @@ import { CommunityName } from '~/v4/social/elements/CommunityName';
 import { CommunityInfo } from '~/v4/social/elements/CommunityInfo';
 import { CommunityCategories } from '~/v4/social/internal-components/CommunityCategories/CommunityCategories';
 import Lock from '~/v4/icons/Lock';
+import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
+import { useSDK } from '~/v4/core/hooks/useSDK';
+import { CommunityPostSettings } from '@amityco/ts-sdk';
 
 interface CommunityProfileHeaderProps {
   pageId?: string;
   community: Amity.Community;
+  isSticky?: boolean;
+  page?: number;
 }
 
 export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
   pageId = '*',
   community,
+  isSticky,
+  page,
 }) => {
   const componentId = 'community_header';
-  const { onBack, onEditCommunity } = useNavigation();
-  const { activeTab, setActiveTab } = useCommunityTabContext();
+  const { onBack } = useNavigation();
+  const { isDesktop } = useResponsive();
+  const { AmityCommunityProfilePageBehavior } = usePageBehavior();
+  const { currentUserId } = useSDK();
 
   const {
-    communityCategories,
     avatarFileUrl,
     joinCommunity,
     pendingPostsCount,
+    reviewingPosts,
     canReviewCommunityPosts,
   } = useCommunityInfo(community.communityId);
 
-  const handleTabChange = (tab: 'community_feed' | 'community_pin') => {
-    setActiveTab(tab);
-  };
+  const isPostOwner = reviewingPosts.some((post) => post.postedUserId === currentUserId);
 
+  //TODO: check needApprovalOnPostCreation and onlyAdminCanPost after postSetting fix from SDK
   const isShowPendingPost =
-    community.isJoined && community.postSetting && canReviewCommunityPosts && pendingPostsCount > 0;
+    community.isJoined &&
+    pendingPostsCount > 0 &&
+    reviewingPosts.length > 0 &&
+    (canReviewCommunityPosts || isPostOwner) &&
+    ((community as Amity.Community & { needApprovalOnPostCreation?: boolean })
+      .needApprovalOnPostCreation ||
+      community?.postSetting === CommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED);
 
   return (
-    <div className={styles.container}>
+    <>
       <CommunityCover
         pageId={pageId}
         componentId={componentId}
         image={avatarFileUrl}
-        onBack={onBack}
-        onClickMenu={() => onEditCommunity(community.communityId)}
+        community={community}
+        onBack={() => onBack(page)}
+        isSticky={!isDesktop && isSticky}
+        onClickMenu={() => {
+          AmityCommunityProfilePageBehavior?.goToCommunitySettingPage?.({
+            community: community,
+          });
+        }}
       />
       <div className={styles.content}>
-        <div className={styles.name}>
+        <div className={styles.communityProfile__name}>
           {!community.isPublic && <Lock className={styles.communityProfile__privateIcon} />}
           <CommunityName pageId={pageId} componentId={componentId} name={community.displayName} />
           {community.isOfficial && <CommunityVerifyBadge />}
@@ -79,38 +98,56 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
             pageId={pageId}
             componentId={componentId}
             count={community.postsCount}
-            text="posts"
+            text={`post${community.postsCount === 1 ? '' : 's'}`}
           />
           <div className={styles.divider}></div>
           <CommunityInfo
             pageId={pageId}
             componentId={componentId}
             count={community.membersCount}
-            text="members"
-            onClick={() => onEditCommunity(community.communityId, 'MEMBERS')}
+            text={`member${community.membersCount === 1 ? '' : 's'}`}
+            onClick={() => {
+              AmityCommunityProfilePageBehavior?.goToMembershipPage?.({
+                community: community,
+              });
+            }}
           />
         </div>
 
         {!community.isJoined && community.isPublic && (
           <div className={styles.communityProfile__joinButton__container}>
             <CommunityJoinButton
+              size="medium"
               pageId={pageId}
-              componentId={componentId}
               onClick={joinCommunity}
+              componentId={componentId}
+              className={styles.communityProfile__joinButton}
             />
           </div>
         )}
         <div>
           <StoryTab type="communityFeed" pageId={pageId} communityId={community.communityId} />
         </div>
-        {/* {isShowPendingPost && (
+
+        {isShowPendingPost && (
           <div className={styles.communityProfile__pendingPost__container}>
-            <CommunityPendingPost pageId={pageId} componentId={componentId}  />
+            <CommunityPendingPost
+              pageId={pageId}
+              componentId={componentId}
+              pendingPostsCount={pendingPostsCount}
+              onClick={() => {
+                AmityCommunityProfilePageBehavior?.goToPendingPostPage?.({
+                  communityId: community.communityId,
+                });
+              }}
+              isPostOwner={isPostOwner}
+              canReviewCommunityPosts={canReviewCommunityPosts}
+            />
           </div>
-        )} */}
-        <CommunityProfileTab pageId={pageId} activeTab={activeTab} onTabChange={handleTabChange} />
+        )}
       </div>
+
       <div className={styles.communityProfile__divider} />
-    </div>
+    </>
   );
 };

@@ -1,27 +1,27 @@
+import clsx from 'clsx';
 import React from 'react';
+import { Menu } from '~/v4/icons/Menu';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { IconComponent } from '~/v4/core/IconComponent';
-import { Button } from '~/v4/core/natives/Button';
+import { Button, ButtonProps } from '~/v4/core/natives/Button';
 import styles from './CommunityProfileMenuButton.module.css';
-import clsx from 'clsx';
-import { EllipsisH } from '~/v4/icons/Ellipsis';
 
-export interface CommunityProfileMenuButtonProps {
+export type CommunityProfileMenuButtonProps = ButtonProps & {
   pageId?: string;
   componentId?: string;
-  onClick?: () => void;
-  className?: string;
-  defaultClassName?: string;
-}
+  defaultIconClassName?: string;
+};
 
 export function CommunityProfileMenuButton({
+  onPress,
+  className,
   pageId = '*',
   componentId = '*',
-  onClick,
-  className,
-  defaultClassName,
+  defaultIconClassName,
+  ...props
 }: CommunityProfileMenuButtonProps) {
   const elementId = 'menu_button';
+
   const { isExcluded, accessibilityId, themeStyles, config, defaultConfig, uiReference } =
     useAmityElement({
       pageId,
@@ -32,14 +32,19 @@ export function CommunityProfileMenuButton({
   if (isExcluded) return null;
 
   return (
-    <Button className={className} onPress={onClick} data-qa-anchor={accessibilityId}>
+    <Button
+      {...props}
+      onPress={onPress}
+      style={themeStyles}
+      data-qa-anchor={accessibilityId}
+      className={clsx(styles.menuButton, className)}
+      aria-label="Menu icon to open community profile settings page"
+    >
       <IconComponent
-        defaultIcon={() => (
-          <EllipsisH className={clsx(styles.menuButton, defaultClassName)} style={themeStyles} />
-        )}
-        imgIcon={() => <img src={config.icon} alt={uiReference} />}
-        defaultIconName={defaultConfig.icon}
         configIconName={config.icon}
+        defaultIconName={defaultConfig.icon}
+        imgIcon={() => <img src={config.icon} alt={uiReference} />}
+        defaultIcon={() => <Menu className={clsx(styles.menuButton__icon, defaultIconClassName)} />}
       />
     </Button>
   );

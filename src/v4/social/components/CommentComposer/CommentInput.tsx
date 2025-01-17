@@ -44,6 +44,7 @@ interface CommentInputProps {
   targetId?: string;
   ref: MutableRefObject<LexicalEditor | null | undefined>;
   mentionContainer?: HTMLElement | null;
+  mentionContainerClassName?: string;
   onChange: (data: { mentioned: Mentioned[]; mentionees: Mentionees; text: string }) => void;
 }
 
@@ -144,10 +145,11 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
       maxLines = 10,
       placehoder,
       mentionContainer,
+      mentionContainerClassName,
     },
     ref,
   ) => {
-    const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
+    const [intersectionNode, setIntersectionNode] = useState<HTMLElement | null>(null);
     const elementId = 'comment_input';
     const { themeStyles, uiReference, config, accessibilityId } = useAmityElement({
       pageId,
@@ -225,7 +227,7 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
             ErrorBoundary={LexicalErrorBoundary}
           />
           <OnChangePlugin
-            onChange={(editorState, editor) => {
+            onChange={(_, editor) => {
               onChange(editorToText(editor));
             }}
           />
@@ -245,39 +247,46 @@ export const CommentInput = forwardRef<CommentInputRef, CommentInputProps>(
               })
             }
             menuRenderFn={(
-              _,
+              menuRenderRef,
               { options, selectedIndex, setHighlightedIndex, selectOptionAndCleanUp },
             ) => {
-              if (!mentionContainer || options.length === 0) {
-                return null;
-              }
-              return ReactDOM.createPortal(
-                <>
-                  {options.map((option, i: number) => {
-                    return (
-                      <MentionItem
-                        isSelected={selectedIndex === i}
-                        onClick={() => {
-                          setHighlightedIndex(i);
-                          selectOptionAndCleanUp(option);
-                        }}
-                        onMouseEnter={() => {
-                          setHighlightedIndex(i);
-                        }}
-                        key={option.key}
-                        option={option}
-                      />
-                    );
-                  })}
-                  {hasMore && (
-                    <div
-                      ref={(node) => setIntersectionNode(node)}
-                      className={styles.commentInput__mentionInterceptor}
-                    />
-                  )}
-                </>,
-                mentionContainer,
-              );
+              if (options.length === 0) return null;
+
+              const optionList = options.map((option, i: number) => {
+                return (
+                  <MentionItem
+                    pageId={pageId}
+                    componentId={componentId}
+                    isSelected={selectedIndex === i}
+                    onClick={() => {
+                      setHighlightedIndex(i);
+                      selectOptionAndCleanUp(option);
+                    }}
+                    onMouseEnter={() => {
+                      setHighlightedIndex(i);
+                    }}
+                    key={option.key}
+                    option={{
+                      ...option,
+                      setRefElement: (element) => {
+                        if (i === options.length - 1) {
+                          setIntersectionNode(element);
+                        }
+                        option.setRefElement(element);
+                      },
+                    }}
+                  />
+                );
+              });
+
+              if (mentionContainer) return ReactDOM.createPortal(optionList, mentionContainer);
+
+              return menuRenderRef?.current
+                ? ReactDOM.createPortal(
+                    <div className={mentionContainerClassName}>{optionList}</div>,
+                    menuRenderRef.current,
+                  )
+                : null;
             }}
             commandPriority={COMMAND_PRIORITY_HIGH}
           />
