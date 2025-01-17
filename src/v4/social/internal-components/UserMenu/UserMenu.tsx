@@ -13,6 +13,7 @@ import useUserBlock from '~/v4/social/hooks/useUserBlock';
 import useUserReportedByMe from '~/v4/social/hooks/useUserReportedByMe';
 import useUserReport from '~/v4/social/hooks/useUserReport';
 import Flag from '~/v4/icons/Flag';
+import useFollowCount from '~/v4/core/hooks/objects/useFollowCount';
 
 interface UserMenuProps {
   user?: Amity.User | null;
@@ -29,9 +30,10 @@ export const UserMenu: React.FC<UserMenuProps> = ({
 }) => {
   const { currentUserId } = useSDK();
   const { isReportedByMe } = useUserReportedByMe(user?.userId);
-  const { blockUser } = useUserBlock();
+  const { blockUser, unblockUser } = useUserBlock();
   const { reportUser, unReportUser } = useUserReport();
   const { AmityUserProfilePageBehavior } = usePageBehavior();
+  const { followStatus } = useFollowCount(user?.userId);
 
   const isCurrentUser = user?.userId === currentUserId;
 
@@ -82,17 +84,28 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             AmityUserProfilePageBehavior?.goToBlockedUsersPage?.();
             onCloseMenu();
           } else
-            blockUser({
-              pageId,
-              componentId,
-              userId: user.userId,
-              displayName: user.displayName ?? user.userId,
-            });
+            followStatus === 'blocked'
+              ? unblockUser({
+                  pageId,
+                  componentId,
+                  userId: user.userId,
+                  displayName: user.displayName ?? user.userId,
+                })
+              : blockUser({
+                  pageId,
+                  componentId,
+                  userId: user.userId,
+                  displayName: user.displayName ?? user.userId,
+                });
         }}
       >
         <BlockedUser className={styles.userMenu__blockedUser__icon} />
         <Typography.BodyBold className={styles.userMenu__blockedUser__text}>
-          {isCurrentUser ? 'Manage blocked users' : 'Block user'}
+          {isCurrentUser
+            ? 'Manage blocked users'
+            : followStatus === 'blocked'
+              ? 'Unblock user'
+              : 'Block user'}
         </Typography.BodyBold>
       </Button>
     </div>
