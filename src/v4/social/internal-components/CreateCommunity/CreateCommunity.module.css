@@ -263,6 +263,7 @@
   }
 
   .createCommunity__topBar {
+    height: 4rem;
     border-radius: 0.5rem;
     padding: 1.25rem 1rem;
     border: 1px solid var(--asc-color-base-shade4);
