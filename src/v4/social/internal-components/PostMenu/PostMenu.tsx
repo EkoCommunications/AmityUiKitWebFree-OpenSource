@@ -122,7 +122,7 @@ export const PostMenu = ({
   const { mutateAsync: mutateDeletePost } = useMutation({
     mutationFn: async () => {
       onCloseMenu();
-      return PostRepository.hardDeletePost(post.postId);
+      return PostRepository.softDeletePost(post.postId);
     },
     onSuccess: () => {
       success({ content: 'Post deleted.' });
