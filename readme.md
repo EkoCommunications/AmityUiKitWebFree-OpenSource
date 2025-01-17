@@ -2,11 +2,6 @@
 
 ## Getting started
 
-Before starting to work, please read the following instructions.
-https://ekoapp.atlassian.net/wiki/spaces/UP/pages/2443706407/ASC+Web+UIKit+V4+Governance
-
-If you have any questions, please ask / discuss with the team.
-
 ### Installation
 
 1. `npm install --save @amityco/ui-kit`
