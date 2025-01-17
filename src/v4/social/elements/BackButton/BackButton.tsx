@@ -6,46 +6,49 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button, ButtonProps } from '~/v4/core/natives/Button/Button';
 import styles from './BackButton.module.css';
 
-interface BackButtonProps {
+type BackButtonProps = ButtonProps & {
   pageId?: string;
   componentId?: string;
-  defaultClassName?: string;
   imgClassName?: string;
-  onPress?: ButtonProps['onPress'];
-}
+  defaultClassName?: string;
+};
 
 export const BackButton = ({
-  pageId = '*',
-  componentId = '*',
-  defaultClassName,
-  imgClassName,
   onPress,
+  className,
+  pageId = '*',
+  imgClassName,
+  defaultClassName,
+  componentId = '*',
+  ...props
 }: BackButtonProps) => {
   const elementId = 'back_button';
+
   const { accessibilityId, config, defaultConfig, isExcluded, uiReference, themeStyles } =
     useAmityElement({
       pageId,
-      componentId,
       elementId,
+      componentId,
     });
 
   if (isExcluded) return null;
 
   return (
     <Button
-      data-qa-anchor={accessibilityId}
-      className={styles.backButton}
+      {...props}
       onPress={onPress}
       style={themeStyles}
-      aria-label="Back"
+      data-qa-anchor={accessibilityId}
+      aria-label="Back to the previous page"
+      className={clsx(styles.backButton, className)}
     >
       <IconComponent
+        configIconName={config.icon}
+        defaultIconName={defaultConfig.icon}
+        imgIcon={() => <img src={config.icon} alt={uiReference} className={imgClassName} />}
         defaultIcon={() => (
           <ArrowLeft className={clsx(styles.backButton__icon, defaultClassName)} />
         )}
-        imgIcon={() => <img src={config.icon} alt={uiReference} className={imgClassName} />}
-        defaultIconName={defaultConfig.icon}
-        configIconName={config.icon}
       />
     </Button>
   );
