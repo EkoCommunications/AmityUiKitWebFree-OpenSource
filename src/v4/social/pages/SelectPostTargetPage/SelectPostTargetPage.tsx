@@ -157,11 +157,9 @@ export function SelectPostTargetPage() {
               <div className={styles.selectPostTargetPage__communityAvatar}>
                 <CommunityAvatar pageId={pageId} community={community} />
               </div>
+              {!community.isPublic && <CommunityPrivateBadge />}
               <CommunityDisplayName pageId={pageId} community={community} />
-              <div>
-                {community.isOfficial && <CommunityOfficialBadge />}
-                {!community.isPublic && <CommunityPrivateBadge />}
-              </div>
+              {community.isOfficial && <CommunityOfficialBadge />}
             </Button>
           );
         })}
