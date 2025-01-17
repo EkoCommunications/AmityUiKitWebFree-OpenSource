@@ -46,7 +46,7 @@ export const PendingUserItem: FC<PendingUserItemProps> = ({ userId }) => {
   return (
     <div className={styles.pendingUserItem}>
       <div className={styles.pendingUserItem__info}>
-        <UserAvatar userId={userId} />
+        <UserAvatar userId={userId} className={styles.pendingUserItem__userAvatar} />
         <Typography.Body className={styles.pendingUserItem__displayName}>
           {user?.displayName}
         </Typography.Body>

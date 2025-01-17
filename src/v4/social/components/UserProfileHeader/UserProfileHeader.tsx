@@ -169,6 +169,7 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
       </div>
       {pendingCount > 0 && (
         <Button
+          variant="outlined"
           className={styles.pendingCountButton}
           onPress={() => AmityUserProfileHeaderComponentBehavior?.goToPendingFollowRequestPage?.()}
         >
@@ -180,7 +181,9 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
               </Typography.BodyBold>
             </div>
             <div>
-              <Typography.Caption>{`${pendingCount} request${pendingCount > 0 ? 's' : ''} need your approval`}</Typography.Caption>
+              <Typography.Caption
+                className={styles.pendingCountButton__notification__requestCount}
+              >{`${pendingCount} request${pendingCount > 0 ? 's' : ''} need your approval`}</Typography.Caption>
             </div>
           </div>
         </Button>

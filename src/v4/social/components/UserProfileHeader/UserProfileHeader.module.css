@@ -171,6 +171,10 @@
   color: var(--asc-color-base-default);
 }
 
+.pendingCountButton__notification__requestCount {
+  color: var(--asc-color-base-shade2);
+}
+
 @media screen and (width >=48em) {
   .userProfileHeader__unFollowButton {
     padding: 0.75rem 1rem;

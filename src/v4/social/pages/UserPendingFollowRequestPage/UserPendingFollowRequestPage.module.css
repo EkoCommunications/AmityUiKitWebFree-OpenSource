@@ -18,7 +18,6 @@
   align-items: center;
   height: 3.625rem;
   padding-inline: 0.75rem 1rem;
-  position: absolute;
   left: 0;
   right: 0;
   top: 0;
@@ -28,10 +27,6 @@
   color: var(--asc-color-base-default);
   width: 100%;
   text-align: center;
-}
-
-.userPendingFollowRequestPage__content {
-  margin-top: 3.625rem;
 }
 
 .userPendingFollowRequestPage__description {
@@ -70,19 +65,18 @@
   .userPendingFollowRequestPage__topBar {
     background-color: var(--asc-color-background-default);
     position: static;
-    border-radius: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
     border: 1px solid var(--asc-color-base-shade4);
-    margin-bottom: 0.75rem;
-  }
-
-  .userPendingFollowRequestPage__content {
-    margin-top: 0;
-    background-color: var(--asc-color-background-default);
-    border-radius: 0.5rem;
-    border: 1px solid var(--asc-color-base-shade4);
+    border-bottom: none;
   }
 
   .userPendingFollowRequestPage__noPending {
     height: auto;
+  }
+
+  .userPendingFollowRequestPage__description {
+    border: 1px solid var(--asc-color-base-shade4);
+    border-radius: 0 0 0.5rem 0.5rem;
+    margin-bottom: 0.75rem;
   }
 }

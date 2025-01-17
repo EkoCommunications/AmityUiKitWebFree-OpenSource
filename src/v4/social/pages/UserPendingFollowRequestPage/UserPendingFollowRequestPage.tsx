@@ -10,6 +10,7 @@ import useSDK from '~/v4/core/hooks/useSDK';
 import { PendingUserItem } from './PendingUserItem/PendingUserItem';
 import { EmptyContent } from '~/v4/social/internal-components/EmptyContent/EmptyContent';
 import PartyHorn from '~/icons/PartyHorn';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 export const UserPendingFollowRequestPage = () => {
   const pageId = 'user_pending_follow_request_page';
@@ -17,6 +18,7 @@ export const UserPendingFollowRequestPage = () => {
   const { themeStyles, accessibilityId } = useAmityPage({ pageId });
   const { onBack } = useNavigation();
   const { pendingCount } = useFollowCount(currentUserId);
+  const { isDesktop } = useResponsive();
   const { followers } = useFollowersCollection({
     userId: currentUserId,
     status: 'pending',
@@ -35,6 +37,12 @@ export const UserPendingFollowRequestPage = () => {
             Follow requests ({pendingCount})
           </Typography.Title>
         </div>
+        <div className={styles.userPendingFollowRequestPage__description}>
+          <Typography.Caption>
+            Declining a follow request is irreversible. The user must send a new request if
+            declined.
+          </Typography.Caption>
+        </div>
         {followers && followers.length === 0 ? (
           <div className={styles.userPendingFollowRequestPage__noPending}>
             <EmptyContent
@@ -46,17 +54,11 @@ export const UserPendingFollowRequestPage = () => {
             />
           </div>
         ) : (
-          <div className={styles.userPendingFollowRequestPage__content}>
-            <div className={styles.userPendingFollowRequestPage__description}>
-              <Typography.Caption>
-                Declining a follow request is irreversible. The user must send a new request if
-                declined.
-              </Typography.Caption>
-            </div>
+          <div>
             {followers.map((follower, index) => (
               <div key={follower.to}>
                 <PendingUserItem userId={follower.from} />
-                {index !== followers.length - 1 && (
+                {index !== followers.length - 1 && !isDesktop && (
                   <div className={styles.userPendingFollowRequestPage__devider}></div>
                 )}
               </div>
