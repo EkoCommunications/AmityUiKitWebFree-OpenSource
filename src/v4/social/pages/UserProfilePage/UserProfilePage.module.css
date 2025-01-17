@@ -13,6 +13,10 @@
   scrollbar-width: none;
 }
 
+.userProfilePage__container::-webkit-scrollbar {
+  display: none;
+}
+
 .userProfilePage__topBar {
   display: flex;
   justify-content: space-between;
