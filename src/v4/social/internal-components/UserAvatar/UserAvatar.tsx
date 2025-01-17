@@ -8,6 +8,7 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import styles from './UserAvatar.module.css';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 type UserAvatarProps = {
   pageId?: string;
@@ -17,6 +18,7 @@ type UserAvatarProps = {
   isShowModeratorBadge?: boolean;
   imageContainerClassName?: string;
   textPlaceholderClassName?: string;
+  shouldRedirectToUserProfile?: boolean;
 };
 
 export function UserAvatar({
@@ -27,6 +29,7 @@ export function UserAvatar({
   imageContainerClassName,
   isShowModeratorBadge = false,
   textPlaceholderClassName = '',
+  shouldRedirectToUserProfile = false,
 }: UserAvatarProps) {
   const elementId = 'user_avatar';
 
@@ -34,6 +37,7 @@ export function UserAvatar({
   const { user, isLoading } = useUser({ userId });
   const userImage = useImage({ fileId: user?.avatar?.fileId });
   const { accessibilityId } = useAmityElement({ pageId, componentId, elementId });
+  const { closePopup } = usePopupContext();
 
   const displayName = user?.displayName || user?.userId || '';
   const firstChar = displayName?.trim().charAt(0).toUpperCase();
@@ -45,7 +49,13 @@ export function UserAvatar({
       <Button
         className={clsx(styles.userAvatar__placeholder, className)}
         onPress={() => {
-          if (userId) onClickUser(userId);
+          if (!userId) return;
+          if (userId && shouldRedirectToUserProfile) {
+            closePopup();
+            onClickUser(userId);
+          } else {
+            onClickUser(userId);
+          }
         }}
       >
         <Typography.Title
@@ -60,7 +70,15 @@ export function UserAvatar({
 
   return (
     <Button
-      onPress={() => onClickUser(userId)}
+      onPress={() => {
+        if (!userId) return;
+        if (userId && shouldRedirectToUserProfile) {
+          closePopup();
+          onClickUser(userId);
+        } else {
+          onClickUser(userId);
+        }
+      }}
       className={clsx(styles.userAvatar__container, imageContainerClassName)}
     >
       <img

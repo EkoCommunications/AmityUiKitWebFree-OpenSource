@@ -8,6 +8,9 @@ import User from '~/v4/icons/User';
 import useSDK from '~/v4/core/hooks/useSDK';
 
 import styles from './ReactionList.module.css';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { Button } from '~/v4/core/components/AriaButton';
+import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 
 export const ReactionListPanel = ({
   filteredReactions,
@@ -25,10 +28,17 @@ export const ReactionListPanel = ({
   currentRef: HTMLDivElement | null;
 }) => {
   const { currentUserId } = useSDK();
+  const { goToUserProfilePage } = useNavigation();
   const { config } = useCustomReaction();
+  const { closePopup } = usePopupContext();
   const reactionList = useMemo(() => config.map(({ name }) => name), [config]);
 
   if (!currentRef || !filteredReactions) return null;
+
+  const onClickUserDetails = (userId: string) => {
+    closePopup();
+    goToUserProfilePage(userId);
+  };
 
   return (
     <div className={styles.infiniteScrollContainer}>
@@ -54,21 +64,29 @@ export const ReactionListPanel = ({
                           data-qa-anchor="user_avatar_view"
                           avatarUrl={reaction.user?.avatar?.fileUrl}
                           defaultImage={<User />}
+                          onClick={() => onClickUserDetails(reaction.user?.userId as string)}
                         />
                       </div>
-                      <Typography.BodyBold data-qa-anchor="user_display_name">
-                        {reaction.user?.displayName}
+                      <div>
+                        <Button
+                          variant="text"
+                          onPress={() => onClickUserDetails(reaction.user?.userId as string)}
+                        >
+                          <Typography.BodyBold
+                            data-qa-anchor="user_display_name"
+                            className={styles.userDetailsName}
+                          >
+                            {reaction.user?.displayName}
+                          </Typography.BodyBold>
+                        </Button>
                         {currentUserId === reaction.user?.userId && (
-                          <>
-                            <br />
-                            <div onClick={() => removeReaction(reaction.reactionName)}>
-                              <Typography.Caption className={styles.removeBtn}>
-                                Click to remove reaction
-                              </Typography.Caption>
-                            </div>
-                          </>
+                          <div onClick={() => removeReaction(reaction.reactionName)}>
+                            <Typography.Caption className={styles.removeBtn}>
+                              Click to remove reaction
+                            </Typography.Caption>
+                          </div>
                         )}
-                      </Typography.BodyBold>
+                      </div>
                     </div>
 
                     <div className={styles.userDetailsReaction}>

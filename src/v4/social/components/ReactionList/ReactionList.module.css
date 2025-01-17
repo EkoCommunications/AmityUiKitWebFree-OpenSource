@@ -125,6 +125,10 @@
   color: var(--asc-color-base-shade1);
 }
 
+.userDetailsName {
+  color: var(--asc-color-base-default);
+}
+
 @keyframes skeleton-pulse {
   0% {
     opacity: 0.6;

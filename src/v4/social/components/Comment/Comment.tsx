@@ -84,8 +84,9 @@ export const Comment = ({
 
   const { isDesktop } = useResponsive();
   const { setDrawerData } = useDrawer();
-  const { openPopup } = usePopupContext();
+  const { openPopup, closePopup } = usePopupContext();
   const { confirm } = useConfirmContext();
+  const { goToUserProfilePage } = useNavigation();
   const mentionRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
@@ -219,13 +220,24 @@ export const Comment = ({
         </div>
       ) : (
         <div className={styles.postComment}>
-          <UserAvatar pageId={pageId} componentId={componentId} userId={comment.userId} />
+          <UserAvatar
+            pageId={pageId}
+            componentId={componentId}
+            userId={comment.userId}
+            shouldRedirectToUserProfile
+          />
           <div className={styles.postComment__details}>
             <div
               className={styles.postComment__content}
               onClick={() => onClickUser(comment.creator?.userId ?? '')}
             >
-              <div className={styles.postComment__userInfo}>
+              <Button
+                onPress={() => {
+                  closePopup();
+                  goToUserProfilePage(comment.creator?.userId as string);
+                }}
+                className={styles.postComment__userInfo}
+              >
                 <Typography.BodyBold
                   data-qa-anchor={`${pageId}/${componentId}/username`}
                   className={styles.postComment__content__username}
@@ -233,7 +245,7 @@ export const Comment = ({
                   {comment.creator?.displayName}
                 </Typography.BodyBold>
                 {isBrandUser && <BrandBadge className={styles.postComment__brandBadge} />}
-              </div>
+              </Button>
 
               {isModeratorUser && !isBrandUser && (
                 <ModeratorBadge pageId={pageId} componentId={componentId} />
