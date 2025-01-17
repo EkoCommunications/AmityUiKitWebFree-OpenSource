@@ -41,8 +41,8 @@
 }
 
 .editorLink {
-  color: var(--asc-color-primary-shade1);
   text-decoration: none;
+  color: var(--asc-color-primary-default);
 }
 
 .commentInput__mentionInterceptor {

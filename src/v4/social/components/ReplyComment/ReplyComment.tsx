@@ -210,7 +210,7 @@ const PostReplyComment = ({ pageId = '*', community, comment }: ReplyCommentProp
                     className={styles.postReplyComment__secondRow__like}
                     data-is-liked={isLiked}
                   >
-                    {isLiked ? 'Liked' : 'Like'}
+                    Like
                   </Typography.CaptionBold>
                 </div>
                 <Popover

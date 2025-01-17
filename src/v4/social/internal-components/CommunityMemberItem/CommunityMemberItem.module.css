@@ -6,14 +6,6 @@
   padding: 0.5rem 1rem;
 }
 
-.communityMemberItem:hover {
-  background-color: var(--asc-color-background-shade1);
-}
-
-.communityMemberItem:focus-within {
-  background-color: var(--asc-color-background-shade1);
-}
-
 .communityMemberItem__leftSide {
   flex: 1;
   min-width: 0;

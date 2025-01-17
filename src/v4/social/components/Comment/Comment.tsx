@@ -266,7 +266,7 @@ export const Comment = ({
                       className={styles.postComment__secondRow__like}
                       data-is-liked={isLiked}
                     >
-                      {isLiked ? 'Liked' : 'Like'}
+                      Like
                     </Typography.CaptionBold>
                   </div>
                   <div

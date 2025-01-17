@@ -143,7 +143,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
       ) : (
         <CommunityProfileSkeleton />
       )}
-      {(activeTab === 'community_feed' || activeTab === 'community_pin') && community?.isJoined && (
+      {activeTab === 'community_feed' && community?.isJoined && (
         <div className={styles.communityProfilePage__poseComposer}>
           <PostComposer
             pageId={pageId}
