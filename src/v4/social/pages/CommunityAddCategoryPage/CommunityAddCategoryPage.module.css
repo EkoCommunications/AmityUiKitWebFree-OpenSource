@@ -233,8 +233,8 @@
 
 @media only screen and (width >= 48em) {
   .communityAddCategoryPage__container {
+    height: 23rem;
     display: block;
-    height: 18.5rem;
     width: 32.625rem;
   }
 
