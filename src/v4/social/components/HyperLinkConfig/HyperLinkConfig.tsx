@@ -242,6 +242,7 @@ export const HyperLinkConfig = ({
           componentId={componentId}
           form={formId}
           className={styles.hyperlinkConfig__footer__editDoneButton}
+          isDisabled={!!errors.url || !!errors.customText || !watch('url')}
         />
       </div>
     </div>
