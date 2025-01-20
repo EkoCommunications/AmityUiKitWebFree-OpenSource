@@ -34,11 +34,7 @@ export function CommunityPrivateBadge({
         <Lock
           style={themeStyles}
           data-qa-anchor={accessibilityId}
-          className={clsx(
-            styles.communityPrivateBadge,
-            styles.communityPrivateBadge__iconSvg,
-            className,
-          )}
+          className={clsx(styles.communityPrivateBadge, className)}
         />
       )}
       imgIcon={() => (

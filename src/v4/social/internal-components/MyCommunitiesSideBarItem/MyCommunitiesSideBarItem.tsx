@@ -55,13 +55,7 @@ export const MyCommunitiesSideBarItem = ({
       <div className={styles.myCommunitiesSideBarItem__content}>
         <div className={styles.myCommunitiesSideBarItem__communityName} data-selected={isSelected}>
           {!community.isPublic && (
-            <div className={styles.myCommunitiesSideBarItem__communityName__private}>
-              <CommunityPrivateBadge
-                pageId={pageId}
-                componentId={componentId}
-                className={styles.myCommunitiesSideBarItem__communityName__privateIcon}
-              />
-            </div>
+            <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
           )}
           <CommunityDisplayName
             pageId={pageId}

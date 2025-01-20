@@ -83,9 +83,7 @@ export const CommunityRowItem = <T extends boolean | undefined>({
       <div className={styles.communityRowItem__content}>
         <div className={styles.communityRowItem__communityName}>
           {!community.isPublic && (
-            <div className={styles.communityRowItem__communityName__private}>
-              <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
-            </div>
+            <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
           )}
           <CommunityDisplayName pageId={pageId} componentId={componentId} community={community} />
           {community.isOfficial && (

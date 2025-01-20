@@ -59,9 +59,7 @@ const RecommendedCommunityCard = ({
       <div className={styles.recommendedCommunityCard__content}>
         <div className={styles.recommendedCommunities__contentTitle}>
           {!community.isPublic && (
-            <div className={styles.recommendedCommunityCard__communityName__private}>
-              <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
-            </div>
+            <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
           )}
           <CommunityDisplayName pageId={pageId} componentId={componentId} community={community} />
           {community.isOfficial && (
