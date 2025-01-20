@@ -2,6 +2,10 @@
   background-color: transparent;
 }
 
+.hyperlinkConfig__inputPlaceholder::placeholder {
+  color: var(--asc-color-base-shade3);
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -142,7 +146,7 @@
   height: 0.0625rem;
   align-self: stretch;
   background-color: var(--asc-color-base-shade4);
-  margin: 1rem 0;
+  margin: 1rem 0 0;
 }
 
 .removeLinkContainer {
@@ -166,7 +170,7 @@
 .hyperlinkConfig__header__closeButton__icon {
   color: var(--asc-color-base-shade3);
   width: 1.5rem;
-  height: 1.5rem;
+  height: 1.25rem;
 }
 
 @media (width > 48em) {
@@ -211,5 +215,14 @@
 
   .hyperlinkFormContainer {
     padding: 0 1.5rem;
+  }
+
+  .hyperlinkConfig__inputPlaceholder {
+    color: var(--asc-color-base-shade3);
+  }
+
+  .removeLinkContainer {
+    border: none;
+    margin-bottom: 1rem;
   }
 }

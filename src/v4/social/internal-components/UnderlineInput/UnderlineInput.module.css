@@ -32,6 +32,10 @@
   line-height: 1.25rem;
 }
 
+.underlineInput__value::placeholder {
+  color: var(--asc-color-base-shade2);
+}
+
 .underlineInput__value:focus {
   outline: none;
 }

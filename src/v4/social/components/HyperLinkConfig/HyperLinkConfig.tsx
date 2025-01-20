@@ -179,7 +179,7 @@ export const HyperLinkConfig = ({
           onPress={handleClose}
           className={styles.hyperlinkConfig__header__editCancelButton}
         />
-        <Typography.Title>Add link</Typography.Title>
+        <Typography.Headline>Add link</Typography.Headline>
         <DoneButton
           type="submit"
           pageId={pageId}
@@ -198,6 +198,7 @@ export const HyperLinkConfig = ({
             label="URL"
             required={true}
             placeholder="https://example.com"
+            placeholderClassName={styles.hyperlinkConfig__inputPlaceholder}
             value={watch('url')}
             {...register('url', {
               onChange: () => trigger('url'),
@@ -209,6 +210,7 @@ export const HyperLinkConfig = ({
           <UnderlineInput
             label="Customize link text"
             placeholder="Name your link"
+            placeholderClassName={styles.hyperlinkConfig__inputPlaceholder}
             {...register('customText')}
             {...{ id: 'asc-uikit-hyperlink-input-link-text' }}
             isError={!!errors.customText?.message}
