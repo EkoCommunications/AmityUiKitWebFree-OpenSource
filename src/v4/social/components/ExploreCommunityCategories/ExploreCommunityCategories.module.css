@@ -25,6 +25,7 @@
   flex-wrap: nowrap;
   color: var(--asc-color-base-default);
   text-wrap: nowrap;
+  width: 7.4rem;
 }
 
 .exploreCommunityCategories__seeMore[data-focus-visible] {
