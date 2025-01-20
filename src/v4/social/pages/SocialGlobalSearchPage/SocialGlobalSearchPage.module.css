@@ -1,27 +1,39 @@
 .socialGlobalSearchPage {
-  display: flex;
-  flex-direction: column;
   gap: 0.5rem;
   width: 100%;
   height: 100%;
+  display: flex;
   padding: 1rem;
+  flex-direction: column;
   background-color: var(--asc-color-background-default);
 }
 
 .socialGlobalSearchPage__tabs {
-  display: flex;
-  gap: 0.5rem;
+  left: 1rem;
   width: 100%;
+  z-index: 10;
+  gap: 1.25rem;
+  display: flex;
+  position: fixed;
+  padding: 0 1rem;
   overflow-y: scroll;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background-color: var(--asc-color-background-default);
 }
 
-.socialGlobalSearchPage__postContents {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  height: 100%;
+.socialGlobalSearchPage__tabPanel {
+  padding: 3rem 0;
+}
+
+.socialGlobalSearchPage__searchResultContainer__footer {
+  left: 1rem;
+  top: 30.6rem;
+  width: 20rem;
+  z-index: 100;
+  position: fixed;
+  padding: 0.25rem 1rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+  background-color: var(--asc-color-background-default);
 }
 
 @media (width >= 48em) {
@@ -43,5 +55,9 @@
     padding: 0 1rem 1rem;
     box-shadow: var(--asc-box-shadow-04);
     background-color: var(--asc-color-background-default);
+  }
+
+  .socialGlobalSearchPage__tabs {
+    width: 20rem;
   }
 }
