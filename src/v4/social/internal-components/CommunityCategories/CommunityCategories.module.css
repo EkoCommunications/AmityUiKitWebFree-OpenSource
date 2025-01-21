@@ -11,11 +11,3 @@
 .communityCategories__categoryOverflow {
   width: min-content;
 }
-
-@media (width >= 48em) {
-  .communityCategories {
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-}
