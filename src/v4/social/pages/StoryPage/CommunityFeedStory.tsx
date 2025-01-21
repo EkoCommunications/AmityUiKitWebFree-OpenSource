@@ -151,6 +151,7 @@ export const CommunityFeedStory = ({
     }
     notification.success({
       content: 'Story deleted',
+      className: styles.notification,
     });
   };
 

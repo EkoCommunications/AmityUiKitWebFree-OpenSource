@@ -205,6 +205,7 @@ export const PlainDraftStoryPage = ({
     if (hyperLink[0]?.data?.url) {
       notification.info({
         content: 'Can’t add more than one link to your story.',
+        className: styles.draftsPage__notification,
       });
       return;
     }
@@ -268,6 +269,8 @@ export const PlainDraftStoryPage = ({
 
     extractColors();
   }, [file, mediaType, extractColorsFromImage]);
+
+  const { page } = useNavigation();
 
   return (
     <div data-qa-anchor={accessibilityId} style={themeStyles} className={styles.storyWrapper}>

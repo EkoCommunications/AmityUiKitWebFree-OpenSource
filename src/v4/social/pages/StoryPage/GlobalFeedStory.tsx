@@ -133,6 +133,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
     await StoryRepository.softDeleteStory(storyId);
     notification.success({
       content: 'Story deleted',
+      className: styles.notification,
     });
     if (stories.length === 1) {
       // If it's the only story, close the ViewStory screen
