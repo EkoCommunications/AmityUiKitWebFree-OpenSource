@@ -125,12 +125,11 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
         >
           {showPrivateBadge && <Lock className={styles.postTitle__community__privateIcon} />}
           <Button
+            className={styles.postTitle__communityText}
             data-qa-anchor={`${pageId}/${componentId}/community_name`}
             onPress={() => goToCommunityProfilePage(targetCommunity.communityId)}
           >
-            <Typography.BodyBold className={styles.postTitle__communityText}>
-              {targetCommunity.displayName}
-            </Typography.BodyBold>
+            <Typography.BodyBold>{targetCommunity.displayName}</Typography.BodyBold>
           </Button>
           {showOfficialBadge && <Verified className={styles.postTitle__community__verifiedIcon} />}
         </div>
