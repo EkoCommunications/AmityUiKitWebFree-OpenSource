@@ -193,19 +193,21 @@ export const checkStoryPermission = (
   return false;
 };
 
-export function formatTimeAgo(dateString: string | Date | undefined) {
+export function formatTimeAgo(dateString: string | Date | undefined): string | undefined {
   if (!dateString) return;
+
   const givenDate = new Date(dateString);
   const currentDate = new Date();
-
   const timeDifferenceInSeconds = Math.floor((currentDate.getTime() - givenDate.getTime()) / 1000);
 
-  if (timeDifferenceInSeconds < 60) {
+  if (timeDifferenceInSeconds === 1) {
     return 'Just now';
+  } else if (timeDifferenceInSeconds > 1 && timeDifferenceInSeconds < 60) {
+    return `${timeDifferenceInSeconds}s`;
   } else if (timeDifferenceInSeconds >= 60 && timeDifferenceInSeconds < 3600) {
     const minutes = Math.floor(timeDifferenceInSeconds / 60);
     return `${minutes}m`;
-  } else {
+  } else if (timeDifferenceInSeconds >= 3600 && timeDifferenceInSeconds < 86400) {
     const hours = Math.floor(timeDifferenceInSeconds / 3600);
     return `${hours}h`;
   }
