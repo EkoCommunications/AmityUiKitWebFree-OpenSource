@@ -80,6 +80,8 @@
   flex-direction: column;
   gap: 1rem;
   padding: 0.75rem 1rem;
+  background-color: var(--asc-color-background-default);
+  border-radius: 0 0 0.5rem 0.5rem;
 }
 
 .postDetailPage__divider {
@@ -114,11 +116,21 @@
 
 @media (width >= 48em) {
   .postDetailPage {
+    height: auto;
     border-radius: 0.5rem;
+    background-color: transparent;
     border: 1px solid var(--asc-color-base-shade4);
   }
 
   .postDetailPage__topBar {
-    border-radius: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  .postDetailPage__postContent {
+    border-radius: 0;
+  }
+
+  .postDetailPage__commentList__container {
+    border-radius: 0 0 0.5rem 0.5rem;
   }
 }

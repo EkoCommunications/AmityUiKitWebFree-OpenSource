@@ -7,7 +7,7 @@ import { Button } from '~/v4/core/natives/Button/Button';
 import { Timestamp } from '~/v4/social/elements/Timestamp';
 import clsx from 'clsx';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
-import Trash from '~/v4/icons/Trash';
+import { TrashIcon } from '~/v4/icons/Trash';
 import { PostAcceptButton } from '~/v4/social/elements/PostAcceptButton';
 import { PostDeclineButton } from '~/v4/social/elements/PostDeclineButton/PostDeclineButton';
 import { PostRepository } from '@amityco/ts-sdk';
@@ -201,7 +201,7 @@ export const PendingPostContent = ({
                             removeDrawerData();
                           }}
                         >
-                          <Trash className={styles.pendingPostContent__deletePost__icon} />
+                          <TrashIcon className={styles.pendingPostContent__deletePost__icon} />
                           <Typography.Title className={styles.pendingPostContent__deletePost__text}>
                             Delete post
                           </Typography.Title>
@@ -219,7 +219,7 @@ export const PendingPostContent = ({
                       handleDeletePost(post.postId);
                     }}
                   >
-                    <Trash className={styles.pendingPostContent__deletePost__icon} />
+                    <TrashIcon className={styles.pendingPostContent__deletePost__icon} />
                     <Typography.Title className={styles.pendingPostContent__deletePost__text}>
                       Delete post
                     </Typography.Title>

@@ -204,6 +204,7 @@ interface PostContentProps {
   pageId?: string;
   disabledContent?: boolean;
   isGlobalFeaturePost?: boolean;
+  className?: string;
 }
 
 export const PostContent = ({
@@ -217,6 +218,7 @@ export const PostContent = ({
   style,
   disabledContent = false,
   isGlobalFeaturePost = false,
+  className,
 }: PostContentProps) => {
   const componentId = 'post_content';
   const { themeStyles, accessibilityId } = useAmityComponent({
@@ -385,7 +387,7 @@ export const PostContent = ({
     <div
       data-qa-anchor={accessibilityId}
       ref={elementRef}
-      className={styles.postContent}
+      className={clsx(styles.postContent, className)}
       style={themeStyles}
     >
       {(category === AmityPostCategory.ANNOUNCEMENT ||

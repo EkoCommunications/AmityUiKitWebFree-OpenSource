@@ -3,6 +3,7 @@
   display: grid;
   grid-template-columns: min-content minmax(0, 1fr);
   gap: 0.5rem;
+  align-items: start;
 }
 
 .postComment__deleteComment_container {

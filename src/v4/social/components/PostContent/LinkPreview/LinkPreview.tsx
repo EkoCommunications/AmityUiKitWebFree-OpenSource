@@ -49,7 +49,9 @@ export function LinkPreview({ pageId = '*', componentId = '*', url }: LinkPrevie
           <ErrorPreview />
         </div>
         <div className={styles.linkPreview__bottom}>
-          <Typography.Caption>Preview not available</Typography.Caption>
+          <Typography.Caption className={styles.linkPreview__domain}>
+            Preview not available
+          </Typography.Caption>
           <Typography.BodyBold>
             Please make sure the URL is correct and try again.
           </Typography.BodyBold>
@@ -77,7 +79,7 @@ export function LinkPreview({ pageId = '*', componentId = '*', url }: LinkPrevie
         )}
       </div>
       <div className={styles.linkPreview__bottom}>
-        <Typography.Caption>{domain}</Typography.Caption>
+        <Typography.Caption className={styles.linkPreview__domain}>{domain}</Typography.Caption>
         <Typography.BodyBold>{previewData.data?.title || ''}</Typography.BodyBold>
       </div>
     </Button>

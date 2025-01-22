@@ -50,6 +50,7 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
             <PostContent
               pageId={pageId}
               post={post}
+              className={styles.postDetailPage__postContent}
               category={category ?? AmityPostCategory.GENERAL}
               style={AmityPostContentComponentStyle.DETAIL}
               hideTarget={hideTarget}
@@ -66,19 +67,24 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
             replyTo={replyComment}
             onCancelReply={() => setReplyComment(undefined)}
             community={community}
+            containerClassName={
+              post?.commentsCount <= 0 ? styles.postDetailPage__commentList__container : undefined
+            }
           />
         )}
-        <div className={styles.postDetailPage__comments}>
-          {post && (
-            <CommentList
-              pageId={pageId}
-              referenceId={post.postId}
-              referenceType="post"
-              onClickReply={(comment: Amity.Comment) => setReplyComment(comment)}
-              community={community}
-            />
-          )}
-        </div>
+        {post?.commentsCount > 0 && (
+          <div className={styles.postDetailPage__comments}>
+            {post && (
+              <CommentList
+                pageId={pageId}
+                referenceId={post.postId}
+                referenceType="post"
+                onClickReply={(comment: Amity.Comment) => setReplyComment(comment)}
+                community={community}
+              />
+            )}
+          </div>
+        )}
       </div>
       <div className={styles.postDetailPage__topBar}>
         <BackButton

@@ -19,6 +19,10 @@
   gap: 0.12rem;
 }
 
+.linkPreview__domain {
+  color: var(--asc-color-base-shade1);
+}
+
 .linkPreview__object {
   width: 100%;
   height: 100%;
