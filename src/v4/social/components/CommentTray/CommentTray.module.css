@@ -64,7 +64,7 @@
 
 @media screen and (width >= 48em) {
   .commentTrayContainer {
-    height: 50vh;
+    min-height: 50vh;
     min-width: 30rem;
   }
 }

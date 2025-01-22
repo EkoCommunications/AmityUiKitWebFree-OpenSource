@@ -227,7 +227,7 @@
   }
 
   .communityAddMemberPage__memberList {
-    max-height: 50vh;
+    max-height: 55vh;
     min-height: 50vh;
     overflow-y: scroll;
     padding-bottom: 5rem;
@@ -235,7 +235,7 @@
 
   .communityAddMemberPage__memberList[data-has-selected='true'] {
     min-height: calc(50vh - 6.5rem);
-    max-height: calc(50vh - 6.5rem);
+    max-height: calc(55vh - 6.5rem);
   }
 
   .communityAddMemberPage__addMemberButton {
