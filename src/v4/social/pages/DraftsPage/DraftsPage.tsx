@@ -268,9 +268,7 @@ export const PlainDraftStoryPage = ({
     };
 
     extractColors();
-  }, [file, mediaType, extractColorsFromImage]);
-
-  const { page } = useNavigation();
+  }, [file, mediaType, imageMode]);
 
   return (
     <div data-qa-anchor={accessibilityId} style={themeStyles} className={styles.storyWrapper}>
