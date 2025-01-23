@@ -328,7 +328,12 @@ export const CommunityFeedStory = ({
 
   return (
     <div className={clsx(styles.storyWrapper)}>
-      <ArrowLeftButton onClick={previousStory} />
+      {currentIndex > 0 ? (
+        <ArrowLeftButton onClick={previousStory} />
+      ) : (
+        <div className={styles.emptyButton} />
+      )}
+
       <motion.div
         id={targetRootId}
         ref={motionRef}
@@ -379,7 +384,11 @@ export const CommunityFeedStory = ({
           />
         </div>
       </motion.div>
-      <ArrowRightButton onClick={nextStory} />
+      {currentIndex !== stories.length - 1 ? (
+        <ArrowRightButton onClick={nextStory} />
+      ) : (
+        <div className={styles.emptyButton} />
+      )}
     </div>
   );
 };

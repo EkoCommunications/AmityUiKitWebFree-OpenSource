@@ -204,7 +204,9 @@ export const HyperLinkConfig = ({
             placeholderClassName={styles.hyperlinkConfig__inputPlaceholder}
             value={watch('url')}
             {...register('url', {
-              onChange: () => trigger('url'),
+              onChange: async () => {
+                await trigger('url');
+              },
             })}
             {...{ id: 'asc-uikit-hyperlink-input-url' }}
             isError={!!errors.url?.message}
@@ -214,7 +216,11 @@ export const HyperLinkConfig = ({
             label="Customize link text"
             placeholder="Name your link"
             placeholderClassName={styles.hyperlinkConfig__inputPlaceholder}
-            {...register('customText')}
+            {...register('customText', {
+              onChange: async () => {
+                await trigger('customText');
+              },
+            })}
             {...{ id: 'asc-uikit-hyperlink-input-link-text' }}
             isError={!!errors.customText?.message}
             helperText={

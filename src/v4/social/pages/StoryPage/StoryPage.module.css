@@ -90,4 +90,8 @@
     position: relative;
     left: -9rem;
   }
+
+  .emptyButton {
+    width: 2rem;
+  }
 }
