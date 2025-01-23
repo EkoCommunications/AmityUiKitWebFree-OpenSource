@@ -290,8 +290,8 @@ export const PlainDraftStoryPage = ({
             style={{
               background: `linear-gradient(
                 180deg,
-                ${colors[0] || 'var(--asc-color-black)'} 0%,
-                ${colors[1] || 'var(--asc-color-black)'} 100%
+                ${colors[0]} 0%,
+                ${colors[1]} 100%
               )`,
             }}
           >
