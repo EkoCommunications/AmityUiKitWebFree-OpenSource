@@ -21,6 +21,7 @@ type CommentListProps = {
   includeDeleted?: boolean;
   community?: Amity.Community | null;
   shouldAllowInteraction?: boolean;
+  renderReplyComment?: (comment: Amity.Comment) => React.ReactNode;
 };
 
 const isAmityAd = (item: Amity.Comment | Amity.InternalComment | Amity.Ad): item is Amity.Ad => {
@@ -36,6 +37,7 @@ export const CommentList = ({
   includeDeleted = false,
   community,
   shouldAllowInteraction = true,
+  renderReplyComment,
 }: CommentListProps) => {
   const componentId = 'comment_tray_component';
   const { online } = useNetworkState();
@@ -102,15 +104,18 @@ export const CommentList = ({
         return isAmityAd(item) ? (
           <CommentAd key={item.adId} ad={item} />
         ) : (
-          <Comment
-            pageId={pageId}
-            key={item.commentId}
-            comment={item as Amity.Comment}
-            onClickReply={(comment) => onClickReply?.(comment)}
-            componentId={componentId}
-            community={community}
-            shouldAllowInteraction={shouldAllowInteraction}
-          />
+          <div>
+            <Comment
+              pageId={pageId}
+              key={item.commentId}
+              comment={item as Amity.Comment}
+              onClickReply={(comment) => onClickReply?.(comment)}
+              componentId={componentId}
+              community={community}
+              shouldAllowInteraction={shouldAllowInteraction}
+            />
+            {renderReplyComment?.(item as Amity.Comment)}
+          </div>
         );
       })}
       {/* TODO: add this button when implement desktop view  */}

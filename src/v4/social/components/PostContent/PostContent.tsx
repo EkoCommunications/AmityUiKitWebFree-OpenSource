@@ -558,7 +558,7 @@ export const PostContent = ({
             </Typography.Caption>
           </div>
         ) : null}
-        {isNotJoinedCommunity ? (
+        {isNotJoinedCommunity && page.type !== PageTypes.PostDetailPage ? (
           <>
             <Typography.Body className={styles.postContent__notMember}>
               Join community to interact with all posts

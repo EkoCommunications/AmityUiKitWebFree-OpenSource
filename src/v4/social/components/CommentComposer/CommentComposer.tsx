@@ -13,6 +13,7 @@ import { Mentionees, Metadata } from '~/v4/helpers/utils';
 
 import styles from './CommentComposer.module.css';
 import clsx from 'clsx';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 const LockSvg = () => {
   return (
@@ -56,6 +57,7 @@ export const CommentComposer = ({
 }: CommentComposerProps) => {
   const userId = useSDK().currentUserId;
   const { user } = useUser({ userId });
+  const { isDesktop } = useResponsive();
   const avatarUrl = useImage({ fileId: user?.avatar?.fileId, imageSize: 'small' });
   const editorRef = useRef<CommentInputRef | null>(null);
   const composerInputRef = useRef<HTMLDivElement | null>(null);
@@ -114,7 +116,7 @@ export const CommentComposer = ({
     <div className={styles.commentComposer}>
       <div className={styles.commentComposer__top}>
         <div className={styles.commentComposer__mentionContainer} ref={mentionContainerRef} />
-        {replyTo && (
+        {replyTo && !isDesktop && (
           <div
             className={styles.commentComposer__replyContainer}
             style={
@@ -170,7 +172,9 @@ export const CommentComposer = ({
             targetType={referenceType}
             targetId={referenceId}
             value={textValue}
-            placehoder="Say something nice..."
+            placehoder={
+              replyTo ? `Replying to ${replyTo?.creator?.displayName}...` : 'Say something nice...'
+            }
             communityId={community?.communityId}
           />
         </div>
