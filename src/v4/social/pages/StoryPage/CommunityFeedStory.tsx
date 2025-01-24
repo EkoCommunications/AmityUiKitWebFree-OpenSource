@@ -68,8 +68,9 @@ export const CommunityFeedStory = ({
   const motionRef = useRef<HTMLDivElement>(null);
   const dragEventTarget = useRef(new EventTarget());
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const { stories: storiesData } = useGetActiveStoriesByTarget({
+  const { stories: storiesData, refresh } = useGetActiveStoriesByTarget({
     targetId: communityId,
     targetType: 'community',
     options: {
@@ -143,16 +144,31 @@ export const CommunityFeedStory = ({
   };
 
   const onDeleteStory = async (storyId: string) => {
-    await StoryRepository.softDeleteStory(storyId);
-    if (currentIndex === 0) {
-      onClose(communityId);
-    } else {
-      setCurrentIndex(currentIndex - 1);
+    const isLastStory = currentIndex === stories.length - 1;
+
+    try {
+      await StoryRepository.softDeleteStory(storyId);
+    } catch (error) {
+      setIsError(true);
+      notification.error({
+        content: 'Failed to delete story',
+      });
+      return;
+    } finally {
+      if (!isError) {
+        notification.success({
+          content: 'Story deleted',
+        });
+        refresh();
+        if (stories.length === 1) {
+          onBack();
+        } else if (isLastStory) {
+          previousStory();
+        } else {
+          setCurrentIndex((prevIndex) => prevIndex);
+        }
+      }
     }
-    notification.success({
-      content: 'Story deleted',
-      className: styles.notification,
-    });
   };
 
   const confirmDeleteStory = (storyId: string) => {
@@ -164,7 +180,7 @@ export const CommunityFeedStory = ({
       okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
-        onDeleteStory(storyId);
+        await onDeleteStory(storyId);
       },
     });
   };

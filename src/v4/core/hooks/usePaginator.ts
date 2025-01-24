@@ -150,6 +150,7 @@ export const usePaginator = <TCallback, TParams>({
   communityId?: string;
   pageSize: number;
   getItemId: (item: TCallback) => string;
+  refresh?: () => void;
 }): {
   items: Array<TCallback | Amity.Ad>;
   isLoading: boolean;
@@ -157,6 +158,7 @@ export const usePaginator = <TCallback, TParams>({
   loadMore: () => void;
   error: Error | null;
   loadMoreHasBeenCalled: boolean;
+  refresh: () => void;
 } => {
   const { combineItemsWithAds } = usePaginatorCore({
     placement,
@@ -165,7 +167,7 @@ export const usePaginator = <TCallback, TParams>({
     getItemId,
   });
 
-  const { items, ...rest } = useLiveCollection({
+  const { items, refresh, ...rest } = useLiveCollection({
     fetcher,
     params,
     config,
@@ -177,6 +179,7 @@ export const usePaginator = <TCallback, TParams>({
   return {
     ...rest,
     items: itemWithAds,
+    refresh,
   };
 };
 
