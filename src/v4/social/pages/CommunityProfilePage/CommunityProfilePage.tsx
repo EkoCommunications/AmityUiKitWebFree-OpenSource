@@ -195,7 +195,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
         </div>
       )}
       <div key={refreshKey}>{renderTabContent()}</div>
-      {community?.isJoined && (
+      {community?.isJoined && checkPostPermission() && (
         <div className={styles.communityProfilePage__createPostButton}>
           <CommunityCreatePostButton
             pageId={pageId}
