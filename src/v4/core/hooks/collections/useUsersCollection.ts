@@ -7,10 +7,12 @@ export const useUserQueryByDisplayName = ({
   displayName,
   limit,
   enabled = true,
+  matchType,
 }: {
   displayName: string;
   limit: number;
   enabled?: boolean;
+  matchType?: Amity.UserSearchMatchType;
 }) => {
   const [items, setItems] = useState<Amity.User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +42,7 @@ export const useUserQueryByDisplayName = ({
       {
         displayName,
         limit,
+        matchType,
       },
       (response) => {
         setHasMore(response.hasNextPage || false);

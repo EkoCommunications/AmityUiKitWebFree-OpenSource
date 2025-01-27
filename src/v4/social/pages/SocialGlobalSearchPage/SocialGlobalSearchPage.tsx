@@ -1,5 +1,6 @@
 import { Key } from 'react-aria';
 import { useClickAway } from 'react-use';
+import { UserRepository } from '@amityco/ts-sdk';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { SecondaryTab } from '~/v4/core/components/SecondaryTab';
 import { TopSearchBar } from '~/v4/social/components/TopSearchBar';
@@ -36,6 +37,7 @@ const useGlobalSearchViewModel = () => {
     displayName: searchKeyword,
     limit: 20,
     enabled: enabledUserSearch,
+    matchType: UserRepository.AmityUserSearchMatchType.PARTIAL,
   });
 
   const search = useCallback(
