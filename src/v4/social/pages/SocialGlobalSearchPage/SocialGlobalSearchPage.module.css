@@ -10,19 +10,19 @@
 
 .socialGlobalSearchPage__tabs {
   left: 1rem;
+  padding: 0;
   width: 100%;
   z-index: 10;
   gap: 1.25rem;
   display: flex;
-  position: fixed;
-  padding: 0 1rem;
+  position: static;
   overflow-y: scroll;
   border-radius: 0.5rem 0.5rem 0 0;
   background-color: var(--asc-color-background-default);
 }
 
 .socialGlobalSearchPage__tabPanel {
-  padding: 3rem 0;
+  padding: 0;
 }
 
 .socialGlobalSearchPage__searchResultContainer__footer {
@@ -43,6 +43,10 @@
     position: relative;
   }
 
+  .socialGlobalSearchPage__tabPanel {
+    padding: 3rem 0;
+  }
+
   .socialGlobalSearchPage__searchResultContainer {
     left: 0;
     top: 2.8rem;
@@ -59,5 +63,7 @@
 
   .socialGlobalSearchPage__tabs {
     width: 20rem;
+    position: fixed;
+    padding: 0 1rem;
   }
 }
