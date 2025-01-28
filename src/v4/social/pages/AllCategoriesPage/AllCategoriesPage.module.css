@@ -35,6 +35,8 @@
 .allCategoryItem__categoryName {
   text-align: left;
   overflow: hidden;
+  white-space: nowrap;
+  -webkit-line-clamp: 1;
   text-overflow: ellipsis;
 }
 
