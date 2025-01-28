@@ -168,7 +168,7 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
           <div className={styles.communityFeed__emptyPost}>
             <EmptyPost className={styles.communityFeed__emptyPostIcon} />
             <Typography.Body className={styles.communityFeed__emptyPostText}>
-              No post yet
+              No posts yet
             </Typography.Body>
           </div>
         )}
