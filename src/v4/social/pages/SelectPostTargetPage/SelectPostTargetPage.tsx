@@ -73,7 +73,7 @@ export function SelectPostTargetPage() {
                       cancelText: 'Keep editing',
                       title: 'Discard this post?',
                       pageId: 'post_composer_page',
-                      content: 'The post will be permanently deleted. It cannot be undone.',
+                      content: 'The post will be permanently discarded. It cannot be undone.',
                     });
                   },
                   header: (
@@ -127,7 +127,7 @@ export function SelectPostTargetPage() {
                           cancelText: 'Keep editing',
                           title: 'Discard this post?',
                           pageId: 'post_composer_page',
-                          content: 'The post will be permanently deleted. It cannot be undone.',
+                          content: 'The post will be permanently discarded. It cannot be undone.',
                         });
                       },
                       header: (

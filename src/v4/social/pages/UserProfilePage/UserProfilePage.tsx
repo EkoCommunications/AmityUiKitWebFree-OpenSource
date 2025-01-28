@@ -110,7 +110,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
       cancelText: 'Keep editing',
       title: 'Discard this post?',
       pageId: 'post_composer_page',
-      content: 'The post will be permanently deleted. It cannot be undone.',
+      content: 'The post will be permanently discarded. It cannot be undone.',
     });
   };
 

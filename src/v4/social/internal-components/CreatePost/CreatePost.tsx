@@ -283,7 +283,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       pageId: pageId,
       type: 'confirm',
       title: 'Discard this post?',
-      content: 'The post will be permanently deleted. It cannot be undone.',
+      content: 'The post will be permanently discarded. It cannot be undone.',
       onOk: () => {
         AmityPostComposerPageBehavior?.goToSocialHomePage?.();
       },
