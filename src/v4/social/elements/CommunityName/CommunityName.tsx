@@ -15,7 +15,7 @@ export const CommunityName = ({
   name = '',
 }: CommunityNameProps) => {
   const elementId = 'community_name';
-  const { config, themeStyles, accessibilityId, isExcluded } = useAmityElement({
+  const { accessibilityId, isExcluded } = useAmityElement({
     pageId,
     componentId,
     elementId,
@@ -24,8 +24,11 @@ export const CommunityName = ({
   if (isExcluded) return null;
 
   return (
-    <Typography.Heading data-qa-anchor={accessibilityId} className={styles.communityName__truncate}>
+    <Typography.Headline
+      data-qa-anchor={accessibilityId}
+      className={styles.communityName__truncate}
+    >
       {name}
-    </Typography.Heading>
+    </Typography.Headline>
   );
 };
