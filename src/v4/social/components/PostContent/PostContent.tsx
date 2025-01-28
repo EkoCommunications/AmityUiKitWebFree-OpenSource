@@ -560,6 +560,7 @@ export const PostContent = ({
         ) : null}
         {isNotJoinedCommunity && page.type !== PageTypes.PostDetailPage ? (
           <>
+            <div className={styles.postContent__divider} />
             <Typography.Body className={styles.postContent__notMember}>
               Join community to interact with all posts
             </Typography.Body>
