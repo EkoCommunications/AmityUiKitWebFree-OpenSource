@@ -7,7 +7,6 @@ import { CommunityJoinButton } from '~/v4/social/elements/CommunityJoinButton';
 import { useCommunityInfo } from '~/v4/social/hooks/useCommunityInfo';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { CommunityVerifyBadge } from '~/v4/social/elements/CommunityVerifyBadge';
 import { CommunityDescription } from '~/v4/social/elements/CommunityDescription';
 import { CommunityName } from '~/v4/social/elements/CommunityName';
 import { CommunityInfo } from '~/v4/social/elements/CommunityInfo';
@@ -16,6 +15,7 @@ import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import { useSDK } from '~/v4/core/hooks/useSDK';
 import { CommunityPostSettings } from '@amityco/ts-sdk';
 import { CommunityPrivateBadge } from '~/v4/social/elements/CommunityPrivateBadge/CommunityPrivateBadge';
+import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge';
 
 interface CommunityProfileHeaderProps {
   pageId?: string;
@@ -81,7 +81,9 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
             />
           )}
           <CommunityName pageId={pageId} componentId={componentId} name={community.displayName} />
-          {community.isOfficial && <CommunityVerifyBadge />}
+          {community.isOfficial && (
+            <CommunityOfficialBadge className={styles.communityProfile__privateIcon} />
+          )}
         </div>
 
         <div className={styles.communityProfile__communityCategories}>

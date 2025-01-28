@@ -1,15 +1,12 @@
-import React from 'react';
-
-import { StoryRing } from '~/v4/social/elements/StoryRing';
-
-import { Typography } from '~/v4/core/components';
-import Verified from '~/v4/icons/Verified';
 import clsx from 'clsx';
-import useCommunity from '~/v4/core/hooks/collections/useCommunity';
+import React from 'react';
+import Verified from '~/v4/icons/Verified';
+import { Typography } from '~/v4/core/components';
 import { useImage } from '~/v4/core/hooks/useImage';
-
+import { StoryRing } from '~/v4/social/elements/StoryRing';
+import useCommunity from '~/v4/core/hooks/collections/useCommunity';
+import { CommunityPrivateBadge } from '~/v4/social/elements/CommunityPrivateBadge';
 import styles from './StoryTabItem.module.css';
-import Lock from '~/v4/icons/Lock';
 
 const ErrorIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
@@ -103,7 +100,7 @@ export const StoryTabItem: React.FC<StoryTabProps> = ({
         data-qa-anchor={`${pageId}/${componentId}/community_name`}
         className={clsx(styles.displayName)}
       >
-        {!community?.isPublic && <Lock className={styles.lockIcon} />}
+        {!community?.isPublic && <CommunityPrivateBadge className={styles.lockIcon} />}
         {community?.displayName}
       </Typography.Caption>
     </div>

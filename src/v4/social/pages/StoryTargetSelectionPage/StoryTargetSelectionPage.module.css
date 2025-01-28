@@ -44,7 +44,6 @@
   padding: 0.5rem 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
 }
 
 .selectStoryTargetPage__myCommunities_text {
@@ -58,6 +57,13 @@
 
 .selectStoryTargetPage__communityAvatar {
   margin-right: var(--asc-spacing-s1);
+}
+
+.selectStoryTargetPage__communityName {
+  display: flex;
+  gap: 0.125rem;
+  align-items: center;
+  justify-content: start;
 }
 
 .selectStoryTargetPage__closeButton {

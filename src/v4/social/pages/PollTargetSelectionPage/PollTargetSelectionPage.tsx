@@ -149,10 +149,10 @@ export function PollTargetSelectionPage() {
               <div className={styles.pollTargetSelectionPage__communityAvatar}>
                 <CommunityAvatar pageId={pageId} community={community} />
               </div>
-              <CommunityDisplayName pageId={pageId} community={community} />
-              <div>
-                {community.isOfficial && <CommunityOfficialBadge />}
+              <div className={styles.pollTargetSelectionPage__communityName}>
                 {!community.isPublic && <CommunityPrivateBadge />}
+                <CommunityDisplayName pageId={pageId} community={community} />
+                {community.isOfficial && <CommunityOfficialBadge />}
               </div>
             </Button>
           );
