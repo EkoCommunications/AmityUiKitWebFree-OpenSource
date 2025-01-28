@@ -20,8 +20,6 @@ import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoVi
 import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
 import { Popover } from '~/v4/core/components/AriaPopover';
-import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 type PendingPostContentProps = {
   pageId?: string;
@@ -46,7 +44,6 @@ export const PendingPostContent = ({
 
   const { setDrawerData, removeDrawerData } = useDrawer();
   const notification = useNotifications();
-  const { info } = useConfirmContext();
 
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isVideoViewerOpen, setIsVideoViewerOpen] = useState(false);
@@ -77,12 +74,10 @@ export const PendingPostContent = ({
         content: 'Post accepted.',
       });
     } catch (error) {
-      info({
-        content: 'Failed to accept post. Post has been reviewed.',
-        onOk: () => {
-          refresh?.();
-        },
+      notification.info({
+        content: 'Failed to accept post. This post has been reviewed by another moderator.',
       });
+      refresh?.();
     }
   };
 
@@ -95,12 +90,10 @@ export const PendingPostContent = ({
         content: 'Post declined.',
       });
     } catch (error) {
-      info({
-        content: 'Failed to decline post. Post has been reviewed',
-        onOk: () => {
-          refresh?.();
-        },
+      notification.info({
+        content: 'Failed to decline post. This post has been reviewed by another moderator.',
       });
+      refresh?.();
     }
   };
 
@@ -114,12 +107,10 @@ export const PendingPostContent = ({
         content: 'Post deleted.',
       });
     } catch (error) {
-      info({
+      notification.info({
         content: 'Failed to delete post. Post has been deleted.',
-        onOk: () => {
-          refresh?.();
-        },
       });
+      refresh?.();
     }
   };
 
