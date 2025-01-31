@@ -227,7 +227,7 @@
   }
 
   .communityAddMemberPage__memberList {
-    max-height: 55vh;
+    max-height: 50vh;
     min-height: 50vh;
     overflow-y: scroll;
     padding-bottom: 5rem;

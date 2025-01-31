@@ -104,7 +104,7 @@
 
   .editPost__formContent {
     overflow-y: auto;
-    max-height: 55vh;
+    max-height: 50vh;
     min-height: 13rem;
     position: relative;
   }
