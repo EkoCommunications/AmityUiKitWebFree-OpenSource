@@ -213,6 +213,7 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
       {!isDesktop && isCurrentUser && (
         <FloatingActionButton
           icon={Plus}
+          className={styles.userProfilePage__floatingButton}
           onPress={() =>
             setDrawerData({
               content: (
@@ -220,7 +221,6 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
               ),
             })
           }
-          className={styles.userProfilePage__floatingButton}
         />
       )}
     </>

@@ -43,7 +43,7 @@ export const CommunityDescription: React.FC<CommunityDescriptionProps> = ({
             lines={4}
             ellipsis={
               <>
-                ...
+                ...{' '}
                 <Button className={styles.communityDescription__seeMoreButton} onPress={expandText}>
                   See more
                 </Button>

@@ -235,7 +235,7 @@
 
   .communityAddMemberPage__memberList[data-has-selected='true'] {
     min-height: calc(50vh - 6.5rem);
-    max-height: calc(55vh - 6.5rem);
+    max-height: calc(50vh - 6.5rem);
   }
 
   .communityAddMemberPage__addMemberButton {
