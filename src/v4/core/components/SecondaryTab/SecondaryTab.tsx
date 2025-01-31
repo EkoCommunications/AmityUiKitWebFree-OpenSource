@@ -11,8 +11,6 @@ type TabsBarProps = TabsProps & {
   tabPanelClassName?: string;
   onChange: (key: Key) => void;
   tabs: { value: string; label: string; accessibilityId?: string; content: () => ReactNode }[];
-  tabListClassName?: string;
-  tabPanelClassName?: string;
 };
 
 export const SecondaryTab = ({

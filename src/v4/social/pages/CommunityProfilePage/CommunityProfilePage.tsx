@@ -26,6 +26,8 @@ import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName'
 import { PollPostComposerPage } from '~/v4/social/pages/PollPostComposerPage/PollPostComposerPage';
 import { CreatePollButton } from '~/v4/social/elements/CreatePollButton';
 import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
+import useCommunityModeratorsCollection from '~/v4/social/hooks/collections/useCommunityModeratorsCollection';
+import useSDK from '~/v4/core/hooks/useSDK';
 
 interface CommunityProfileProps {
   communityId: string;
@@ -37,6 +39,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
 
   const { openPopup } = usePopupContext();
   const { confirm } = useConfirmContext();
+  const { currentUserId } = useSDK();
   const { file, setFile } = useStoryContext();
   const [isSticky, setIsSticky] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -47,6 +50,8 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
   const { AmityCommunityProfilePageBehavior } = usePageBehavior();
   const { themeStyles, accessibilityId } = useAmityPage({ pageId });
   const { community } = useCommunity({ communityId, shouldCall: !!communityId });
+  const { moderators } = useCommunityModeratorsCollection({ communityId: community?.communityId });
+  const isCommunityModerator = moderators.find((moderator) => moderator.userId === currentUserId);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -72,6 +77,11 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
     removeDrawerData();
   };
 
+  const checkPostPermission = () => {
+    const isOnlyAdminCanPost = community?.postSetting === 'ONLY_ADMIN_CAN_POST';
+    return isOnlyAdminCanPost ? isCommunityModerator : !!community?.isJoined;
+  };
+
   const onCloseCreatePostPopup = ({ close }: { close: () => void }) => {
     confirm({
       onOk: close,
@@ -80,7 +90,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
       cancelText: 'Keep editing',
       title: 'Discard this post?',
       pageId: 'post_composer_page',
-      content: 'The post will be permanently deleted. It cannot be undone.',
+      content: 'The post will be permanently discarded. It cannot be undone.',
     });
   };
 
@@ -143,7 +153,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
       ) : (
         <CommunityProfileSkeleton />
       )}
-      {activeTab === 'community_feed' && community?.isJoined && (
+      {activeTab === 'community_feed' && checkPostPermission() && (
         <div className={styles.communityProfilePage__poseComposer}>
           <PostComposer
             pageId={pageId}
@@ -185,7 +195,7 @@ export const CommunityProfilePage: React.FC<CommunityProfileProps> = ({ communit
         </div>
       )}
       <div key={refreshKey}>{renderTabContent()}</div>
-      {community?.isJoined && (
+      {community?.isJoined && checkPostPermission() && (
         <div className={styles.communityProfilePage__createPostButton}>
           <CommunityCreatePostButton
             pageId={pageId}

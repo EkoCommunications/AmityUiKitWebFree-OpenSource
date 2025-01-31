@@ -33,6 +33,7 @@
   color: var(--asc-color-white);
   border-radius: 0.5rem;
   margin-bottom: var(--asc-spacing-m1);
+  margin-top: 0;
   animation-duration: 0.3s;
   animation-name: appear;
   pointer-events: auto;
@@ -56,10 +57,11 @@
     top: auto;
     left: 0;
     bottom: 0;
-    padding-bottom: var(--asc-spacing-l1);
   }
 
   .notificationContainer {
     width: 100%;
+    margin-top: var(--asc-spacing-m1);
+    margin-bottom: 0;
   }
 }

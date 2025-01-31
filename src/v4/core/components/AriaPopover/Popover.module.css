@@ -33,6 +33,11 @@
   outline: none;
 }
 
+.popover__menuButton {
+  background-color: var(--asc-color-background-shade1);
+  border-radius: 0.5rem;
+}
+
 @keyframes popover-slide {
   from {
     transform: var(--origin);

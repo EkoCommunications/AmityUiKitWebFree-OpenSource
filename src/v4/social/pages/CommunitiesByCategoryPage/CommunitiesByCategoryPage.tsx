@@ -9,7 +9,6 @@ import { BackButton } from '~/v4/social/elements/BackButton';
 import { CommunityRowItem } from '~/v4/social/internal-components/CommunityRowItem';
 import { CommunityRowItemSkeleton } from '~/v4/social/internal-components/CommunityRowItem/CommunityRowItemSkeleton';
 import { EmptyCommunity } from './EmptyCommunity';
-import { CommunityRowItemDivider } from '~/v4/social/internal-components/CommunityRowItem/CommunityRowItemDivider';
 import { useCommunityActions } from '~/v4/social/hooks/useCommunityActions';
 import styles from './CommunitiesByCategoryPage.module.css';
 
@@ -88,12 +87,7 @@ export function CommunitiesByCategoryPage({ categoryId }: CommunitiesByCategoryP
             </React.Fragment>
           ))}
           {isLoading &&
-            Array.from({ length: 10 }).map((_, index) => (
-              <React.Fragment key={index}>
-                <CommunityRowItemDivider />
-                <CommunityRowItemSkeleton />
-              </React.Fragment>
-            ))}
+            Array.from({ length: 10 }).map((_, index) => <CommunityRowItemSkeleton key={index} />)}
           {hasMore && (
             <div
               ref={(node) => setIntersectionNode(node)}

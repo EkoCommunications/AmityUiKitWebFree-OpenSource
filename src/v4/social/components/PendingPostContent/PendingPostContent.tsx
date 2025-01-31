@@ -7,7 +7,7 @@ import { Button } from '~/v4/core/natives/Button/Button';
 import { Timestamp } from '~/v4/social/elements/Timestamp';
 import clsx from 'clsx';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
-import Trash from '~/v4/icons/Trash';
+import { TrashIcon } from '~/v4/icons/Trash';
 import { PostAcceptButton } from '~/v4/social/elements/PostAcceptButton';
 import { PostDeclineButton } from '~/v4/social/elements/PostDeclineButton/PostDeclineButton';
 import { PostRepository } from '@amityco/ts-sdk';
@@ -20,8 +20,6 @@ import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoVi
 import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
 import { Popover } from '~/v4/core/components/AriaPopover';
-import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
-import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 type PendingPostContentProps = {
   pageId?: string;
@@ -46,7 +44,6 @@ export const PendingPostContent = ({
 
   const { setDrawerData, removeDrawerData } = useDrawer();
   const notification = useNotifications();
-  const { info } = useConfirmContext();
 
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isVideoViewerOpen, setIsVideoViewerOpen] = useState(false);
@@ -77,12 +74,10 @@ export const PendingPostContent = ({
         content: 'Post accepted.',
       });
     } catch (error) {
-      info({
-        content: 'Failed to accept post. Post has been reviewed.',
-        onOk: () => {
-          refresh?.();
-        },
+      notification.info({
+        content: 'Failed to accept post. This post has been reviewed by another moderator.',
       });
+      refresh?.();
     }
   };
 
@@ -95,12 +90,10 @@ export const PendingPostContent = ({
         content: 'Post declined.',
       });
     } catch (error) {
-      info({
-        content: 'Failed to decline post. Post has been reviewed',
-        onOk: () => {
-          refresh?.();
-        },
+      notification.info({
+        content: 'Failed to decline post. This post has been reviewed by another moderator.',
       });
+      refresh?.();
     }
   };
 
@@ -114,12 +107,10 @@ export const PendingPostContent = ({
         content: 'Post deleted.',
       });
     } catch (error) {
-      info({
+      notification.info({
         content: 'Failed to delete post. Post has been deleted.',
-        onOk: () => {
-          refresh?.();
-        },
       });
+      refresh?.();
     }
   };
 
@@ -201,7 +192,7 @@ export const PendingPostContent = ({
                             removeDrawerData();
                           }}
                         >
-                          <Trash className={styles.pendingPostContent__deletePost__icon} />
+                          <TrashIcon className={styles.pendingPostContent__deletePost__icon} />
                           <Typography.Title className={styles.pendingPostContent__deletePost__text}>
                             Delete post
                           </Typography.Title>
@@ -219,7 +210,7 @@ export const PendingPostContent = ({
                       handleDeletePost(post.postId);
                     }}
                   >
-                    <Trash className={styles.pendingPostContent__deletePost__icon} />
+                    <TrashIcon className={styles.pendingPostContent__deletePost__icon} />
                     <Typography.Title className={styles.pendingPostContent__deletePost__text}>
                       Delete post
                     </Typography.Title>

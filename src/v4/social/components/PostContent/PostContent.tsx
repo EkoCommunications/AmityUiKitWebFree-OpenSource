@@ -37,14 +37,14 @@ import { AnnouncementBadge } from '~/v4/social/elements/AnnouncementBadge';
 import { PinBadge } from '~/v4/social/elements/PinBadge';
 import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
 import clsx from 'clsx';
-import { Lock } from '~/icons';
-import Verified from '~/v4/icons/Verified';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import styles from './PostContent.module.css';
+import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge';
+import { CommunityPrivateBadge } from '~/v4/social/elements/CommunityPrivateBadge';
 
 export enum AmityPostContentComponentStyle {
   FEED = 'feed',
@@ -123,16 +123,15 @@ const PostTitle = ({ pageId, componentId, post, hideTarget }: PostTitleProps) =>
           data-show-private-badge={showPrivateBadge === true}
           data-show-official-badge={showOfficialBadge === true}
         >
-          {showPrivateBadge && <Lock className={styles.postTitle__community__privateIcon} />}
+          {showPrivateBadge && <CommunityPrivateBadge />}
           <Button
+            className={styles.postTitle__communityText}
             data-qa-anchor={`${pageId}/${componentId}/community_name`}
             onPress={() => goToCommunityProfilePage(targetCommunity.communityId)}
           >
-            <Typography.BodyBold className={styles.postTitle__communityText}>
-              {targetCommunity.displayName}
-            </Typography.BodyBold>
+            <Typography.BodyBold>{targetCommunity.displayName}</Typography.BodyBold>
           </Button>
-          {showOfficialBadge && <Verified className={styles.postTitle__community__verifiedIcon} />}
+          {showOfficialBadge && <CommunityOfficialBadge />}
         </div>
       )}
       {showTargetUser && (
@@ -205,6 +204,7 @@ interface PostContentProps {
   pageId?: string;
   disabledContent?: boolean;
   isGlobalFeaturePost?: boolean;
+  className?: string;
 }
 
 export const PostContent = ({
@@ -218,6 +218,7 @@ export const PostContent = ({
   style,
   disabledContent = false,
   isGlobalFeaturePost = false,
+  className,
 }: PostContentProps) => {
   const componentId = 'post_content';
   const { themeStyles, accessibilityId } = useAmityComponent({
@@ -386,7 +387,7 @@ export const PostContent = ({
     <div
       data-qa-anchor={accessibilityId}
       ref={elementRef}
-      className={styles.postContent}
+      className={clsx(styles.postContent, className)}
       style={themeStyles}
     >
       {(category === AmityPostCategory.ANNOUNCEMENT ||
@@ -495,6 +496,7 @@ export const PostContent = ({
             text={post?.data?.text}
             mentioned={post?.metadata?.mentioned}
             mentionees={post?.mentioness}
+            post={post}
           />
           {post.children.length > 0 ? (
             <ChildrenPostContent
@@ -557,8 +559,9 @@ export const PostContent = ({
             </Typography.Caption>
           </div>
         ) : null}
-        {isNotJoinedCommunity ? (
+        {isNotJoinedCommunity && page.type !== PageTypes.PostDetailPage ? (
           <>
+            <div className={styles.postContent__divider} />
             <Typography.Body className={styles.postContent__notMember}>
               Join community to interact with all posts
             </Typography.Body>

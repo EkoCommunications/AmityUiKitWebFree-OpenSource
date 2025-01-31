@@ -1,7 +1,8 @@
-import React, { ReactNode, useState } from 'react';
 import clsx from 'clsx';
-import styles from './Notification.module.css';
+import React, { ReactNode, useState } from 'react';
+import { Typography } from '~/v4/core/components/Typography/TypographyV4';
 import { useNotificationData } from '~/v4/core/providers/NotificationProvider';
+import styles from './Notification.module.css';
 
 interface NotificationProps {
   className?: string;
@@ -37,13 +38,13 @@ export const Notification = ({
         data-show-detail-media-attachment={isShowAttributes}
         className={clsx(styles.notificationContainer, className)}
       >
-        <div className={clsx(styles.icon__container)}>{icon}</div> {content}
+        <div className={clsx(styles.icon__container)}>{icon}</div>{' '}
+        {typeof content === 'string' ? <Typography.Body>{content}</Typography.Body> : content}
       </div>
     )
   );
 };
 
-// rendered by provider, to allow spawning of notification from notification function below
 export const NotificationsContainer = () => {
   const notifications = useNotificationData();
 

@@ -1,12 +1,10 @@
-import React, { useState, useMemo, ReactNode, useEffect } from 'react';
-
-import { Linkify } from '~/v4/social/internal-components/Linkify';
-import { Mentioned, findChunks, processChunks, Mentionees } from '~/v4/helpers/utils';
-import { Typography } from '~/v4/core/components';
+import React, { ReactNode } from 'react';
+import { Mentioned, Mentionees } from '~/v4/helpers/utils';
 import { LinkPreview } from '~/v4/social/components/PostContent/LinkPreview/LinkPreview';
 import styles from './TextContent.module.css';
 import * as linkify from 'linkifyjs';
 import { TextWithMention } from '~/v4/social/internal-components/TextWithMention/TextWithMention';
+import usePost from '~/v4/core/hooks/objects/usePost';
 
 interface MentionHighlightTagProps {
   children: ReactNode;
@@ -25,6 +23,7 @@ interface TextContentProps {
   text?: string;
   mentioned?: Mentioned[];
   mentionees?: Mentionees;
+  post?: Amity.Post<'image'>;
 }
 
 export const TextContent = ({
@@ -33,12 +32,17 @@ export const TextContent = ({
   text = '',
   mentionees = [],
   mentioned,
+  post,
 }: TextContentProps) => {
   if (!text) {
     return null;
   }
 
+  const { post: childPost } = usePost(post?.children?.[0]);
+
   const linksFounded = linkify.find(text).filter((link) => link.type === 'url');
+
+  const isHasMedia = childPost?.dataType === 'image' || childPost?.dataType === 'video';
 
   return (
     <>
@@ -51,7 +55,7 @@ export const TextContent = ({
           mentioned,
         }}
       />
-      {linksFounded && linksFounded.length > 0 && (
+      {linksFounded && linksFounded.length > 0 && !isHasMedia && (
         <LinkPreview pageId={pageId} componentId={componentId} url={linksFounded[0].href} />
       )}
     </>

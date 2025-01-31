@@ -1,9 +1,10 @@
 import { Key } from 'react-aria';
 import { useClickAway } from 'react-use';
+import { UserRepository } from '@amityco/ts-sdk';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { SecondaryTab } from '~/v4/core/components/SecondaryTab';
 import { TopSearchBar } from '~/v4/social/components/TopSearchBar';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { UserSearchResult } from '~/v4/social/components/UserSearchResult';
 import { CommunitySearchResult } from '~/v4/social/components/CommunitySearchResult';
 import useCommunitiesCollection from '~/v4/core/hooks/collections/useCommunitiesCollection';
@@ -36,6 +37,7 @@ const useGlobalSearchViewModel = () => {
     displayName: searchKeyword,
     limit: 20,
     enabled: enabledUserSearch,
+    matchType: UserRepository.AmityUserSearchMatchType.PARTIAL,
   });
 
   const search = useCallback(
@@ -114,6 +116,8 @@ export function SocialGlobalSearchPage() {
           <SecondaryTab
             tabs={tabs}
             activeTab={activeTab}
+            tabListClassName={styles.socialGlobalSearchPage__tabs}
+            tabPanelClassName={styles.socialGlobalSearchPage__tabPanel}
             onChange={(newTab) => {
               setActiveTab(newTab);
               setSearchType(
@@ -123,6 +127,7 @@ export function SocialGlobalSearchPage() {
               );
             }}
           />
+          <div className={styles.socialGlobalSearchPage__searchResultContainer__footer} />
         </div>
       )}
     </div>

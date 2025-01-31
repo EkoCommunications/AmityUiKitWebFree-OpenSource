@@ -54,9 +54,9 @@ const Footer: React.FC<
     onPause();
     confirm({
       title: 'Failed to upload story',
-      content: 'Would you like to discard or retry uploading?',
-      cancelText: 'CANCEL',
-      okText: 'DISCARD',
+      content: 'Would you like to discard uploading?',
+      cancelText: 'Cancel',
+      okText: 'Discard',
       onCancel() {
         onPlay();
       },

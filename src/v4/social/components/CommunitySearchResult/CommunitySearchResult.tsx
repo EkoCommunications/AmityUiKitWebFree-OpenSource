@@ -48,6 +48,7 @@ export const CommunitySearchResult = ({
             pageId={pageId}
             community={community}
             componentId={componentId}
+            maxCategoryCharacters={24}
             key={community.communityId}
             showJoinButton={showJoinButton}
             maxCategoriesLength={isDesktop ? 2 : 5}

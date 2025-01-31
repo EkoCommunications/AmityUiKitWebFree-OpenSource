@@ -263,7 +263,7 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
       pageId: pageId,
       type: 'confirm',
       title: 'Discard this post?',
-      content: 'The post will be permanently deleted. It cannot be undone.',
+      content: 'The post will be permanently discarded. It cannot be undone.',
       onOk: () => {
         prevPage?.type == PageTypes.PollTargetSelectionPage ? onBack(-2) : onBack();
       },

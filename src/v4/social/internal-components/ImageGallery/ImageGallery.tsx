@@ -15,19 +15,25 @@ const ImageItem = ({
 }) => {
   const image = useImage({ fileId, imageSize: 'medium' });
 
-  return image ? (
+  const [isBrokenImg, setIsBrokenImg] = useState(false);
+
+  return image && !isBrokenImg ? (
     <Button
       className={styles.imageGallery__itemContainer}
       onPress={() => onClickImageItem(postIndex)}
     >
       <img
-        data-no-image={image == undefined}
         className={styles.imageGallery__item}
         src={image}
         alt={`${fileId}`}
+        onError={() => setIsBrokenImg(true)}
       />
     </Button>
-  ) : null;
+  ) : (
+    <div className={styles.imageGallery__itemContainer}>
+      <div className={styles.imageGallery__brokenImg} />
+    </div>
+  );
 };
 
 interface ImageGalleryProps {

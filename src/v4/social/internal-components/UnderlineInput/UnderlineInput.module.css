@@ -30,6 +30,11 @@
   resize: none;
   overflow: hidden;
   line-height: 1.25rem;
+  field-sizing: content;
+}
+
+.underlineInput__value::placeholder {
+  color: var(--asc-color-base-shade2);
 }
 
 .underlineInput__value:focus {

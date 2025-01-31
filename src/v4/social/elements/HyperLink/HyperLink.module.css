@@ -1,6 +1,6 @@
 .hyperlink {
   color: var(--asc-color-secondary-default);
-  background: #fffc;
+  background: var(--asc-color-background-transparent-white);
   display: inline-flex;
   align-items: center;
   padding: var(--asc-spacing-s2) var(--asc-spacing-m1) var(--asc-spacing-s2) var(--asc-spacing-s2);
@@ -12,7 +12,7 @@
   line-height: 1.25rem;
   letter-spacing: -0.015rem;
   max-width: 200px;
-  border: var(--asc-color-base-shade4);
+  border: 1px solid var(--asc-color-base-shade4);
   text-decoration: none;
   cursor: pointer;
 }

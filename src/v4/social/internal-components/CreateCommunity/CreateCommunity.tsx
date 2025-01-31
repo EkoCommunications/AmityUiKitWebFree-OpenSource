@@ -109,7 +109,7 @@ export function CreateCommunity({ mode }: CreateCommunityProps) {
     const community = await CommunityRepository.createCommunity(data);
     if (community) {
       notification.success({
-        content: 'Successfully created community!',
+        content: 'Successfully created community.',
       });
       goToCommunityProfilePage(community.data.communityId, 2);
     }

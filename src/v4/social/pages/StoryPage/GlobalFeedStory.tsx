@@ -69,11 +69,12 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const dragEventTarget = useRef(new EventTarget());
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [lastSeenIndex, setLastSeenIndex] = useState(0);
+  const [lastSeenIndex, setLastSeenIndex] = useState(-1);
+  const [isError, setIsError] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { stories } = useGetActiveStoriesByTarget({
+  const { stories, refresh } = useGetActiveStoriesByTarget({
     targetType: 'community',
     targetId,
     options: {
@@ -129,21 +130,32 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
 
   const onDeleteStory = async (storyId: string) => {
     const isLastStory = currentIndex === stories.length - 1;
-
-    await StoryRepository.softDeleteStory(storyId);
-    notification.success({
-      content: 'Story deleted',
-    });
-    if (stories.length === 1) {
-      // If it's the only story, close the ViewStory screen
-      onChangePage?.();
-    } else if (isLastStory) {
-      // If it's the last story, move to the previous one
-      previousStory();
-    } else {
-      // For any other case (including first story), stay on the same index
-      // The next story will automatically take its place
-      setCurrentIndex((prevIndex) => prevIndex);
+    try {
+      await StoryRepository.softDeleteStory(storyId);
+    } catch (error) {
+      setIsError(true);
+      notification.error({
+        content: 'Failed to delete story',
+      });
+      return;
+    } finally {
+      if (!isError) {
+        notification.success({
+          content: 'Story deleted',
+        });
+        refresh();
+        if (stories.length === 1) {
+          // If it's the only story, close the ViewStory screen
+          onChangePage?.();
+        } else if (isLastStory) {
+          // If it's the last story, move to the previous one
+          previousStory();
+        } else {
+          // For any other case (including first story), stay on the same index
+          // The next story will automatically take its place
+          setCurrentIndex((prevIndex) => prevIndex);
+        }
+      }
     }
   };
 
@@ -155,7 +167,7 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
         'This story will be permanently deleted. You’ll no longer to see and find this story.',
       okText: 'Delete',
       onOk: async () => {
-        onDeleteStory(storyId);
+        await onDeleteStory(storyId);
       },
     });
   };

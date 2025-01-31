@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback, Children } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Truncate from 'react-truncate-markup';
 import {
   CustomRenderer,
@@ -22,6 +22,8 @@ import { Action } from 'react-insta-stories/dist/interfaces';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
+
+const DEFAULT_VIDEO_DURATION = 15000;
 
 const useAudioControl = () => {
   const [muted, setMuted] = useState(false);
@@ -143,19 +145,59 @@ export const renderer: CustomRenderer = ({
   const isCreator = creator?.userId === user?.userId;
   const { hasStoryPermission } = useStoryPermission(community?.communityId);
 
+  const [videoDuration, setVideoDuration] = useState<number | null>(null);
+  const [videoSrc, setVideoSrc] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (story?.videoData) {
+      setVideoSrc(story.videoData.fileUrl || story.videoData.videoUrl?.original);
+      // @ts-ignore
+      setVideoDuration(story.videoData.attributes.metadata.video.duration * 1000);
+    } else {
+      const base64Video = story?.data?.fileData as string;
+      const base64WithoutPrefix = base64Video?.split(',')[1];
+
+      if (!base64WithoutPrefix) {
+        // SDK sends empty fileData the first time when the story fails to upload
+        // so we need to check if fileData is empty, then set videoSrc to empty string and the duration for a while to keep the preview show until the fileData is updated
+        setVideoSrc('');
+        setVideoDuration(DEFAULT_VIDEO_DURATION);
+        return;
+      }
+
+      const byteArray = Uint8Array.from(atob(base64WithoutPrefix), (c) => c.charCodeAt(0));
+      const blob = new Blob([byteArray], { type: 'video/mp4' });
+      const blobUrl = URL.createObjectURL(blob);
+
+      setVideoSrc(blobUrl);
+
+      // Create a video element to get the duration
+      const videoElement = document.createElement('video');
+      videoElement.src = blobUrl;
+
+      // Get the video duration once metadata is loaded
+      videoElement.addEventListener('loadedmetadata', () => {
+        setVideoDuration(videoElement.duration * 1000); // Duration in milliseconds
+      });
+
+      return () => {
+        if (blobUrl) URL.revokeObjectURL(blobUrl);
+      };
+    }
+  }, [story?.videoData, story?.data?.fileData]);
 
   const videoLoaded = useCallback(() => {
     messageHandler('UPDATE_VIDEO_DURATION', {
       // TODO: need to fix video type from TS-SDK
       // @ts-ignore
-      duration: story?.videoData?.attributes.metadata.video.duration,
+      duration: videoDuration,
     });
     setLoaded(true);
     action('play', true);
     // TODO: need to fix video type from TS-SDK
     // @ts-ignore
-  }, [messageHandler, story?.videoData?.attributes.metadata.video.duration, action]);
+  }, [messageHandler, videoDuration, action]);
 
   const handleProgressComplete = useCallback(() => {
     if (currentIndex + 1 < storiesCount) {
@@ -219,10 +261,6 @@ export const renderer: CustomRenderer = ({
       };
     }
   }, [action, pause, play, dragEventTarget]);
-
-  // TODO: need to fix video type from TS-SDK
-  // @ts-ignore
-  const videoDuration = Math.round(story?.videoData?.attributes.metadata.video.duration * 1000);
 
   const renderCommentTray = () => (
     <CommentTray
@@ -292,7 +330,7 @@ export const renderer: CustomRenderer = ({
     <div className={clsx(rendererStyles.rendererContainer)}>
       <StoryProgressBar
         pageId={pageId}
-        duration={videoDuration}
+        duration={videoDuration ?? DEFAULT_VIDEO_DURATION}
         currentIndex={currentIndex}
         storiesCount={storiesCount}
         isPaused={isPaused || isBottomSheetOpen || isOpenCommentSheet}
@@ -335,7 +373,8 @@ export const renderer: CustomRenderer = ({
         data-qa-anchor="video_view"
         ref={vid}
         className={clsx(rendererStyles.storyVideo)}
-        src={story?.videoData?.fileUrl || story?.videoData?.videoUrl?.original}
+        src={videoSrc}
+        key={videoSrc}
         controls={false}
         onLoadedData={videoLoaded}
         playsInline

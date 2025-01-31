@@ -45,6 +45,13 @@
   margin-right: var(--asc-spacing-s1);
 }
 
+.pollTargetSelectionPage__communityName {
+  display: flex;
+  gap: 0.125rem;
+  align-items: center;
+  justify-content: start;
+}
+
 .pollTargetSelectionPage__closeButton {
   display: flex;
   fill: var(--asc-color-base-default);
@@ -67,7 +74,6 @@
 @media (width >= 48em) {
   .pollTargetSelectionPage {
     width: 30rem;
-    height: 30rem;
     overflow-y: auto;
     border-radius: 0.75rem;
     padding: 0 1.5rem;

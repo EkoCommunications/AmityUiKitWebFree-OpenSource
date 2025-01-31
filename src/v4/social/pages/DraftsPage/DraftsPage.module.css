@@ -157,7 +157,7 @@
 
 .addHyperlinkContainer {
   width: 100%;
-  padding: 0 1rem;
+  height: 90vh;
 }
 
 @media (width >= 48em) {
@@ -175,5 +175,11 @@
   .addHyperlinkContainer {
     width: 100%;
     padding: unset;
+    height: unset;
+  }
+
+  .draftsPage__notification {
+    position: relative;
+    left: -9rem;
   }
 }

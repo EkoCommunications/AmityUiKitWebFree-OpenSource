@@ -156,7 +156,7 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
     if (!communities) return null;
     if (communities) {
       notification.success({
-        content: 'Successfully updated community profile!',
+        content: 'Successfully updated community profile.',
       });
       goToCommunityProfilePage(community.communityId);
     }

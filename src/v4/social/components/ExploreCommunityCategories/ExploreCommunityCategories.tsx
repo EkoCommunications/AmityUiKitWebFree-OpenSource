@@ -30,6 +30,7 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
     <Carousel
       scrollOffset={300}
       isHidden={isCategoryLoading || categories.length <= 3}
+      className={styles.exploreCommunityCategories__carousel}
       iconClassName={styles.exploreCommunityCategories__arrowIcon}
       leftArrowClassName={clsx(styles.exploreCommunityCategories__arrow, styles.left)}
       rightArrowClassName={clsx(styles.exploreCommunityCategories__arrow, styles.right)}
@@ -40,7 +41,7 @@ export const ExploreCommunityCategories = ({ pageId = '*' }: ExploreCommunityCat
         className={styles.exploreCommunityCategories}
       >
         {isCategoryLoading ? (
-          Array.from({ length: 5 }).map((_, index) => <CategoryChipSkeleton key={index} />)
+          Array.from({ length: 6 }).map((_, index) => <CategoryChipSkeleton key={index} />)
         ) : (
           <Fragment>
             {categories.slice(0, 5).map((category) => (

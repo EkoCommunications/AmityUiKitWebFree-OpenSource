@@ -1,47 +1,47 @@
 .recommendedCommunityCardSkeleton {
-  width: 17.375rem;
-  height: 13.3125rem;
+  width: 15.625rem;
   border-radius: 0.75rem;
-  border: 1px solid var(--asc-color-base-shade4);
+  height: calc(8.4rem + 5.7rem);
   box-shadow: var(--asc-box-shadow-02);
+  border: 1px solid var(--asc-color-base-shade4);
 }
 
 .recommendedCommunityCardSkeleton__image {
-  width: 17.375rem;
-  height: 8.1875rem;
+  height: 8.4rem;
+  width: 15.625rem;
   border-radius: 0.75rem 0.75rem 0 0;
   background-color: var(--asc-color-base-shade4);
 }
 
 .recommendedCommunityCardSkeleton__content {
-  width: 17.375rem;
-  height: 5.12rem;
   display: flex;
+  height: 5.7rem;
+  width: 15.625rem;
   flex-direction: column;
   padding: 1.06rem 1rem;
 }
 
 .recommendedCommunityCardSkeleton__contentBar1 {
+  height: 0.5rem;
+  width: 5.1875rem;
   border-radius: 0.75rem;
   background-color: var(--asc-color-base-shade4);
-  width: 5.1875rem;
-  height: 0.5rem;
 }
 
 .recommendedCommunityCardSkeleton__contentBar2 {
+  height: 0.5rem;
   margin-top: 1rem;
+  width: 8.9055rem;
   border-radius: 0.75rem;
   background-color: var(--asc-color-base-shade4);
-  width: 8.9055rem;
-  height: 0.5rem;
 }
 
 .recommendedCommunityCardSkeleton__contentBar3 {
+  height: 0.5rem;
+  width: 11.25rem;
   margin-top: 0.5rem;
   border-radius: 0.75rem;
   background-color: var(--asc-color-base-shade4);
-  width: 11.25rem;
-  height: 0.5rem;
 }
 
 .recommendedCommunityCardSkeleton__animation {
