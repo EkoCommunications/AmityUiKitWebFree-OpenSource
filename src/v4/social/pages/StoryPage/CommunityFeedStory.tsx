@@ -144,8 +144,6 @@ export const CommunityFeedStory = ({
   };
 
   const onDeleteStory = async (storyId: string) => {
-    const isLastStory = currentIndex === stories.length - 1;
-
     try {
       await StoryRepository.softDeleteStory(storyId);
     } catch (error) {
@@ -153,25 +151,10 @@ export const CommunityFeedStory = ({
       notification.error({
         content: 'Failed to delete story',
       });
-      return;
-    } finally {
-      if (!isError) {
-        notification.success({
-          content: 'Story deleted',
-        });
-        refresh();
-        if (stories.length === 1) {
-          onBack();
-        } else if (isLastStory) {
-          previousStory();
-        } else {
-          setCurrentIndex((prevIndex) => prevIndex);
-        }
-      }
     }
   };
 
-  const confirmDeleteStory = (storyId: string) => {
+  const confirmDeleteStory = (story: Amity.Story) => {
     confirm({
       pageId,
       title: 'Delete this story?',
@@ -180,13 +163,27 @@ export const CommunityFeedStory = ({
       okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
-        await onDeleteStory(storyId);
+        if (story.syncState === 'synced') await onDeleteStory(story.storyId);
+
+        const isLastStory = currentIndex === stories.length - 1;
+        notification.success({
+          content: 'Story deleted',
+        });
+
+        refresh();
+        if (stories.length === 1) {
+          onBack();
+        } else if (isLastStory) {
+          previousStory();
+        } else {
+          setCurrentIndex((prevIndex) => prevIndex);
+        }
       },
     });
   };
 
-  const deleteStory = (storyId: string) => {
-    confirmDeleteStory(storyId);
+  const deleteStory = (story: Amity.Story) => {
+    confirmDeleteStory(story);
   };
 
   const onCreateStory = useCallback(
@@ -261,7 +258,6 @@ export const CommunityFeedStory = ({
     if (isStory(story)) {
       const isImage = story?.dataType === 'image';
       const url = isImage ? story?.imageData?.fileUrl : story?.videoData?.videoUrl?.['720p'];
-
       return {
         story,
         url,
@@ -270,7 +266,7 @@ export const CommunityFeedStory = ({
           isStoryCreator || isModerator
             ? {
                 name: 'Delete',
-                action: () => deleteStory(story?.storyId as string),
+                action: () => deleteStory(story),
                 icon: (
                   <Trash2Icon
                     fill={getComputedStyle(document.documentElement).getPropertyValue(
