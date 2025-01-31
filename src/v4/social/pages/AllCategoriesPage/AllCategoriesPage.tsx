@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './AllCategoriesPage.module.css';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
-import { Typography } from '~/v4/core/components';
+import { Typography } from '~/v4/core/components/Typography/TypographyV4';
 import { Button } from '~/v4/core/natives/Button';
 import useCategoriesCollection from '~/v4/core/hooks/collections/useCategoriesCollection';
 import useImage from '~/core/hooks/useImage';
@@ -70,17 +70,12 @@ export function AllCategoriesPage() {
       </div>
       <div className={styles.allCategoriesList}>
         {categories.map((category) => (
-          <React.Fragment key={category.categoryId}>
-            <AllCategoryItem
-              category={category}
-              pageId={pageId}
-              onClick={(categoryId) => {
-                goToCommunitiesByCategoryPage({
-                  categoryId,
-                });
-              }}
-            />
-          </React.Fragment>
+          <AllCategoryItem
+            pageId={pageId}
+            category={category}
+            key={category.categoryId}
+            onClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
+          />
         ))}
         <div
           ref={(node) => setIntersectionNode(node)}

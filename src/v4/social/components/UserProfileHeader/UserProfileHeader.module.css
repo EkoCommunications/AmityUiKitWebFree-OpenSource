@@ -1,6 +1,7 @@
 .userProfileHeader__container {
   padding: 0 1rem;
   background-color: var(--asc-color-background-default);
+  margin-bottom: 0.75rem;
 }
 
 .userProfileHeader__header {

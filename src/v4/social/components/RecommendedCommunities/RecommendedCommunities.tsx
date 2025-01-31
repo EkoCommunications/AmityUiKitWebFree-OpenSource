@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
 import clsx from 'clsx';
+import React, { useEffect } from 'react';
+import useImage from '~/core/hooks/useImage';
+import { Button } from '~/v4/core/natives/Button';
+import { Carousel } from '~/v4/core/components/Carousel';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
+import { useExplore } from '~/v4/social/providers/ExploreProvider';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { useCommunityActions } from '~/v4/social/hooks/useCommunityActions';
+import { CommunityCardImage } from '~/v4/social/elements/CommunityCardImage';
+import { RecommendedCommunityCardSkeleton } from './RecommendedCommunityCardSkeleton';
 import { CommunityJoinButton } from '~/v4/social/elements/CommunityJoinButton/CommunityJoinButton';
 import { CommunityMembersCount } from '~/v4/social/elements/CommunityMembersCount/CommunityMembersCount';
 import { CommunityCategories } from '~/v4/social/internal-components/CommunityCategories/CommunityCategories';
 import { CommunityPrivateBadge } from '~/v4/social/elements/CommunityPrivateBadge/CommunityPrivateBadge';
 import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName/CommunityDisplayName';
 import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge/CommunityOfficialBadge';
-import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { CommunityCardImage } from '~/v4/social/elements/CommunityCardImage';
-import useImage from '~/core/hooks/useImage';
-import { RecommendedCommunityCardSkeleton } from './RecommendedCommunityCardSkeleton';
-import { useExplore } from '~/v4/social/providers/ExploreProvider';
 import { CommunityJoinedButton } from '~/v4/social/elements/CommunityJoinedButton/CommunityJoinedButton';
-import { useCommunityActions } from '~/v4/social/hooks/useCommunityActions';
-import { ClickableArea } from '~/v4/core/natives/ClickableArea/ClickableArea';
-import { Carousel } from '~/v4/core/components/Carousel';
 import styles from './RecommendedCommunities.module.css';
 
 type RecommendedCommunityCardProps = {
@@ -37,14 +37,10 @@ const RecommendedCommunityCard = ({
   onJoinButtonClick,
   onLeaveButtonClick,
 }: RecommendedCommunityCardProps) => {
-  const avatarUrl = useImage({
-    fileId: community.avatarFileId,
-    imageSize: 'medium',
-  });
+  const avatarUrl = useImage({ fileId: community.avatarFileId, imageSize: 'medium' });
 
   return (
-    <ClickableArea
-      elementType="div"
+    <Button
       className={styles.recommendedCommunityCard}
       onPress={() => onClick(community.communityId)}
     >
@@ -59,15 +55,11 @@ const RecommendedCommunityCard = ({
       <div className={styles.recommendedCommunityCard__content}>
         <div className={styles.recommendedCommunities__contentTitle}>
           {!community.isPublic && (
-            <div className={styles.recommendedCommunityCard__communityName__private}>
-              <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
-            </div>
+            <CommunityPrivateBadge pageId={pageId} componentId={componentId} />
           )}
           <CommunityDisplayName pageId={pageId} componentId={componentId} community={community} />
           {community.isOfficial && (
-            <div className={styles.recommendedCommunityCard__communityName__official}>
-              <CommunityOfficialBadge pageId={pageId} componentId={componentId} />
-            </div>
+            <CommunityOfficialBadge pageId={pageId} componentId={componentId} />
           )}
         </div>
         <div className={styles.recommendedCommunityCard__bottom}>
@@ -79,7 +71,7 @@ const RecommendedCommunityCard = ({
               maxCategoriesLength={2}
               componentId={componentId}
               onClick={onCategoryClick}
-              maxCategoryCharacters={5}
+              className={styles.recommendedCommunityCard__category}
             />
             <CommunityMembersCount
               pageId={pageId}
@@ -104,7 +96,7 @@ const RecommendedCommunityCard = ({
           </div>
         </div>
       </div>
-    </ClickableArea>
+    </Button>
   );
 };
 

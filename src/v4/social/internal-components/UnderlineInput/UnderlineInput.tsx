@@ -3,6 +3,7 @@ import styles from './UnderlineInput.module.css';
 import { TextArea, Label, TextField } from 'react-aria-components';
 import { Typography } from '~/v4/core/components';
 import { Title } from '~/v4/social/internal-components/Title';
+import clsx from 'clsx';
 
 // TODO: move this component to core component
 
@@ -21,6 +22,7 @@ export type UnderlineInputProps = {
   helperText?: string;
   required?: boolean;
   placeholder?: string;
+  placeholderClassName?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
@@ -40,6 +42,7 @@ export const UnderlineInput = forwardRef(function (
     helperText,
     required = false,
     placeholder = '',
+    placeholderClassName = '',
     onChange,
     ...props
   }: UnderlineInputProps,
@@ -94,7 +97,7 @@ export const UnderlineInput = forwardRef(function (
         maxLength={maxLength}
         value={value}
         onChange={handleTextareaChange}
-        className={styles.underlineInput__value}
+        className={clsx(styles.underlineInput__value, placeholderClassName)}
         data-error={isError}
         disabled={disabled}
         placeholder={placeholder}

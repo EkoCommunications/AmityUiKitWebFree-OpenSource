@@ -23,8 +23,6 @@ import ColorThief from 'colorthief';
 
 import styles from './DraftsPage.module.css';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
-import { BottomSheet } from '~/v4/core/components';
-import { set } from 'lodash';
 
 export type AmityStoryMediaType = { type: 'image'; url: string } | { type: 'video'; url: string };
 
@@ -50,6 +48,7 @@ export const PlainDraftStoryPage = ({
   const { isDesktop } = useResponsive();
 
   const { openPopup, closePopup } = usePopupContext();
+  const { setDrawerData, removeDrawerData } = useDrawer();
   const { onBack, prevPage } = useNavigation();
   const pageId = 'create_story_page';
   const { accessibilityId, themeStyles } = useAmityPage({
@@ -61,8 +60,6 @@ export const PlainDraftStoryPage = ({
 
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
-
-  const [openBottomSheet, setOpenBottomSheet] = useState(false);
   const [hyperLink, setHyperLink] = useState<
     {
       data: { url: string; customText: string };
@@ -171,14 +168,10 @@ export const PlainDraftStoryPage = ({
       },
     ]);
 
-    setOpenBottomSheet(false);
+    removeDrawerData();
 
     if (isDesktop) closePopup();
-    else setOpenBottomSheet(false);
-  };
-
-  const openBottomSheetChange = (isOpen: boolean) => {
-    setOpenBottomSheet(isOpen);
+    else removeDrawerData();
   };
 
   const onRemoveHyperLink = () => {
@@ -203,7 +196,6 @@ export const PlainDraftStoryPage = ({
           onClose={onClose}
           onSubmit={onSubmitHyperLink}
           onRemove={onRemoveHyperLink}
-          openBottomSheetChange={openBottomSheetChange}
         />
       </div>
     );
@@ -213,12 +205,17 @@ export const PlainDraftStoryPage = ({
     if (hyperLink[0]?.data?.url) {
       notification.info({
         content: 'Can’t add more than one link to your story.',
+        className: styles.draftsPage__notification,
       });
       return;
     }
 
     if (!isDesktop) {
-      setOpenBottomSheet(true);
+      setDrawerData({
+        content: renderHyperLinkComponent(() => {
+          removeDrawerData();
+        }),
+      });
     } else {
       openPopup({
         pageId,
@@ -230,7 +227,11 @@ export const PlainDraftStoryPage = ({
 
   const handleOnEditHyperlink = () => {
     if (!isDesktop) {
-      setOpenBottomSheet(true);
+      setDrawerData({
+        content: renderHyperLinkComponent(() => {
+          removeDrawerData();
+        }),
+      });
     } else {
       openPopup({
         pageId,
@@ -267,7 +268,7 @@ export const PlainDraftStoryPage = ({
     };
 
     extractColors();
-  }, [file, mediaType, extractColorsFromImage]);
+  }, [file, mediaType, imageMode]);
 
   return (
     <div data-qa-anchor={accessibilityId} style={themeStyles} className={styles.storyWrapper}>
@@ -289,8 +290,8 @@ export const PlainDraftStoryPage = ({
             style={{
               background: `linear-gradient(
                 180deg,
-                ${colors[0] || 'var(--asc-color-black)'} 0%,
-                ${colors[1] || 'var(--asc-color-black)'} 100%
+                ${colors[0]} 0%,
+                ${colors[1]} 100%
               )`,
             }}
           >
@@ -344,15 +345,6 @@ export const PlainDraftStoryPage = ({
           />
         </div>
       </div>
-      <BottomSheet
-        isOpen={openBottomSheet}
-        children={renderHyperLinkComponent(() => {
-          setOpenBottomSheet(false);
-        })}
-        mountPoint={document.getElementById('asc-uikit-create-story') as HTMLElement}
-        onClose={() => setOpenBottomSheet(false)}
-        style={themeStyles}
-      />
     </div>
   );
 };

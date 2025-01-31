@@ -30,7 +30,7 @@
   position: relative;
   width: 3rem;
   display: flex;
-  gap: 0.13rem;
+  gap: 0.25rem;
   flex-direction: column;
   text-align: center;
   padding: 1rem 0.75rem;

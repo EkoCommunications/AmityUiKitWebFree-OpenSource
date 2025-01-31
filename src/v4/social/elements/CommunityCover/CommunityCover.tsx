@@ -38,7 +38,7 @@ export const CommunityCover: React.FC<CommunityCoverProps> = ({
 
   const backgroundStyle = image
     ? { '--background-image': `url(${image})` }
-    : { background: 'linear-gradient(180deg, #a5a9b5 0%, #636878 100%)' };
+    : { background: 'linear-gradient(188deg, #A5A9B5 6.23%, #898E9E 93.77%)' };
 
   return (
     <div

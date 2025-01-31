@@ -183,6 +183,7 @@
 }
 
 .createCommunity__formRadio {
+  gap: 0.75rem;
   padding: 1rem 0;
   align-items: flex-start;
   flex-direction: row-reverse;
@@ -222,8 +223,16 @@
 
 .createCommunity__removeUserButton {
   top: 0;
-  right: 0.3rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  right: 0.4rem;
+  cursor: pointer;
+  background: none;
   position: absolute;
+  align-items: center;
+  justify-content: center;
 }
 
 .createCommunity__removeUser {

@@ -85,4 +85,13 @@
     /* To show this component as modal */
     z-index: 500;
   }
+
+  .notification {
+    position: relative;
+    left: -9rem;
+  }
+
+  .emptyButton {
+    width: 2rem;
+  }
 }

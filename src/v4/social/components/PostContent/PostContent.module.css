@@ -177,16 +177,6 @@
   max-width: 100%;
 }
 
-.postTitle__community__privateIcon {
-  width: 0.75rem;
-  height: 0.75rem;
-}
-
-.postTitle__community__verifiedIcon {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
 .postContent__comment {
   display: grid;
 }

@@ -16,6 +16,8 @@ import Close from '~/v4/icons/Close';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { UnderlineInput } from '~/v4/social/internal-components/UnderlineInput/UnderlineInput';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 
 interface HyperLinkConfigProps {
   pageId: string;
@@ -24,7 +26,6 @@ interface HyperLinkConfigProps {
   onClose: () => void;
   onSubmit: (data: { url: string; customText?: string }) => void;
   onRemove: () => void;
-  openBottomSheetChange?: (isOpen: boolean) => void;
 }
 
 const MAX_LENGTH = 30;
@@ -36,16 +37,18 @@ export const HyperLinkConfig = ({
   onClose,
   onSubmit,
   onRemove,
-  openBottomSheetChange,
 }: HyperLinkConfigProps) => {
   const componentId = 'hyper_link_config_component';
   const { confirm } = useConfirmContext();
+  const { removeDrawerData } = useDrawer();
+
   const { accessibilityId, isExcluded, themeStyles } = useAmityComponent({
     pageId,
     componentId,
   });
 
   const { closePopup } = usePopupContext();
+  const { isDesktop } = useResponsive();
 
   if (isExcluded) return null;
 
@@ -120,8 +123,14 @@ export const HyperLinkConfig = ({
   });
 
   useEffect(() => {
-    setHasUnsavedChanges(url !== '' || customText !== '');
-  }, [url, customText]);
+    const subscription = watch((values) => {
+      const isUrlChanged = values.url !== (url ?? '');
+      const isCustomTextChanged = values.customText !== (customText ?? '');
+      setHasUnsavedChanges(isUrlChanged || isCustomTextChanged);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, url, customText]);
 
   const onSubmitForm = (data: HyperLinkFormInputs) => {
     onSubmit(data);
@@ -136,33 +145,27 @@ export const HyperLinkConfig = ({
   };
 
   const discardHyperlink = () => {
-    openBottomSheetChange?.(false);
     confirm({
       title: 'Remove Link',
       content: 'This link will be removed from story.',
       cancelText: 'Cancel',
       okText: 'Remove',
       onOk: confirmDiscardHyperlink,
-      onCancel: () => {
-        openBottomSheetChange?.(true);
-      },
     });
   };
 
   const handleClose = () => {
-    openBottomSheetChange?.(false);
     if (hasUnsavedChanges) {
       confirm({
         title: 'Unsaved changes',
         content: `Are you sure you want to cancel? Your changes won't be saved.`,
         cancelText: 'No',
         okText: 'Yes',
-        onCancel: () => {
-          openBottomSheetChange?.(true);
-        },
+
         onOk: () => {
           reset();
           closePopup();
+          !isDesktop && removeDrawerData();
         },
       });
     } else {
@@ -179,7 +182,7 @@ export const HyperLinkConfig = ({
           onPress={handleClose}
           className={styles.hyperlinkConfig__header__editCancelButton}
         />
-        <Typography.Title>Add link</Typography.Title>
+        <Typography.Headline>Add link</Typography.Headline>
         <DoneButton
           type="submit"
           pageId={pageId}
@@ -198,9 +201,12 @@ export const HyperLinkConfig = ({
             label="URL"
             required={true}
             placeholder="https://example.com"
+            placeholderClassName={styles.hyperlinkConfig__inputPlaceholder}
             value={watch('url')}
             {...register('url', {
-              onChange: () => trigger('url'),
+              onChange: async () => {
+                await trigger('url');
+              },
             })}
             {...{ id: 'asc-uikit-hyperlink-input-url' }}
             isError={!!errors.url?.message}
@@ -209,7 +215,12 @@ export const HyperLinkConfig = ({
           <UnderlineInput
             label="Customize link text"
             placeholder="Name your link"
-            {...register('customText')}
+            placeholderClassName={styles.hyperlinkConfig__inputPlaceholder}
+            {...register('customText', {
+              onChange: async () => {
+                await trigger('customText');
+              },
+            })}
             {...{ id: 'asc-uikit-hyperlink-input-link-text' }}
             isError={!!errors.customText?.message}
             helperText={
@@ -242,6 +253,7 @@ export const HyperLinkConfig = ({
           componentId={componentId}
           form={formId}
           className={styles.hyperlinkConfig__footer__editDoneButton}
+          isDisabled={!!errors.url || !!errors.customText || !watch('url')}
         />
       </div>
     </div>

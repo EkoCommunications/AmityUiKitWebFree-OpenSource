@@ -1,20 +1,23 @@
 import React from 'react';
-import { Button } from '~/v4/core/natives/Button';
 import { Typography } from '~/v4/core/components';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './DoneButton.module.css';
 import clsx from 'clsx';
+import { Button } from '~/v4/core/components/AriaButton';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 
 export interface DoneButtonProps extends React.ComponentProps<typeof Button> {
   pageId?: string;
   componentId?: string;
   className?: string;
+  isDisabled?: boolean;
 }
 
 export function DoneButton({
   pageId = '*',
   componentId = '*',
   className,
+  isDisabled = false,
 
   ...buttonProps
 }: DoneButtonProps) {
@@ -24,13 +27,16 @@ export function DoneButton({
     componentId,
     elementId,
   });
+  const { isDesktop } = useResponsive();
 
   if (isExcluded) return null;
 
   return (
     <Button
+      variant={isDesktop ? 'fill' : 'text'}
       className={clsx(styles.doneButton, className)}
       data-qa-anchor={accessibilityId}
+      isDisabled={isDisabled}
       {...buttonProps}
     >
       <Typography.Body>{config.done_button_text}</Typography.Body>

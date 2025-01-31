@@ -62,10 +62,10 @@ export function StoryTargetSelectionPage() {
             <div className={styles.selectStoryTargetPage__communityAvatar}>
               <CommunityAvatar pageId={pageId} community={community} />
             </div>
-            <CommunityDisplayName pageId={pageId} community={community} />
-            <div>
-              {community.isOfficial && <CommunityOfficialBadge />}
+            <div className={styles.selectStoryTargetPage__communityName}>
               {!community.isPublic && <CommunityPrivateBadge />}
+              <CommunityDisplayName pageId={pageId} community={community} />
+              {community.isOfficial && <CommunityOfficialBadge />}
             </div>
           </div>
         </Button>

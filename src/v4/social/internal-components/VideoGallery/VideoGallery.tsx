@@ -19,6 +19,8 @@ const VideoItem = ({
   postIndex: number;
   onClickVideoItem: (postIndex: number) => void;
 }) => {
+  const [isBrokenImg, setIsBrokenImg] = useState(false);
+
   const image = useImage({ fileId: thumbnailFileId, imageSize: 'medium' });
 
   const file = useFile<Amity.File<'video'>>(videoFileId);
@@ -30,12 +32,21 @@ const VideoItem = ({
       </div>
     );
 
-  return (
+  return isBrokenImg ? (
+    <div className={styles.videoGallery__itemContainer}>
+      <div className={styles.videoGallery__brokenImg} />
+    </div>
+  ) : (
     <Button
       className={styles.videoGallery__itemContainer}
       onPress={() => onClickVideoItem(postIndex)}
     >
-      <img className={styles.videoGallery__item} src={image} alt={`${thumbnailFileId}`} />
+      <img
+        className={styles.videoGallery__item}
+        src={image}
+        alt={`${thumbnailFileId}`}
+        onError={() => setIsBrokenImg(true)}
+      />
       <Typography.Caption className={styles.videoGallery__duration}>
         {formatDuration((file?.attributes.metadata.video as any)?.duration)}
       </Typography.Caption>

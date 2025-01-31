@@ -197,4 +197,8 @@
     padding: 0 1rem;
     min-height: 28rem;
   }
+
+  .reactionCustomStateContainer {
+    height: 50vh;
+  }
 }

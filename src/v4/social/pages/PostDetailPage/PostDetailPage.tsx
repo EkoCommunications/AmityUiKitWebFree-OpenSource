@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Typography } from '~/v4/core/components';
 import { PostContent, PostContentSkeleton } from '~/v4/social/components/PostContent';
 import { PostMenu } from '~/v4/social/internal-components/PostMenu/PostMenu';
@@ -38,6 +38,14 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
     communityId: post?.targetType === 'community' ? post.targetId : null,
   });
 
+  const handleReplyClick = useCallback(
+    (comment: Amity.Comment) =>
+      setReplyComment((prevComment) =>
+        prevComment?.commentId === comment?.commentId ? undefined : comment,
+      ),
+    [],
+  );
+
   const isNotJoinedCommunity = post?.targetType === 'community' && !community?.isJoined;
 
   return (
@@ -50,6 +58,7 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
             <PostContent
               pageId={pageId}
               post={post}
+              className={styles.postDetailPage__postContent}
               category={category ?? AmityPostCategory.GENERAL}
               style={AmityPostContentComponentStyle.DETAIL}
               hideTarget={hideTarget}
@@ -58,27 +67,45 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
           ) : null}
         </div>
         <div className={styles.postDetailPage__comments__divider} data-is-loading={isPostLoading} />
-        {post && isDesktop && (
+        {post && isDesktop && !isNotJoinedCommunity && (
           <CommentComposer
             pageId={pageId}
             referenceId={post.postId}
             referenceType={'post'}
-            replyTo={replyComment}
             onCancelReply={() => setReplyComment(undefined)}
             community={community}
+            containerClassName={
+              post?.commentsCount <= 0 ? styles.postDetailPage__commentList__container : undefined
+            }
           />
         )}
-        <div className={styles.postDetailPage__comments}>
-          {post && (
-            <CommentList
-              pageId={pageId}
-              referenceId={post.postId}
-              referenceType="post"
-              onClickReply={(comment: Amity.Comment) => setReplyComment(comment)}
-              community={community}
-            />
-          )}
-        </div>
+        {post?.commentsCount > 0 && (
+          <div className={styles.postDetailPage__comments}>
+            {post && (
+              <CommentList
+                pageId={pageId}
+                referenceId={post.postId}
+                referenceType="post"
+                onClickReply={handleReplyClick}
+                community={community}
+                renderReplyComment={(comment) => {
+                  if (replyComment && comment.commentId === replyComment.commentId && isDesktop) {
+                    return (
+                      <CommentComposer
+                        pageId={pageId}
+                        referenceId={post.postId}
+                        referenceType={'post'}
+                        replyTo={replyComment}
+                        onCancelReply={() => setReplyComment(undefined)}
+                        community={community}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
+          </div>
+        )}
       </div>
       <div className={styles.postDetailPage__topBar}>
         <BackButton

@@ -190,8 +190,9 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       ) {
         info({
           pageId,
+          title: 'Posts sent for review',
           content:
-            'Your post has been submitted to pending list. It will be reviewed by the community moderator.',
+            'Your post has been submitted to the pending list. It will be published once approved by the community moderator.',
           okText: 'OK',
         });
       } else {
@@ -282,7 +283,7 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       pageId: pageId,
       type: 'confirm',
       title: 'Discard this post?',
-      content: 'The post will be permanently deleted. It cannot be undone.',
+      content: 'The post will be permanently discarded. It cannot be undone.',
       onOk: () => {
         AmityPostComposerPageBehavior?.goToSocialHomePage?.();
       },

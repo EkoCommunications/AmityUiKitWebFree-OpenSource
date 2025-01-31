@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { Fragment, ReactNode } from 'react';
+import React, { Fragment, ReactNode, useState } from 'react';
 import { CloseButton } from '~/v4/social/elements';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button } from '~/v4/core/components/AriaButton';
@@ -33,6 +33,8 @@ const Confirm = ({
   const elementId = 'confirm-modal';
   const { accessibilityId, themeStyles } = useAmityElement({ pageId, componentId, elementId });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <ModalOverlay
       isDismissable
@@ -57,6 +59,7 @@ const Confirm = ({
                     pageId={pageId}
                     onPress={close}
                     defaultClassName={styles.popup__header__closeButton}
+                    isDisabled={isLoading}
                   />
                 </div>
                 <div
@@ -75,6 +78,7 @@ const Confirm = ({
                       style={themeStyles}
                       data-qa-anchor={`${elementId}-cancel-button`}
                       className={styles.popup__footer__cancelButton}
+                      isDisabled={isLoading}
                     >
                       <Typography.BodyBold>{cancelText}</Typography.BodyBold>
                     </Button>
@@ -82,11 +86,24 @@ const Confirm = ({
                   <Button
                     size="medium"
                     variant="fill"
-                    onPress={onOk}
                     style={themeStyles}
                     className={styles.popup__footer__okButton}
                     color={type === 'info' ? 'primary' : 'alert'}
                     data-qa-anchor={`${elementId}-${accessibilityId}-ok-button`}
+                    isDisabled={isLoading}
+                    onPress={async () => {
+                      setIsLoading(true);
+                      try {
+                        const result = onOk?.();
+                        if (result && (result as Promise<void>).then) {
+                          await (result as Promise<void>);
+                        }
+                      } catch (err) {
+                        console.error('Error in onOk:', err);
+                      } finally {
+                        setIsLoading(false);
+                      }
+                    }}
                   >
                     <Typography.BodyBold>{okText}</Typography.BodyBold>
                   </Button>
@@ -110,9 +127,9 @@ export const ConfirmModal = () => {
     confirmData?.onCancel?.();
   };
 
-  const onOk = () => {
+  const onOk = async () => {
+    await confirmData?.onOk?.();
     closeConfirm();
-    confirmData?.onOk?.();
   };
 
   return <Confirm {...confirmData} onOk={onOk} onCancel={onCancel} isOpen={!!confirmData} />;

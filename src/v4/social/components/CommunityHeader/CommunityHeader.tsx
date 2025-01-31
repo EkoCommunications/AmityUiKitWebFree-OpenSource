@@ -7,15 +7,15 @@ import { CommunityJoinButton } from '~/v4/social/elements/CommunityJoinButton';
 import { useCommunityInfo } from '~/v4/social/hooks/useCommunityInfo';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { CommunityVerifyBadge } from '~/v4/social/elements/CommunityVerifyBadge';
 import { CommunityDescription } from '~/v4/social/elements/CommunityDescription';
 import { CommunityName } from '~/v4/social/elements/CommunityName';
 import { CommunityInfo } from '~/v4/social/elements/CommunityInfo';
 import { CommunityCategories } from '~/v4/social/internal-components/CommunityCategories/CommunityCategories';
-import Lock from '~/v4/icons/Lock';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import { useSDK } from '~/v4/core/hooks/useSDK';
 import { CommunityPostSettings } from '@amityco/ts-sdk';
+import { CommunityPrivateBadge } from '~/v4/social/elements/CommunityPrivateBadge/CommunityPrivateBadge';
+import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge';
 
 interface CommunityProfileHeaderProps {
   pageId?: string;
@@ -73,9 +73,17 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
       />
       <div className={styles.content}>
         <div className={styles.communityProfile__name}>
-          {!community.isPublic && <Lock className={styles.communityProfile__privateIcon} />}
+          {!community.isPublic && (
+            <CommunityPrivateBadge
+              pageId={pageId}
+              componentId={componentId}
+              className={styles.communityProfile__privateIcon}
+            />
+          )}
           <CommunityName pageId={pageId} componentId={componentId} name={community.displayName} />
-          {community.isOfficial && <CommunityVerifyBadge />}
+          {community.isOfficial && (
+            <CommunityOfficialBadge className={styles.communityProfile__privateIcon} />
+          )}
         </div>
 
         <div className={styles.communityProfile__communityCategories}>

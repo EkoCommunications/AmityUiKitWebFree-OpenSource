@@ -68,8 +68,9 @@ export const CommunityFeedStory = ({
   const motionRef = useRef<HTMLDivElement>(null);
   const dragEventTarget = useRef(new EventTarget());
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const { stories: storiesData } = useGetActiveStoriesByTarget({
+  const { stories: storiesData, refresh } = useGetActiveStoriesByTarget({
     targetId: communityId,
     targetType: 'community',
     options: {
@@ -143,18 +144,17 @@ export const CommunityFeedStory = ({
   };
 
   const onDeleteStory = async (storyId: string) => {
-    await StoryRepository.softDeleteStory(storyId);
-    if (currentIndex === 0) {
-      onClose(communityId);
-    } else {
-      setCurrentIndex(currentIndex - 1);
+    try {
+      await StoryRepository.softDeleteStory(storyId);
+    } catch (error) {
+      setIsError(true);
+      notification.error({
+        content: 'Failed to delete story',
+      });
     }
-    notification.success({
-      content: 'Story deleted',
-    });
   };
 
-  const confirmDeleteStory = (storyId: string) => {
+  const confirmDeleteStory = (story: Amity.Story) => {
     confirm({
       pageId,
       title: 'Delete this story?',
@@ -163,13 +163,27 @@ export const CommunityFeedStory = ({
       okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
-        onDeleteStory(storyId);
+        if (story.syncState === 'synced') await onDeleteStory(story.storyId);
+
+        const isLastStory = currentIndex === stories.length - 1;
+        notification.success({
+          content: 'Story deleted',
+        });
+
+        refresh();
+        if (stories.length === 1) {
+          onBack();
+        } else if (isLastStory) {
+          previousStory();
+        } else {
+          setCurrentIndex((prevIndex) => prevIndex);
+        }
       },
     });
   };
 
-  const deleteStory = (storyId: string) => {
-    confirmDeleteStory(storyId);
+  const deleteStory = (story: Amity.Story) => {
+    confirmDeleteStory(story);
   };
 
   const onCreateStory = useCallback(
@@ -244,7 +258,6 @@ export const CommunityFeedStory = ({
     if (isStory(story)) {
       const isImage = story?.dataType === 'image';
       const url = isImage ? story?.imageData?.fileUrl : story?.videoData?.videoUrl?.['720p'];
-
       return {
         story,
         url,
@@ -253,7 +266,7 @@ export const CommunityFeedStory = ({
           isStoryCreator || isModerator
             ? {
                 name: 'Delete',
-                action: () => deleteStory(story?.storyId as string),
+                action: () => deleteStory(story),
                 icon: (
                   <Trash2Icon
                     fill={getComputedStyle(document.documentElement).getPropertyValue(
@@ -327,7 +340,12 @@ export const CommunityFeedStory = ({
 
   return (
     <div className={clsx(styles.storyWrapper)}>
-      <ArrowLeftButton onClick={previousStory} />
+      {currentIndex > 0 ? (
+        <ArrowLeftButton onClick={previousStory} />
+      ) : (
+        <div className={styles.emptyButton} />
+      )}
+
       <motion.div
         id={targetRootId}
         ref={motionRef}
@@ -378,7 +396,11 @@ export const CommunityFeedStory = ({
           />
         </div>
       </motion.div>
-      <ArrowRightButton onClick={nextStory} />
+      {currentIndex !== stories.length - 1 ? (
+        <ArrowRightButton onClick={nextStory} />
+      ) : (
+        <div className={styles.emptyButton} />
+      )}
     </div>
   );
 };

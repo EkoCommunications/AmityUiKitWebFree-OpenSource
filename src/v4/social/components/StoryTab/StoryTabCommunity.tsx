@@ -10,6 +10,7 @@ import { CommunityAvatar } from '~/v4/social/elements/CommunityAvatar';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 import styles from './StoryTabCommunity.module.css';
+import { Typography } from '~/v4/core/components/Typography/TypographyV4';
 
 const ErrorIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
@@ -103,14 +104,9 @@ export const StoryTabCommunityFeed: React.FC<StoryTabCommunityFeedProps> = ({
         )}
         {isErrored && <ErrorIcon className={clsx(styles.errorIcon)} />}
       </div>
-      <Truncate lines={1}>
-        <div
-          data-qa-anchore={`${pageId}/${componentId}/story_title`}
-          className={clsx(styles.storyTitle)}
-        >
-          Story
-        </div>
-      </Truncate>
+      <Typography.Caption data-qa-anchor={`${pageId}/${componentId}/story_title`}>
+        Story
+      </Typography.Caption>
     </div>
   );
 };

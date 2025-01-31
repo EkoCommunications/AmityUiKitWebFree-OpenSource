@@ -6,6 +6,7 @@ import { Button } from '~/v4/core/natives/Button/Button';
 import styles from './styles.module.css';
 
 type CarouselProps = PropsWithChildren<{
+  className?: string;
   isHidden?: boolean;
   scrollOffset?: number;
   iconClassName?: string;
@@ -16,6 +17,7 @@ type CarouselProps = PropsWithChildren<{
 export const Carousel = ({
   children,
   isHidden,
+  className,
   iconClassName,
   leftArrowClassName,
   scrollOffset = 250,
@@ -56,7 +58,7 @@ export const Carousel = ({
   }, [carouselRef.current]);
 
   return (
-    <section className={styles.carousel}>
+    <section className={clsx(styles.carousel, className)}>
       {isScrollable && !isHidden && (
         <Button
           onPress={scrollLeft}

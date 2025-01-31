@@ -18,7 +18,7 @@ import { IconComponent } from '~/v4/core/IconComponent';
 import Banned from '~/v4/icons/Banned';
 import GoldenBadge from '~/v4/icons/GoldenBadge';
 import { Popover } from '~/v4/core/components/AriaPopover';
-import Trash from '~/v4/icons/Trash';
+import { TrashIcon } from '~/v4/icons/Trash';
 
 const { COMMUNITY_MODERATOR, CHANNEL_MODERATOR } = MemberRoles;
 
@@ -137,7 +137,7 @@ export const CommunityMemberItem = ({
           accessibilityId: 'remove_member',
           action: onRemoveFromCommunityClick,
           className: styles.communityMemberItem__alertText,
-          icon: <Trash className={styles.communityMemberItem__alertbottomSheeticon} />,
+          icon: <TrashIcon className={styles.communityMemberItem__alertbottomSheeticon} />,
         }
       : null,
   ].filter(isNonNullable);

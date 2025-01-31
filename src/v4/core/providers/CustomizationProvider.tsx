@@ -314,7 +314,7 @@ export const defaultConfig: DefaultConfig = {
       text: 'Your Feed is empty',
     },
     'social_home_page/empty_newsfeed/description': {
-      text: 'Find community or create your own',
+      text: 'Find community or create your own.',
     },
     'social_home_page/empty_newsfeed/explore_communities_button': {
       icon: 'exploreCommunityIcon',
@@ -580,7 +580,7 @@ export const defaultConfig: DefaultConfig = {
       text: 'Your explore is empty',
     },
     'social_home_page/explore_empty/description': {
-      text: 'Find community or create your own',
+      text: 'Find community or create your own.',
     },
     'social_home_page/explore_empty/explore_create_community': {
       text: 'Create community',
@@ -706,7 +706,7 @@ export const defaultConfig: DefaultConfig = {
       text: 'Unblock to see their posts.',
     },
     'user_profile_page/user_image_feed/empty_user_image_feed': {
-      text: 'No photo yet',
+      text: 'No photos yet',
       image: 'EmptyImagePost',
     },
     'user_profile_page/user_image_feed/private_user_image_feed': {
@@ -724,7 +724,7 @@ export const defaultConfig: DefaultConfig = {
       text: 'Unblock to see their posts.',
     },
     'user_profile_page/user_video_feed/empty_user_video_feed': {
-      text: 'No video yet',
+      text: 'No videos yet',
       image: 'EmptyVideoPost',
     },
     'user_profile_page/user_video_feed/private_user_video_feed': {
