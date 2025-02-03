@@ -186,12 +186,7 @@ export const CommunityFeedStory = ({
       okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
-        if (story.syncState === 'synced') await onDeleteStory(story.storyId);
-
-        const isLastStory = currentIndex === stories.length - 1;
-        notification.success({
-          content: 'Story deleted',
-        });
+        await onDeleteStory(story.storyId);
       },
     });
   };
