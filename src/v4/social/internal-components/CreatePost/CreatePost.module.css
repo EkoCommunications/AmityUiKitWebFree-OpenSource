@@ -105,6 +105,7 @@
 
 .createPost__notificationToast {
   margin-bottom: 0;
+  margin-top: 0;
 }
 
 .createPost__status[data-show-detail-media-attachment='1'] {

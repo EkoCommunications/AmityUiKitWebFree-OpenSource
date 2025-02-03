@@ -285,7 +285,11 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
       title: 'Discard this post?',
       content: 'The post will be permanently discarded. It cannot be undone.',
       onOk: () => {
-        AmityPostComposerPageBehavior?.goToSocialHomePage?.();
+        if (prevPage?.type === PageTypes.SelectPostTargetPage) {
+          AmityPostComposerPageBehavior?.goToSocialHomePage?.();
+        } else {
+          onBack();
+        }
       },
       okText: 'Discard',
       cancelText: 'Keep editing',
