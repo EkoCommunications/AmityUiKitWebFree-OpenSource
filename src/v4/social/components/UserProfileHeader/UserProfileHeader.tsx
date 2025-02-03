@@ -197,7 +197,15 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
         <FollowUserButton
           pageId={pageId}
           componentId={componentId}
-          onClick={() => followUser(user.userId)}
+          onClick={() => {
+            if (!online) {
+              notification.info({
+                content: 'Oops, something went wrong.',
+              });
+              return;
+            }
+            followUser(user.userId);
+          }}
         />
       )}
 
@@ -207,7 +215,15 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
         <PendingUserButton
           pageId={pageId}
           componentId={componentId}
-          onClick={() => cancelFollow(user.userId)}
+          onClick={() => {
+            if (!online) {
+              notification.info({
+                content: 'Oops, something went wrong.',
+              });
+              return;
+            }
+            cancelFollow(user.userId);
+          }}
         />
       )}
 
