@@ -23,6 +23,7 @@ import ColorThief from 'colorthief';
 
 import styles from './DraftsPage.module.css';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
+import { useNetworkState } from 'react-use';
 
 export type AmityStoryMediaType = { type: 'image'; url: string } | { type: 'video'; url: string };
 
@@ -60,6 +61,7 @@ export const PlainDraftStoryPage = ({
 
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
+  const { online } = useNetworkState();
   const [hyperLink, setHyperLink] = useState<
     {
       data: { url: string; customText: string };
@@ -205,7 +207,7 @@ export const PlainDraftStoryPage = ({
     if (hyperLink[0]?.data?.url) {
       notification.info({
         content: 'Can’t add more than one link to your story.',
-        className: styles.draftsPage__notification,
+        alignment: 'fullscreen',
       });
       return;
     }
@@ -333,15 +335,22 @@ export const PlainDraftStoryPage = ({
           <ShareStoryButton
             community={community}
             pageId={pageId}
-            onClick={() =>
+            onClick={() => {
+              if (!online) {
+                notification.info({
+                  content: 'Failed to shared story. Please try again.',
+                  alignment: 'fullscreen',
+                });
+                return;
+              }
               !isStoryUploading &&
-              onCreateStory({
-                file,
-                imageMode,
-                metadata: {},
-                items: currentHyperlinkUrl ? hyperLink : [],
-              })
-            }
+                onCreateStory({
+                  file,
+                  imageMode,
+                  metadata: {},
+                  items: currentHyperlinkUrl ? hyperLink : [],
+                });
+            }}
           />
         </div>
       </div>

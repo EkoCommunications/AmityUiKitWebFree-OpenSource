@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { MessageList } from '~/v4/chat/components/MessageList';
 import { MessageComposer } from '~/v4/chat/components/MessageComposer';
 import { ReplyMessagePlaceholder } from '~/v4/chat/pages/LiveChat/ChatContainer/ReplyMessagePlaceholder';
-import useConnectionStates from '~/social/hooks/useConnectionStates';
 import ChatLoadingState from '~/v4/chat/pages/LiveChat/ChatContainer/ChatLoadingState';
 import ChatCustomState from '~/v4/chat/pages/LiveChat/ChatContainer/ChatCustomState';
 import styles from './styles.module.css';
@@ -14,9 +13,10 @@ import CommentAltExclamation from '~/v4/icons/CommentAltExclamation';
 import { useSearchChannelUser } from '~/v4/chat/hooks/collections/useSearchChannelUser';
 import useSDK from '~/core/hooks/useSDK';
 import { useChannelPermission } from '~/v4/chat/hooks/useChannelPermission';
+import { useNetworkState } from 'react-use';
 
 const ChatReadyState = ({ pageId = '*', channel }: { pageId?: string; channel: Amity.Channel }) => {
-  const isOnline = useConnectionStates();
+  const { online } = useNetworkState();
 
   const { isModerator } = useChannelPermission(channel.channelId);
 
@@ -42,7 +42,7 @@ const ChatReadyState = ({ pageId = '*', channel }: { pageId?: string; channel: A
     }
   }, [composeBarRef.current?.clientHeight]);
 
-  if (!isOnline) return <ChatLoadingState />;
+  if (!online) return <ChatLoadingState />;
 
   if (currentUserMembership?.isBanned)
     return (
@@ -61,7 +61,7 @@ const ChatReadyState = ({ pageId = '*', channel }: { pageId?: string; channel: A
     <>
       <MessageList channel={channel} replyMessage={setReplyMessage} pageId={pageId} />
 
-      {isOnline && (
+      {online && (
         <>
           <div ref={suggestionRef} className={mentionStyles.mentionContainer}></div>
           {!isModerator && channel.isMuted ? (

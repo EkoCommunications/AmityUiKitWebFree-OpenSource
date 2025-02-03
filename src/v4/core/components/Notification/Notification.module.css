@@ -1,8 +1,6 @@
 .icon__container {
   display: flex;
-  padding-right: 0.75rem;
   align-items: center;
-  gap: var(--asc-spacing-s1);
   align-self: stretch;
   fill: var(--asc-color-white);
 }
@@ -26,7 +24,8 @@
 }
 
 .notificationContainer {
-  width: 21.438rem;
+  gap: var(--asc-spacing-s1);
+  width: 22rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -40,6 +39,18 @@
   background-color: var(--asc-color-secondary-default);
   padding: 1rem;
   box-shadow: var(--asc-box-shadow-02);
+}
+
+.notificationContainer[data-alignment='fullscreen'] {
+  position: relative;
+  left: -9rem;
+}
+
+.notificationContainer[data-alignment='fixed'] {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 @keyframes appear {
@@ -63,5 +74,17 @@
     width: 100%;
     margin-top: var(--asc-spacing-m1);
     margin-bottom: 0;
+  }
+
+  .notificationContainer[data-alignment='fullscreen'] {
+    position: unset;
+    left: unset;
+  }
+
+  .notificationContainer[data-alignment='fixed'] {
+    position: unset;
+    top: unset;
+    left: unset;
+    transform: unset;
   }
 }

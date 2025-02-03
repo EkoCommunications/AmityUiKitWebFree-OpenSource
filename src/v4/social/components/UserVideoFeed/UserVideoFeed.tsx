@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
-import styles from './UserVideoFeed.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { VideoGallery } from '~/v4/social/internal-components/VideoGallery';
 import { EmptyUserVideoFeed } from '~/v4/social/elements/EmptyUserVideoFeed/EmptyUserVideoFeed';
@@ -9,6 +8,8 @@ import { PrivateUserVideoFeed } from '~/v4/social/elements/PrivateUserVideoFeed'
 import { BlockedUserVideoFeed } from '~/v4/social/elements/BlockedUserVideoFeed';
 import useFollowCount from '~/v4/core/hooks/objects/useFollowCount';
 import { ErrorContent } from '~/v4/social/internal-components/ErrorContent';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
+import styles from './UserVideoFeed.module.css';
 
 interface UserVideoFeedProps {
   userId: string;
@@ -72,13 +73,17 @@ export const UserVideoFeed = ({ pageId = '*', userId }: UserVideoFeedProps) => {
 
   return (
     <div data-qa-anchor={accessibilityId} style={themeStyles}>
-      {renderVideoFeed()}
-      {hasMore && (
-        <div
-          ref={(node) => setIntersectionNode(node)}
-          className={styles.userVideoFeed__observerTarget}
-        />
-      )}
+      <NoInternetConnectionHoc page="feed" refresh={refresh}>
+        <>
+          {renderVideoFeed()}
+          {hasMore && (
+            <div
+              ref={(node) => setIntersectionNode(node)}
+              className={styles.userVideoFeed__observerTarget}
+            />
+          )}
+        </>
+      </NoInternetConnectionHoc>
     </div>
   );
 };

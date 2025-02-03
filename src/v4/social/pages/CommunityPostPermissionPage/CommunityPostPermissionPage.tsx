@@ -10,6 +10,7 @@ import { CommunityPostSettings } from '@amityco/ts-sdk';
 import { RadioGroup } from '~/v4/core/components/AriaRadioGroup';
 import { Button } from '~/v4/core/components/AriaButton';
 import styles from './CommunityPostPermissionPage.module.css';
+import { useNetworkState } from 'react-use';
 
 type CommunityPostPermissionPageProps = {
   community: Amity.Community;
@@ -22,6 +23,7 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
 
   const { confirm } = useConfirmContext();
   const notification = useNotifications();
+  const { online } = useNetworkState();
   const { onBack, onClickCommunity } = useNavigation();
   const { themeStyles, accessibilityId } = useAmityPage({ pageId });
 
@@ -42,6 +44,11 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
   }, [defaultPostSetting]);
 
   const handleSubmitPermission = async () => {
+    if (!online) {
+      notification.info({ content: 'Failed to update community profile.' });
+      return;
+    }
+
     let payload;
 
     if (postSetting === CommunityPostSettings.ONLY_ADMIN_CAN_POST) {
@@ -54,9 +61,9 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
     try {
       await CommunityRepository.updateCommunity(community?.communityId, payload);
     } catch (error) {
-      notification.error({ content: 'Failed to update community profile!' });
+      notification.info({ content: 'Failed to update community profile.' });
     } finally {
-      notification.success({ content: 'Successfully updated community profile!' });
+      notification.success({ content: 'Successfully updated community profile.' });
       onClickCommunity(community?.communityId);
     }
   };

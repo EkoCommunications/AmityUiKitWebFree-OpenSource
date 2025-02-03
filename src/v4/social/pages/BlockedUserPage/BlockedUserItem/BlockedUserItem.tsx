@@ -6,6 +6,8 @@ import { Typography } from '~/v4/core/components';
 import useUserBlock from '~/v4/social/hooks/useUserBlock';
 import { Button } from '~/v4/core/components/AriaButton';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { useNetworkState } from 'react-use';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 
 type BlockedUserItemProps = {
   pageId?: string;
@@ -20,6 +22,9 @@ export const BlockedUserItem: FC<BlockedUserItemProps> = ({
 }) => {
   const { unblockUser } = useUserBlock();
   const { goToUserProfilePage } = useNavigation();
+  const { online } = useNetworkState();
+  const notification = useNotifications();
+
   return (
     <div className={styles.blockUserItem}>
       <Button
@@ -36,14 +41,20 @@ export const BlockedUserItem: FC<BlockedUserItemProps> = ({
       <UserListUnblockUserButton
         pageId={pageId}
         componentId={componentId}
-        onClick={() =>
+        onClick={() => {
+          if (!online) {
+            notification.info({
+              content: 'Failed to unblock user. Please try again.',
+            });
+            return;
+          }
           unblockUser({
             pageId,
             componentId,
             userId: user.userId,
             displayName: user.displayName ?? user.userId,
-          })
-        }
+          });
+        }}
       />
     </div>
   );

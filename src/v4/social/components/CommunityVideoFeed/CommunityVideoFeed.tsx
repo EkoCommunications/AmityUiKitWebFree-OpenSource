@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import styles from './CommunityVideoFeed.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
@@ -7,6 +6,8 @@ import { EmptyCommunityVideoFeed } from '~/v4/social/elements/EmptyCommunityVide
 import { VideoGallery } from '~/v4/social/internal-components/VideoGallery';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import LockPrivateContent from '~/v4/social/internal-components/LockPrivateContent';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
+import styles from './CommunityVideoFeed.module.css';
 
 type CommunityVideoFeedProps = {
   pageId?: string;
@@ -67,18 +68,19 @@ export const CommunityVideoFeed = ({ pageId = '*', communityId }: CommunityVideo
     );
 
   return (
-    <div
-      style={themeStyles}
-      data-qa-anchor={accessibilityId}
-      className={styles.communityVideoFeed__container}
-    >
-      {posts?.length === 0 && !isLoading && (
-        <EmptyCommunityVideoFeed pageId={pageId} componentId={componentId} />
-      )}
-      {posts?.length > 0 && (
-        <VideoGallery posts={posts} pageId={pageId} componentId={communityId} />
-      )}
-      {isLoading && renderLoading()}
+    <div style={themeStyles} data-qa-anchor={accessibilityId}>
+      <NoInternetConnectionHoc page="feed" refresh={refresh}>
+        <div className={styles.communityVideoFeed__container}>
+          {posts?.length === 0 && !isLoading && (
+            <EmptyCommunityVideoFeed pageId={pageId} componentId={componentId} />
+          )}
+          {posts?.length > 0 && (
+            <VideoGallery posts={posts} pageId={pageId} componentId={communityId} />
+          )}
+          {isLoading && renderLoading()}
+        </div>
+      </NoInternetConnectionHoc>
+
       <div ref={(node) => setIntersectionNode(node)} />
     </div>
   );

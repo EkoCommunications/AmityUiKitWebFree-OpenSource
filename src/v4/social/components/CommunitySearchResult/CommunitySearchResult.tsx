@@ -8,6 +8,7 @@ import { EmptySearchResult } from '~/v4/social/internal-components/EmptySearchRe
 import { CommunityRowItemSkeleton } from '~/v4/social/internal-components/CommunityRowItem/CommunityRowItemSkeleton';
 import styles from './CommunitySearchResult.module.css';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
 
 type CommunitySearchResultProps = {
   pageId?: string;
@@ -42,31 +43,33 @@ export const CommunitySearchResult = ({
       data-qa-anchor={accessibilityId}
       className={styles.communitySearchResult}
     >
-      {communityCollection.length > 0 &&
-        communityCollection.map((community) => (
-          <CommunityRowItem
-            pageId={pageId}
-            community={community}
-            componentId={componentId}
-            maxCategoryCharacters={24}
-            key={community.communityId}
-            showJoinButton={showJoinButton}
-            maxCategoriesLength={isDesktop ? 2 : 5}
-            onJoinButtonClick={(communityId) => joinCommunity(communityId)}
-            onLeaveButtonClick={(communityId) => leaveCommunity(communityId)}
-            onCategoryClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
-            onClick={(communityId) => {
-              onClosePopover?.();
-              goToCommunityProfilePage(communityId);
-            }}
-          />
-        ))}
-      {isLoading
-        ? Array.from({ length: 5 }).map((_, index) => (
-            <CommunityRowItemSkeleton key={index} pageId={pageId} componentId={componentId} />
-          ))
-        : null}
-      {!isLoading && communityCollection.length === 0 && <EmptySearchResult />}
+      <NoInternetConnectionHoc page="global-search">
+        {communityCollection.length > 0 &&
+          communityCollection.map((community) => (
+            <CommunityRowItem
+              pageId={pageId}
+              community={community}
+              componentId={componentId}
+              maxCategoryCharacters={24}
+              key={community.communityId}
+              showJoinButton={showJoinButton}
+              maxCategoriesLength={isDesktop ? 2 : 5}
+              onJoinButtonClick={(communityId) => joinCommunity(communityId)}
+              onLeaveButtonClick={(communityId) => leaveCommunity(communityId)}
+              onCategoryClick={(categoryId) => goToCommunitiesByCategoryPage({ categoryId })}
+              onClick={(communityId) => {
+                onClosePopover?.();
+                goToCommunityProfilePage(communityId);
+              }}
+            />
+          ))}
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <CommunityRowItemSkeleton key={index} pageId={pageId} componentId={componentId} />
+            ))
+          : null}
+        {!isLoading && communityCollection.length === 0 && <EmptySearchResult />}
+      </NoInternetConnectionHoc>
       <div ref={(node) => setIntersectionNode(node)} />
     </div>
   );

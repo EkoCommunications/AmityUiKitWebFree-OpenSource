@@ -394,14 +394,14 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
         <Notification
           icon={<Spinner />}
           content={isOnline ? 'Posting...' : 'Waiting for network...'}
-          className={styles.createPost__notification}
+          alignment="fixed"
         />
       )}
       {(isError || postErrorText) && (
         <Notification
           duration={3000}
           content={postErrorText ? postErrorText : 'Failed to create post.'}
-          className={styles.createPost__notification}
+          alignment="fixed"
           icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
           onClose={() => {
             setPostErrorText(undefined);
@@ -557,31 +557,37 @@ export function CreatePost({ community, targetType, targetId }: AmityPostCompose
             : null}
 
           {(isCreating || !isOnline) && (
-            <Notification
-              content={isOnline ? 'Posting...' : 'Waiting for network...'}
-              icon={<Spinner />}
-              className={styles.createPost__notification}
-              isShowAttributes={
-                isShowDetailMediaAttachmentMenu
-                  ? snap == HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2
-                    ? '2'
-                    : '3'
-                  : '1'
-              }
-            />
+            <div className={styles.createPost__notification}>
+              <Notification
+                className={styles.createPost__notificationToast}
+                content={isOnline ? 'Posting...' : 'Waiting for network...'}
+                icon={<Spinner />}
+                alignment="fixed"
+                isShowAttributes={
+                  isShowDetailMediaAttachmentMenu
+                    ? snap == HEIGHT_DETAIL_MEDIA_ATTACHMENT__MENU_2
+                      ? '2'
+                      : '3'
+                    : '1'
+                }
+              />
+            </div>
           )}
           {(isError || postErrorText) && (
-            <Notification
-              content={postErrorText ? postErrorText : 'Failed to create post.'}
-              icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
-              className={styles.createPost__notification}
-              data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
-              duration={3000}
-              onClose={() => {
-                setPostErrorText(undefined);
-                setIsError(false);
-              }}
-            />
+            <div className={styles.createPost__notification}>
+              <Notification
+                content={postErrorText ? postErrorText : 'Failed to create post.'}
+                icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
+                alignment="fixed"
+                data-show-detail-media-attachment={isShowDetailMediaAttachmentMenu}
+                duration={3000}
+                className={styles.createPost__notificationToast}
+                onClose={() => {
+                  setPostErrorText(undefined);
+                  setIsError(false);
+                }}
+              />
+            </div>
           )}
         </div>
       )}

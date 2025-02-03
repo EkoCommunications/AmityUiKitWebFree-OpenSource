@@ -9,12 +9,12 @@ import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection
 import EmptyPost from '~/v4/icons/EmptyPost';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import LockPrivateContent from '~/v4/social/internal-components/LockPrivateContent';
-import { SubscriptionLevels } from '@amityco/ts-sdk';
 import { Button } from '~/v4/core/natives/Button';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import usePinnedPostsCollection from '~/v4/social/hooks/collections/usePinnedPostCollection';
 import { Typography } from '~/v4/core/components';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
 import styles from './CommunityFeed.module.css';
 
 export const CommunityFeedPostContentSkeleton = () => {
@@ -228,14 +228,23 @@ export const CommunityFeed = ({ pageId = '*', communityId }: CommunityFeedProps)
       className={styles.communityFeed__container}
       style={themeStyles}
     >
-      {isMemberPrivateCommunity || community?.isPublic ? (
-        <>
-          {renderAnnouncementPost()}
-          {renderPublicCommunityFeed()}
-        </>
-      ) : (
-        <>{!isLoading && !isLoadingAllPinnedPosts && <LockPrivateContent />}</>
-      )}
+      <NoInternetConnectionHoc
+        page="feed"
+        refresh={() => {
+          refreshPosts();
+          refreshPinnedPosts();
+        }}
+        className={styles.communityFeed__noInternet}
+      >
+        {isMemberPrivateCommunity || community?.isPublic ? (
+          <>
+            {renderAnnouncementPost()}
+            {renderPublicCommunityFeed()}
+          </>
+        ) : (
+          <>{!isLoading && !isLoadingAllPinnedPosts && <LockPrivateContent />}</>
+        )}
+      </NoInternetConnectionHoc>
     </div>
   );
 };

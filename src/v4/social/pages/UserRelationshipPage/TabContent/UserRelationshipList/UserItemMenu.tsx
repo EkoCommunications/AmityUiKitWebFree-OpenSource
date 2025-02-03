@@ -8,6 +8,8 @@ import useUserReport from '~/v4/social/hooks/useUserReport';
 import useUserReportedByMe from '~/v4/social/hooks/useUserReportedByMe';
 import Flag from '~/v4/social/icons/flag';
 import styles from './UserItem.module.css';
+import { useNetworkState } from 'react-use';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 
 type UserItemMenuProps = {
   pageId?: string;
@@ -26,6 +28,8 @@ export const UserItemMenu: FC<UserItemMenuProps> = ({
   const { removeDrawerData } = useDrawer();
   const { reportUser, unReportUser } = useUserReport();
   const { isReportedByMe, isFetching } = useUserReportedByMe(user.userId);
+  const { online } = useNetworkState();
+  const notification = useNotifications();
 
   return (
     <div className={styles.userItem__menuContainer}>
@@ -42,6 +46,12 @@ export const UserItemMenu: FC<UserItemMenuProps> = ({
             onPress={() => {
               closePopover();
               removeDrawerData();
+              if (!online) {
+                notification.info({
+                  content: `Failed to ${isReportedByMe ? 'unreport' : 'report'} user. Please try again.`,
+                });
+                return;
+              }
               if (isReportedByMe) unReportUser(user.userId);
               else reportUser(user.userId);
             }}
@@ -58,6 +68,12 @@ export const UserItemMenu: FC<UserItemMenuProps> = ({
             onPress={() => {
               closePopover();
               removeDrawerData();
+              if (!online) {
+                notification.info({
+                  content: 'Failed to block user. Please try again.',
+                });
+                return;
+              }
               blockUser({
                 pageId,
                 componentId,

@@ -8,12 +8,12 @@ import usePinnedPostsCollection from '~/v4/social/hooks/collections/usePinnedPos
 import { CommunityFeedPostContentSkeleton } from '~/v4/social/components/CommunityFeed/CommunityFeed';
 import { Button } from '~/v4/core/natives/Button';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
-import { SubscriptionLevels } from '@amityco/ts-sdk';
 import {
   AmityPostCategory,
   AmityPostContentComponentStyle,
   PostContent,
 } from '~/v4/social/components/PostContent/PostContent';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
 
 interface CommunityPinProps {
   pageId?: string;
@@ -143,18 +143,24 @@ export const CommunityPin = ({ pageId = '*', communityId }: CommunityPinProps) =
       className={styles.communityPin__container}
       style={themeStyles}
     >
-      {isMemberPrivateCommunity || community?.isPublic ? (
-        pinnedPost.length > 0 ? (
-          <>
-            {renderAnnouncementPost()}
-            {renderPinnedPost()}
-          </>
+      <NoInternetConnectionHoc
+        page="feed"
+        refresh={refresh}
+        className={styles.communityPin__noInternet}
+      >
+        {isMemberPrivateCommunity || community?.isPublic ? (
+          pinnedPost.length > 0 ? (
+            <>
+              {renderAnnouncementPost()}
+              {renderPinnedPost()}
+            </>
+          ) : (
+            <EmptyPinnedPost />
+          )
         ) : (
-          <EmptyPinnedPost />
-        )
-      ) : (
-        <LockPrivateContent />
-      )}
+          <LockPrivateContent />
+        )}
+      </NoInternetConnectionHoc>
     </div>
   );
 };

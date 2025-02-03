@@ -23,6 +23,7 @@ import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import useCommunityModeratorsCollection from '~/v4/social/hooks/collections/useCommunityModeratorsCollection';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import { AmityCommunitySetupPageMode } from '~/v4/social/pages/CommunitySetupPage';
+import { useNetworkState } from 'react-use';
 
 type CommunitySettingPageProps = {
   community: Amity.Community;
@@ -35,6 +36,7 @@ export const CommunitySettingPage = ({ community }: CommunitySettingPageProps) =
   });
   const { onBack, goToEditCommunityPage } = useNavigation();
   const { AmityCommunitySettingPageBehavior } = usePageBehavior();
+  const { online } = useNetworkState();
 
   const { client, currentUserId } = useSDK();
   const { leaveCommunity, closeCommunity } = useCommunityInfo(community.communityId);
@@ -44,6 +46,14 @@ export const CommunitySettingPage = ({ community }: CommunitySettingPageProps) =
   const isCommunityModerator = moderators.some((moderator) => moderator.userId === currentUserId);
 
   const handleLeaveCommunity = () => {
+    if (!online) {
+      info({
+        title: 'Unable to leave community',
+        content: 'Something went wrong. Please try again later.',
+        okText: 'OK',
+      });
+      return;
+    }
     if (moderators.length == 1 && isCommunityModerator) {
       info({
         title: 'Unable to leave community',
@@ -66,6 +76,14 @@ export const CommunitySettingPage = ({ community }: CommunitySettingPageProps) =
   };
 
   const handleCloseCommunity = () => {
+    if (!online) {
+      info({
+        title: 'Unable to close community',
+        content: 'Something went wrong. Please try again later.',
+        okText: 'OK',
+      });
+      return;
+    }
     confirm({
       title: 'Close community?',
       content:

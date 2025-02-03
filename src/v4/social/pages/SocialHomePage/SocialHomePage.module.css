@@ -54,6 +54,10 @@
   width: 12.5rem;
 }
 
+.socialHomePage__noConnection {
+  padding-top: 10rem;
+}
+
 @media (width >= 48em) {
   .socialHomePage {
     background-color: transparent;
@@ -66,5 +70,9 @@
   .socialHomePage__contents {
     top: 0;
     height: 100%;
+  }
+
+  .socialHomePage__noConnection {
+    margin: 0;
   }
 }

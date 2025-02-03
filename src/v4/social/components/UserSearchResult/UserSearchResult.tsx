@@ -4,6 +4,7 @@ import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { UserSearchItemSkeleton } from './UserSearchItemSkeleton';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
 import { EmptySearchResult } from '~/v4/social/internal-components/EmptySearchResult';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
 import styles from './UserSearchResult.module.css';
 
 type UserSearchResultProps = {
@@ -30,22 +31,25 @@ export const UserSearchResult = ({
 
   return (
     <div className={styles.userSearchResult} style={themeStyles} data-qa-anchor={accessibilityId}>
-      {userCollection.length > 0 &&
-        userCollection.map((user) => (
-          <UserSearchItem
-            user={user}
-            pageId={pageId}
-            key={user.userId}
-            onClick={onClosePopover}
-            componentId={componentId}
-          />
-        ))}
-      {isLoading
-        ? Array.from({ length: 5 }).map((_, index) => (
-            <UserSearchItemSkeleton key={index} pageId={pageId} componentId={componentId} />
-          ))
-        : null}
-      {!isLoading && userCollection.length === 0 && <EmptySearchResult />}
+      <NoInternetConnectionHoc page="global-search">
+        {userCollection.length > 0 &&
+          userCollection.map((user) => (
+            <UserSearchItem
+              user={user}
+              pageId={pageId}
+              key={user.userId}
+              onClick={onClosePopover}
+              componentId={componentId}
+            />
+          ))}
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <UserSearchItemSkeleton key={index} pageId={pageId} componentId={componentId} />
+            ))
+          : null}
+        {!isLoading && userCollection.length === 0 && <EmptySearchResult />}
+      </NoInternetConnectionHoc>
+
       <div ref={(node) => setIntersectionNode(node)} />
     </div>
   );

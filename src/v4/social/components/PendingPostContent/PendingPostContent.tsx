@@ -20,6 +20,9 @@ import { VideoViewer } from '~/v4/social/internal-components/VideoViewer/VideoVi
 import usePost from '~/v4/core/hooks/objects/usePost';
 import dayjs from 'dayjs';
 import { Popover } from '~/v4/core/components/AriaPopover';
+import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { useNetworkState } from 'react-use';
 
 type PendingPostContentProps = {
   pageId?: string;
@@ -44,6 +47,8 @@ export const PendingPostContent = ({
 
   const { setDrawerData, removeDrawerData } = useDrawer();
   const notification = useNotifications();
+  const { info } = useConfirmContext();
+  const { online } = useNetworkState();
 
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isVideoViewerOpen, setIsVideoViewerOpen] = useState(false);
@@ -243,12 +248,30 @@ export const PendingPostContent = ({
             <PostAcceptButton
               pageId={pageId}
               componentId={componentId}
-              onClick={() => handleApprovePost(post.postId)}
+              onClick={() => {
+                if (!online) {
+                  notification.info({
+                    content: 'Failed to accept post. Please try again.',
+                  });
+                  return;
+                }
+                handleApprovePost(post.postId);
+              }}
             />
             <PostDeclineButton
               pageId={pageId}
               componentId={componentId}
-              onClick={() => handleDeclinePost(post.postId)}
+              onClick={() => {
+                {
+                  if (!online) {
+                    notification.info({
+                      content: 'Failed to decline post. Please try again.',
+                    });
+                    return;
+                  }
+                  handleDeclinePost(post.postId);
+                }
+              }}
             />
           </div>
         )}
