@@ -11,6 +11,8 @@ import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 import styles from './StoryTabCommunity.module.css';
 import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { canCreatePostCommunity } from '~/v4/social/utils';
+import useSDK from '~/v4/core/hooks/useSDK';
 
 const ErrorIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
@@ -46,6 +48,7 @@ export const StoryTabCommunityFeed: React.FC<StoryTabCommunityFeedProps> = ({
   onFileChange,
   onStoryClick,
 }) => {
+  const { client } = useSDK();
   const { community } = useCommunityInfo(communityId);
   const { hasStoryPermission } = useStoryPermission(communityId);
   const { isExcluded, accessibilityId, themeStyles } = useAmityComponent({ pageId, componentId });
@@ -68,7 +71,12 @@ export const StoryTabCommunityFeed: React.FC<StoryTabCommunityFeedProps> = ({
 
   if (isExcluded) return null;
 
-  if (!hasStories && !hasStoryPermission) return null;
+  if (
+    (!hasStories && !hasStoryPermission) ||
+    // if community has setting to only allow admin to post
+    (community && !canCreatePostCommunity(client, community))
+  )
+    return null;
 
   return (
     <div
@@ -92,7 +100,7 @@ export const StoryTabCommunityFeed: React.FC<StoryTabCommunityFeedProps> = ({
           <CommunityAvatar pageId={pageId} componentId={componentId} community={community} />
         </button>
 
-        {hasStoryPermission && (
+        {hasStoryPermission && community && canCreatePostCommunity(client, community) && (
           <FileTrigger
             onSelect={(e) => {
               const files = Array.from(e as FileList);
