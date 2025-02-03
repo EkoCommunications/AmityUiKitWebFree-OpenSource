@@ -152,12 +152,12 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ userId }) => {
           <div className={styles.userProfilePage__topSection}>
             <div className={styles.userProfilePage__topBar}>
               <BackButton pageId={pageId} onPress={() => onBack()} />
-              <Typography.Title
+              <Typography.TitleBold
                 className={styles.userProfilePage__displayName}
                 data-show={isScroll}
               >
                 {user?.displayName}
-              </Typography.Title>
+              </Typography.TitleBold>
               <Popover
                 trigger={{
                   pageId,

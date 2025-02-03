@@ -59,9 +59,9 @@ export function VideoViewer({
         />
       </span>
       {videoPosts.length > 1 && (
-        <Typography.Title className={styles.videoViewer__count}>
+        <Typography.TitleBold className={styles.videoViewer__count}>
           {selectedVideoIndex + 1} / {videoPosts.length}
-        </Typography.Title>
+        </Typography.TitleBold>
       )}
       {hasPrev && (
         <Button className={styles.videoViewer__prev} onPress={prev}>

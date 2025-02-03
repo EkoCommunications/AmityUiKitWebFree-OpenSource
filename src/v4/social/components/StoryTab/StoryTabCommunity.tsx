@@ -10,7 +10,7 @@ import { CommunityAvatar } from '~/v4/social/elements/CommunityAvatar';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { useStoryPermission } from '~/v4/social/hooks/useStoryPermission';
 import styles from './StoryTabCommunity.module.css';
-import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { Typography } from '~/v4/core/components';
 import { canCreatePostCommunity } from '~/v4/social/utils';
 import useSDK from '~/v4/core/hooks/useSDK';
 

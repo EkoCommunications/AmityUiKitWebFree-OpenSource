@@ -14,7 +14,7 @@ import SocialMentionItem from '~/v4/core/components/SocialMentionItem';
 import { QueryMentioneesFnType } from '~/v4/chat/hooks/useMention';
 
 import styles from './styles.module.css';
-import typography from '~/v4/styles/typography.module.css';
+import typographyStyles from '~/v4/core/components/Typography/Typography.module.css';
 
 interface InsideInputTextProps {
   'data-qa-anchor'?: string;
@@ -124,12 +124,7 @@ const InsideInputText = forwardRef<HTMLInputElement | HTMLTextAreaElement, Insid
     return (
       <div
         ref={containerRef}
-        className={clsx(
-          styles.inputTextContainer,
-          classNames,
-          typography['typography'],
-          typography['typography-body'],
-        )}
+        className={clsx(styles.inputTextContainer, classNames, typographyStyles.typography__body)}
       >
         {prepend}
         <div ref={mentionRef} className={styles.mentionContainer} id="mention-input" />

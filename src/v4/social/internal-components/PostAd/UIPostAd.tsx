@@ -61,13 +61,9 @@ export const UIPostAd = ({
         onPress={handleCallToActionClick}
       >
         <div className={styles.footer__left}>
-          <Typography.Body
-            renderer={({ typoClassName }) => (
-              <div className={clsx(typoClassName, styles.footer__content__description)}>
-                {ad.description}
-              </div>
-            )}
-          />
+          <Typography.Body className={styles.footer__content__description}>
+            {ad.description}
+          </Typography.Body>
           <Typography.BodyBold className={styles.footer__content__headline}>
             {ad.headline}
           </Typography.BodyBold>
@@ -75,13 +71,9 @@ export const UIPostAd = ({
         {ad.callToActionUrl ? (
           <div className={styles.footer__right}>
             <Button className={styles.footer__content__button} onPress={handleCallToActionClick}>
-              <Typography.CaptionBold
-                renderer={({ typoClassName }) => (
-                  <div className={clsx(typoClassName, styles.footer__content__button__text)}>
-                    {ad.callToAction}
-                  </div>
-                )}
-              />
+              <Typography.CaptionBold className={styles.footer__content__button__text}>
+                {ad.callToAction}
+              </Typography.CaptionBold>
             </Button>
           </div>
         ) : null}

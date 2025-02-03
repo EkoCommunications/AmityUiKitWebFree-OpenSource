@@ -113,12 +113,12 @@ export function PostDetailPage({ id, hideTarget, category }: PostDetailPageProps
           defaultClassName={styles.postDetailPage__backIcon}
           onPress={() => onBack()}
         />
-        <Typography.Title
+        <Typography.TitleBold
           data-qa-anchor={`${pageId}/page_title`}
           className={styles.postDetailPage__topBar__title}
         >
           Post
-        </Typography.Title>
+        </Typography.TitleBold>
         <Popover
           containerClassName={styles.postDetailPage__topBar__menuBar}
           trigger={{

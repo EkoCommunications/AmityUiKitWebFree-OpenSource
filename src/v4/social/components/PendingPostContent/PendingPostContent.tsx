@@ -156,15 +156,11 @@ export const PendingPostContent = ({
             <UserAvatar pageId={pageId} componentId={componentId} userId={post?.postedUserId} />
             <div>
               <Typography.BodyBold
-                renderer={({ typoClassName }) => (
-                  <div
-                    className={clsx(typoClassName, styles.pendingPostContent__username)}
-                    data-qa-anchor={`${pageId}/${componentId}/username`}
-                  >
-                    {post.creator.displayName}
-                  </div>
-                )}
-              />
+                className={styles.pendingPostContent__username}
+                data-qa-anchor={`${pageId}/${componentId}/username`}
+              >
+                {post.creator.displayName}
+              </Typography.BodyBold>
               <div className={styles.pendingPostContent__information__subtitle}>
                 <Timestamp timestamp={post.createdAt} />
                 {post.createdAt !== post.editedAt && (
@@ -198,9 +194,11 @@ export const PendingPostContent = ({
                           }}
                         >
                           <TrashIcon className={styles.pendingPostContent__deletePost__icon} />
-                          <Typography.Title className={styles.pendingPostContent__deletePost__text}>
+                          <Typography.TitleBold
+                            className={styles.pendingPostContent__deletePost__text}
+                          >
                             Delete post
-                          </Typography.Title>
+                          </Typography.TitleBold>
                         </Button>
                       ),
                     }),
@@ -216,9 +214,9 @@ export const PendingPostContent = ({
                     }}
                   >
                     <TrashIcon className={styles.pendingPostContent__deletePost__icon} />
-                    <Typography.Title className={styles.pendingPostContent__deletePost__text}>
+                    <Typography.TitleBold className={styles.pendingPostContent__deletePost__text}>
                       Delete post
-                    </Typography.Title>
+                    </Typography.TitleBold>
                   </Button>
                 )}
               </Popover>

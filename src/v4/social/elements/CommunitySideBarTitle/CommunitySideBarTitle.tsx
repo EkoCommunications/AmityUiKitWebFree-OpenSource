@@ -22,12 +22,12 @@ export function CommunitySideBarTitle({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       style={themeStyles}
       data-qa-anchor={accessibilityId}
       className={styles.community_sideBar__title}
     >
       {config.text}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 }

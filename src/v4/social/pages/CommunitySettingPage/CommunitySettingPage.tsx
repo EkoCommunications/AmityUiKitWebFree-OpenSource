@@ -114,16 +114,16 @@ export const CommunitySettingPage = ({ community }: CommunitySettingPageProps) =
     >
       <div className={styles.communitySettingPage__communityTitleWrap}>
         <BackButton onPress={() => onBack()} />
-        <Typography.Title className={styles.communitySettingPage__communityTitle}>
+        <Typography.TitleBold className={styles.communitySettingPage__communityTitle}>
           {community?.displayName}
-        </Typography.Title>
+        </Typography.TitleBold>
         <div />
       </div>
       <div className={styles.communitySettingPage__content}>
         <div className={styles.communitySettingPage__basicInfoWrap}>
-          <Typography.Title className={styles.communitySettingPage__basicInfo}>
+          <Typography.TitleBold className={styles.communitySettingPage__basicInfo}>
             Basic info
-          </Typography.Title>
+          </Typography.TitleBold>
           {checkEditCommunityPermission(client, community?.communityId) && (
             <EditProfile
               pageId={pageId}
@@ -145,9 +145,9 @@ export const CommunitySettingPage = ({ community }: CommunitySettingPageProps) =
           checkDeleteCommunityPermission(client, community?.communityId)) && (
           <div className={styles.communitySettingPage__communityPermissionWrap}>
             {
-              <Typography.Title className={styles.communitySettingPage__communityPermissions}>
+              <Typography.TitleBold className={styles.communitySettingPage__communityPermissions}>
                 Community permissions
-              </Typography.Title>
+              </Typography.TitleBold>
             }
             {checkReviewPostPermission(client, community?.communityId) && (
               <PostPermission

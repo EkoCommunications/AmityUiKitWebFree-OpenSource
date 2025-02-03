@@ -56,7 +56,7 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
         <BackButton onPress={() => onBack()} />
         <div className={styles.pendingPostsPage__titleWrap}>
           <Title titleClassName={styles.pendingPostsPage__title} pageId={pageId} />
-          <Typography.Title>{`(${pendingPostsCount})`}</Typography.Title>
+          <Typography.TitleBold>{`(${pendingPostsCount})`}</Typography.TitleBold>
         </div>
         <div className={styles.pendingPostsPage__emptyDiv} />
       </div>
@@ -77,9 +77,9 @@ export const PendingPostsPage = ({ communityId }: PendingPostsPageProps) => {
       {reviewingPosts.length === 0 && !isLoading && (
         <div className={styles.pendingPostsPage__noPendingPost}>
           <FireworkPaper className={styles.pendingPostsPage__fireworkIcon} />
-          <Typography.Title className={styles.pendingPostsPage__noPendingPostText}>
+          <Typography.TitleBold className={styles.pendingPostsPage__noPendingPostText}>
             No post to review
-          </Typography.Title>
+          </Typography.TitleBold>
         </div>
       )}
       {!isLoading && pendingPostsCount > 0 && (canReviewCommunityPosts || isPostOwner) && (

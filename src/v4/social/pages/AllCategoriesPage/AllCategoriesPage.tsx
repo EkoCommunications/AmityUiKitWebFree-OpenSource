@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './AllCategoriesPage.module.css';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
-import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { Typography } from '~/v4/core/components';
 import { Button } from '~/v4/core/natives/Button';
 import useCategoriesCollection from '~/v4/core/hooks/collections/useCategoriesCollection';
 import useImage from '~/core/hooks/useImage';

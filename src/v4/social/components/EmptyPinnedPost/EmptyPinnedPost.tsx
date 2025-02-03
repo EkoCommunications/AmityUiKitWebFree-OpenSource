@@ -22,9 +22,9 @@ export const EmptyPinnedPost = ({ pageId = '*' }: EmptyPinnedPostProps) => {
       style={themeStyles}
     >
       <EmptyPost className={styles.emptyPinnedPost__icon} />
-      <Typography.Title className={styles.emptyPinnedPost__text}>
+      <Typography.TitleBold className={styles.emptyPinnedPost__text}>
         No pinned post yet
-      </Typography.Title>
+      </Typography.TitleBold>
     </div>
   );
 };

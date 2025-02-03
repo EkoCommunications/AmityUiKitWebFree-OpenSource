@@ -30,13 +30,13 @@ export function Title({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       className={clsx(styles.title, titleClassName)}
       style={themeStyles}
       data-qa-anchor={accessibilityId}
     >
       {config.text ?? labelText}
       {required && <span className={styles.title__requiredIndicator}>*</span>}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 }

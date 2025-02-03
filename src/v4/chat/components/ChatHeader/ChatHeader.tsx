@@ -29,7 +29,7 @@ export const ChatHeader = ({ channel, pageId = '*' }: ChatHeaderProps) => {
       </div>
       <div>
         <div className={styles.displayName}>
-          <Typography.Title>{chatName || 'Loading...'}</Typography.Title>
+          <Typography.TitleBold>{chatName || 'Loading...'}</Typography.TitleBold>
         </div>
         <div className={styles.memberCount}>
           {online ? (

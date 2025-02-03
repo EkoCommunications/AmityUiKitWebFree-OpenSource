@@ -50,9 +50,9 @@ export const UserRelationshipPage: FC<UserRelationshipPageProps> = ({ userId, se
         <div className={styles.userRelationshipPage__topSection}>
           <div className={styles.userRelationshipPage__topBar}>
             <BackButton pageId={pageId} onPress={() => onBack()} />
-            <Typography.Title className={styles.userRelationshipPage__displayName}>
+            <Typography.TitleBold className={styles.userRelationshipPage__displayName}>
               {user?.displayName}
-            </Typography.Title>
+            </Typography.TitleBold>
           </div>
         </div>
         <div className={styles.userRelationshipPage__content}>

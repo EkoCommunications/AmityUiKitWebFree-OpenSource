@@ -46,11 +46,9 @@ export const CategoryChip: React.FC<CategoryChipProps> = ({
         componentId={componentId}
         elementId={elementId}
       />
-      <Typography.BodyBold
-        renderer={({ typoClassName }) => (
-          <span className={clsx(typoClassName, styles.categoryChip__text)}>{category.name}</span>
-        )}
-      />
+      <Typography.BodyBold className={styles.categoryChip__text}>
+        {category.name}
+      </Typography.BodyBold>
     </Button>
   );
 };

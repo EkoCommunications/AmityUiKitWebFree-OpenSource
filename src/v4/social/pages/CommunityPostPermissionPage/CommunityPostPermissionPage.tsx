@@ -90,9 +90,9 @@ export const CommunityPostPermissionPage = ({ community }: CommunityPostPermissi
     >
       <div className={styles.communityPostPermissionPage__communityTitleWrap}>
         <BackButton onPress={confirmPageChange} />
-        <Typography.Title className={styles.communityPostPermissionPage__communityTitle}>
+        <Typography.TitleBold className={styles.communityPostPermissionPage__communityTitle}>
           Post permissions
-        </Typography.Title>
+        </Typography.TitleBold>
         <Button
           size="medium"
           variant="text"

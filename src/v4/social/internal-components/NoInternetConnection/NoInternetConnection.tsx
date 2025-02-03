@@ -1,7 +1,7 @@
 import React from 'react';
 import { NoInternetConnection as NoInternetConnectionIcon } from '~/v4/icons/NoInternetConnection';
 import styles from './NoInternetConnection.module.css';
-import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { Typography } from '~/v4/core/components';
 import { Button } from '~/v4/core/components/AriaButton';
 import clsx from 'clsx';
 

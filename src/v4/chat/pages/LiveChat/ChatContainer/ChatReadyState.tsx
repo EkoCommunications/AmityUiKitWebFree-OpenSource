@@ -49,7 +49,7 @@ const ChatReadyState = ({ pageId = '*', channel }: { pageId?: string; channel: A
       <ChatCustomState>
         <div className={styles.banStatePanel}>
           <CommentAltExclamation className={styles.commentAltIcon} />
-          <Typography.Heading>You are banned from chat</Typography.Heading>
+          <Typography.Headline>You are banned from chat</Typography.Headline>
           <Typography.Body>
             You won’t be able to participate in this chat until you’ve been unbanned.
           </Typography.Body>

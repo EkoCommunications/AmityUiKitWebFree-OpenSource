@@ -172,9 +172,9 @@ export const CommunityAddMemberPage = ({
             onPress={() => (isDesktop ? closePopup?.() : onBack())}
             defaultClassName={styles.communityAddMemberPage__closeButton}
           />
-          <Typography.Title className={styles.communityAddMemberPage__title}>
+          <Typography.TitleBold className={styles.communityAddMemberPage__title}>
             Add member
-          </Typography.Title>
+          </Typography.TitleBold>
           <div className={styles.communityAddMemberPage__emptySapce} />
         </div>
         <div className={styles.communityAddMemberPage__searchWrap}>

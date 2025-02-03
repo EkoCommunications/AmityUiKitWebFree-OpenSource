@@ -1,10 +1,9 @@
 import React from 'react';
 import styles from './CommunityCategory.module.css';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { CommunityCategoryName } from '~/v4/social/elements/CommunityCategoryName';
 import { Button } from '~/v4/core/natives/Button/Button';
 import clsx from 'clsx';
-import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { Typography } from '~/v4/core/components';
 
 interface CommunityCategoryProps {
   pageId?: string;

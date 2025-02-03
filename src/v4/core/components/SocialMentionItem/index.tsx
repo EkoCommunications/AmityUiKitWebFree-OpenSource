@@ -7,7 +7,7 @@ import useImage from '~/core/hooks/useImage';
 import styles from './styles.module.css';
 import { MentionIcon } from '~/icons';
 import { FormattedMessage } from 'react-intl';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 import { Avatar } from '~/v4/core/components/Avatar';
 import User from '~/v4/icons/User';
 

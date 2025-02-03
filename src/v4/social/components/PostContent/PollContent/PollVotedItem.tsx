@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Typography } from '~/v4/core/components/';
+import { Typography } from '~/v4/core/components';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar/UserAvatar';
 import millify from 'millify';
 import styles from './PollVotedItem.module.css';

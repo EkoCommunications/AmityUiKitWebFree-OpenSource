@@ -61,9 +61,9 @@ export function ImageViewer({
         />
       </span>
       {post?.children.length > 1 && (
-        <Typography.Title className={styles.imageViewer__count}>
+        <Typography.TitleBold className={styles.imageViewer__count}>
           {selectedImageIndex + 1} / {post?.children.length}
-        </Typography.Title>
+        </Typography.TitleBold>
       )}
       {hasPrev && (
         <Button className={styles.imageViewer__prev} onPress={prev}>

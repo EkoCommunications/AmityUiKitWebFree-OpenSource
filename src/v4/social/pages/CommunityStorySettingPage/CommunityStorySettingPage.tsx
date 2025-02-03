@@ -51,9 +51,9 @@ export const CommunityStorySettingPage = ({ community }: CommunityStorySettingPa
     >
       <div className={styles.communityStorySettingPage__communityTitleWrap}>
         <BackButton onPress={() => onBack()} />
-        <Typography.Title className={styles.communityStorySettingPage__communityTitle}>
+        <Typography.TitleBold className={styles.communityStorySettingPage__communityTitle}>
           Story comments
-        </Typography.Title>
+        </Typography.TitleBold>
         <div className={styles.communityStorySettingPage__emptyDiv} />
       </div>
       <div className={styles.communityStorySettingPage__wrapLabel}>

@@ -58,11 +58,11 @@ export function UserAvatar({
           }
         }}
       >
-        <Typography.Title
+        <Typography.TitleBold
           className={clsx(styles.userAvatar__placeholder__text, textPlaceholderClassName)}
         >
           {firstChar}
-        </Typography.Title>
+        </Typography.TitleBold>
         {isShowModeratorBadge && <Badge className={styles.userAvatar__badge} />}
       </Button>
     );

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { ReactNode, useState } from 'react';
-import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { Typography } from '~/v4/core/components';
 import { useNotificationData } from '~/v4/core/providers/NotificationProvider';
 import styles from './Notification.module.css';
 

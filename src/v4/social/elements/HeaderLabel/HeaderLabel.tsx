@@ -20,12 +20,12 @@ export function HeaderLabel({ pageId = '*', componentId = '*' }: HeaderLabelProp
   if (isExcluded) return null;
 
   return (
-    <Typography.Heading
+    <Typography.Headline
       className={styles.headerLabel}
       style={themeStyles}
       data-qa-anchor={accessibilityId}
     >
       {config.text}
-    </Typography.Heading>
+    </Typography.Headline>
   );
 }

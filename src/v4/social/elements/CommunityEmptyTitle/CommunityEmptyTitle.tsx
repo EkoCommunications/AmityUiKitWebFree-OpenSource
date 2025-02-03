@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import styles from './CommunityEmptyTitle.module.css';
 
@@ -25,12 +25,12 @@ export const CommunityEmptyTitle = ({
   }
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       style={themeStyles}
       className={styles.communityEmptyTitle}
       data-qa-anchor={accessibilityId}
     >
       {config.text}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 };
