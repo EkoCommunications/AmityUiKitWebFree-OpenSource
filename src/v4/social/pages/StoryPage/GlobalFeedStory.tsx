@@ -235,6 +235,10 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
     setFile(null);
   };
 
+  useEffect(() => {
+    refresh();
+  }, []);
+
   const addStoryButton = (
     <FileTrigger
       ref={fileInputRef}
