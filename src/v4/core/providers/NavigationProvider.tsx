@@ -1,4 +1,12 @@
-import React, { createContext, useCallback, useContext, useState, useMemo, ReactNode } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  useMemo,
+  ReactNode,
+  useEffect,
+} from 'react';
 import { AmityStoryMediaType } from '~/v4/social/pages/DraftsPage/DraftsPage';
 import { Mode } from '~/v4/social/pages/PostComposerPage/PostComposerPage';
 import { NavigationContext as NavigationContextV3 } from '~/social/providers/NavigationProvider';
@@ -8,6 +16,7 @@ import {
   AmityCommunitySetupPageMode,
   MemberCommunitySetup,
 } from '~/v4/social/pages/CommunitySetupPage/CommunitySetupPage';
+import { AmityRoute } from './AmityUIKitProvider';
 
 export enum PageTypes {
   Explore = 'explore',
@@ -15,8 +24,6 @@ export enum PageTypes {
   CommunityFeed = 'communityFeed',
   CommunityEdit = 'communityEdit',
   Category = 'category',
-  UserFeed = 'userFeed',
-  UserEdit = 'userEdit',
   ViewStoryPage = 'ViewStoryPage',
   SocialHomePage = 'SocialHomePage',
   PostDetailPage = 'PostDetailPage',
@@ -70,13 +77,6 @@ type Page =
       type: PageTypes.Category;
       context: {
         categoryId: string;
-        communityId?: string;
-      };
-    }
-  | {
-      type: PageTypes.UserFeed | PageTypes.UserEdit;
-      context: {
-        userId: string;
         communityId?: string;
       };
     }
@@ -472,11 +472,51 @@ interface NavigationProviderProps {
     storyType: 'communityFeed' | 'globalFeed',
     targetId?: string[],
   ) => void;
+  activeRoute?: AmityRoute;
+  onRouteChange?: (route: AmityRoute) => void;
 }
+
+const getDefaultRoute = (activeRoute?: AmityRoute): Page => {
+  if (activeRoute?.route === 'community') {
+    if (activeRoute?.id) {
+      return {
+        type: PageTypes.CommunityProfilePage,
+        context: {
+          communityId: activeRoute.id,
+        },
+      };
+    }
+  }
+  if (activeRoute?.route === 'user') {
+    if (activeRoute?.id) {
+      return {
+        type: PageTypes.UserProfilePage,
+        context: {
+          userId: activeRoute.id,
+        },
+      };
+    }
+  }
+
+  if (activeRoute?.route === 'post') {
+    if (activeRoute?.id) {
+      return {
+        type: PageTypes.PostDetailPage,
+        context: {
+          postId: activeRoute?.id,
+        },
+      };
+    }
+  }
+
+  return { type: PageTypes.SocialHomePage, context: { communityId: undefined } };
+};
 
 export default function NavigationProvider({
   askForConfirmation,
   children,
+  activeRoute,
+  onRouteChange,
   onChangePage: onChangePageProp,
   onClickCategory,
   onClickCommunity,
@@ -487,9 +527,7 @@ export default function NavigationProvider({
   onMessageUser,
   onBack,
 }: NavigationProviderProps) {
-  const [pages, setPages] = useState<Page[]>([
-    { type: PageTypes.SocialHomePage, context: { communityId: undefined } },
-  ]);
+  const [pages, setPages] = useState<Page[]>([getDefaultRoute(activeRoute)]);
   const currentPage = useMemo(() => pages[pages.length - 1], [pages]);
   const prevPage = useMemo(() => pages[pages.length - 2], [pages]);
   const [navigationBlocker, setNavigationBlocker] = useState<
@@ -592,7 +630,7 @@ export default function NavigationProvider({
   const handleClickUser = useCallback(
     (userId, pageType) => {
       const next = {
-        type: pageType ?? PageTypes.UserFeed,
+        type: pageType ?? PageTypes.UserProfilePage,
         context: {
           userId,
         },
@@ -609,7 +647,7 @@ export default function NavigationProvider({
   const handleEditUser = useCallback(
     (userId) => {
       const next = {
-        type: PageTypes.UserEdit,
+        type: PageTypes.EditUserProfilePage,
         context: {
           userId,
         },
@@ -737,7 +775,7 @@ export default function NavigationProvider({
   const goToUserProfilePage = useCallback(
     (userId) => {
       const next = {
-        type: PageTypes.UserFeed,
+        type: PageTypes.UserProfilePage,
         context: {
           userId,
         },
@@ -1065,6 +1103,21 @@ export default function NavigationProvider({
     },
     [onChangePage, pushPage],
   );
+
+  useEffect(() => {
+    if (currentPage.type === PageTypes.CommunityProfilePage) {
+      onRouteChange?.({
+        route: 'community',
+        id: currentPage.context.communityId,
+      });
+    } else if (currentPage.type === PageTypes.UserProfilePage) {
+      onRouteChange?.({ route: 'user', id: currentPage.context.userId });
+    } else if (currentPage.type === PageTypes.PostDetailPage) {
+      onRouteChange?.({ route: 'post', id: currentPage.context.postId });
+    } else {
+      onRouteChange?.({ route: '', id: undefined });
+    }
+  }, [currentPage]);
 
   return (
     <NavigationContext.Provider
