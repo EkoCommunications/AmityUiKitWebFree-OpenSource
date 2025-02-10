@@ -105,7 +105,9 @@ const Confirm = ({
                       }
                     }}
                   >
-                    <Typography.BodyBold>{okText}</Typography.BodyBold>
+                    <Typography.BodyBold className={styles.popup__footer__okText}>
+                      {okText}
+                    </Typography.BodyBold>
                   </Button>
                 </div>
               </Fragment>
