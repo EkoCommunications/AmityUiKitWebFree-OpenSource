@@ -1,8 +1,8 @@
 .typography {
   margin: 0;
   padding: 0;
+  color: inherit;
   font-family: 'Inter var', sans-serif;
-  color: var(--asc-color-base-default);
 }
 
 .typography__headline {

@@ -47,13 +47,13 @@
   display: block;
 }
 
+.userRelationshipList__emptyText {
+  color: var(--asc-color-base-shade3);
+}
+
 @media (width >= 48em) {
   .userRelationshipList__container {
     margin: 0;
-  }
-
-  .userRelationshipList__emptyText {
-    color: var(--asc-color-base-shade3);
   }
 
   .userRelationshipList__skeletonContainer {

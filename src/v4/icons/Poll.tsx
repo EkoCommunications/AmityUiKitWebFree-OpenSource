@@ -33,7 +33,7 @@ export const PollIcon = (props: React.SVGProps<SVGSVGElement>) => {
       />
       <path
         d="M12.75 14.25V18.75H3.75"
-        stroke="#292B32"
+        stroke="currentColor"
         stroke-width="1.3"
         stroke-linecap="round"
         stroke-linejoin="round"

@@ -41,6 +41,10 @@
   box-shadow: var(--asc-box-shadow-02);
 }
 
+.notification__text {
+  color: var(--asc-color-white);
+}
+
 .notificationContainer[data-alignment='fullscreen'] {
   position: relative;
   left: -9rem;

@@ -42,7 +42,11 @@ export const Notification = ({
         data-alignment={alignment}
       >
         <div className={clsx(styles.icon__container)}>{icon}</div>{' '}
-        {typeof content === 'string' ? <Typography.Body>{content}</Typography.Body> : content}
+        {typeof content === 'string' ? (
+          <Typography.Body className={styles.notification__text}>{content}</Typography.Body>
+        ) : (
+          content
+        )}
       </div>
     )
   );

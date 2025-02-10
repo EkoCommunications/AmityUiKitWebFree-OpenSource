@@ -218,4 +218,5 @@
 
 body {
   pointer-events: auto !important;
+  color: var(--asc-color-base-default);
 }
