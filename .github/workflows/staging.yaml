@@ -8,10 +8,14 @@ on:
 jobs:
   sync_staging:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
 
     environment:
       name: staging
-      url: https://ui-kit.staging.amity.co/
+      url: https://uikit.staging.amity.co/
 
     env:
       NPM_FONT_AWESOME_TOKEN: ${{ secrets.NPM_FONT_AWESOME_TOKEN }}
@@ -51,13 +55,15 @@ jobs:
       - name: build storybook
         run: pnpm run storybook:build
 
-      - name: publish on s3
-        uses: jakejarvis/s3-sync-action@master
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          args: --acl public-read --follow-symlinks --delete
+          role-to-assume: ${{ vars.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync to S3
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_S3_BUCKET: ui-kit.staging.amity.co
-          SOURCE_DIR: ./storybook-build
-          DEST_DIR: ''
+          AWS_S3_BUCKET: uikit.staging.amity.co
+          SOURCE_DIR: storybook-build
+        run: |
+          aws s3 sync ./$SOURCE_DIR s3://$AWS_S3_BUCKET --acl public-read --follow-symlinks --delete
