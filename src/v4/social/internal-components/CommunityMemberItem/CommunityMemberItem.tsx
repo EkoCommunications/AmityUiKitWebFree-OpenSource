@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './CommunityMemberItem.module.css';
 import { UserAvatar } from '~/v4/social/internal-components/UserAvatar';
-import { Typography } from '~/v4/core/components/Typography/Typography';
+import { Typography } from '~/v4/core/components';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { PromoteToModerator } from '~/v4/icons/PromoteToModerator';
@@ -19,6 +19,7 @@ import Banned from '~/v4/icons/Banned';
 import GoldenBadge from '~/v4/icons/GoldenBadge';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { TrashIcon } from '~/v4/icons/Trash';
+import { useNetworkState } from 'react-use';
 
 const { COMMUNITY_MODERATOR, CHANNEL_MODERATOR } = MemberRoles;
 
@@ -43,6 +44,7 @@ export const CommunityMemberItem = ({
   currentUserId,
   isModeratorTab = false,
 }: CommunityMemberItemProps) => {
+  const { online } = useNetworkState();
   const notification = useNotifications();
   const { setDrawerData, removeDrawerData } = useDrawer();
   const { isFlaggedByMe, toggleFlagUser } = useUserFlaggedByMe(user?.userId as string);
@@ -51,23 +53,36 @@ export const CommunityMemberItem = ({
       community,
       user,
     });
-
   const memberHasModeratorRole = isModerator(roles);
   const isGlobalBanned = user?.isGlobalBan;
   const isCurrentUser = currentUserId === user?.userId;
 
   const onReportUser = async () => {
     removeDrawerData();
+
+    if (!online) {
+      notification.info({
+        content: `Failed to ${isFlaggedByMe ? 'unreport' : 'report'} member. Please try again.`,
+      });
+      return;
+    }
+
     try {
       await toggleFlagUser();
       notification.success({ content: isFlaggedByMe ? 'User unreported.' : 'User reported.' });
     } catch (err) {
-      notification.error({ content: 'Failed to report member. Please try again.' });
+      notification.info({ content: 'Failed to report member. Please try again.' });
     }
   };
 
   const onPromoteModeratorClick = async () => {
     removeDrawerData();
+
+    if (!online) {
+      notification.info({ content: 'Failed to promote member. Please try again.' });
+      return;
+    }
+
     try {
       await assignRolesToUsers([COMMUNITY_MODERATOR, CHANNEL_MODERATOR], [user?.userId as string]);
       setTimeout(() => {
@@ -75,12 +90,18 @@ export const CommunityMemberItem = ({
       }, 2000); // TODO: to remove refresh function after SDK has been fixed.
       notification.success({ content: 'Successfully promoted to moderator!' });
     } catch (err) {
-      notification.error({ content: 'Failed to promote member. Please try again.' });
+      notification.info({ content: 'Failed to promote member. Please try again.' });
     }
   };
 
   const onDismissModeratorClick = async () => {
     removeDrawerData();
+
+    if (!online) {
+      notification.info({ content: 'Failed to demote member. Please try again.' });
+      return;
+    }
+
     try {
       await removeRolesFromUsers(
         [COMMUNITY_MODERATOR, CHANNEL_MODERATOR],
@@ -88,17 +109,23 @@ export const CommunityMemberItem = ({
       );
       notification.success({ content: 'Successfully demoted to member!' });
     } catch (err) {
-      notification.error({ content: 'Failed to demote member. Please try again.' });
+      notification.info({ content: 'Failed to demote member. Please try again.' });
     }
   };
 
   const onRemoveFromCommunityClick = async () => {
     removeDrawerData();
+
+    if (!online) {
+      notification.info({ content: 'Failed to remove member. Please try again.' });
+      return;
+    }
+
     try {
       user?.userId && (await removeMembers([user.userId]));
       notification.success({ content: 'Member removed from this community.' });
     } catch (err) {
-      notification.error({ content: 'Failed to remove member. Please try again.' });
+      notification.info({ content: 'Failed to remove member. Please try again.' });
     }
   };
 

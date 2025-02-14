@@ -8,7 +8,6 @@ import {
 
 import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
 import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
-import styles from './UserFeed.module.css';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { EmptyUserFeed } from '~/v4/social/elements/EmptyUserFeed';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
@@ -16,6 +15,8 @@ import { BlockedUserFeed } from '~/v4/social/elements/BlockedUserFeed/BlockedUse
 import { PrivateUserFeed } from '~/v4/social/elements/PrivateUserFeed/PrivateUserFeed';
 import useFollowCount from '~/v4/core/hooks/objects/useFollowCount';
 import { ErrorContent } from '~/v4/social/internal-components/ErrorContent';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
+import styles from './UserFeed.module.css';
 
 interface UserFeedProps {
   userId: string;
@@ -117,20 +118,19 @@ export const UserFeed = ({ pageId = '*', userId }: UserFeedProps) => {
   };
 
   return (
-    <div
-      data-qa-anchor={accessibilityId}
-      style={themeStyles}
-      className={styles.userFeed__container}
-    >
-      {renderUserFeed()}
-      {isLoading && <UserFeedPostContentSkeleton />}
-
-      {hasMore && (
-        <div
-          ref={(node) => setIntersectionNode(node)}
-          className={styles.userFeed__observerTarget}
-        />
-      )}
+    <div data-qa-anchor={accessibilityId} style={themeStyles}>
+      <NoInternetConnectionHoc page="feed" refresh={refresh}>
+        <div className={styles.userFeed__container}>
+          {renderUserFeed()}
+          {isLoading && <UserFeedPostContentSkeleton />}
+          {hasMore && (
+            <div
+              ref={(node) => setIntersectionNode(node)}
+              className={styles.userFeed__observerTarget}
+            />
+          )}
+        </div>
+      </NoInternetConnectionHoc>
     </div>
   );
 };

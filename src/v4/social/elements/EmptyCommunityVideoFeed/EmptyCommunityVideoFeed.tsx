@@ -3,7 +3,7 @@ import styles from './EmptyCommunityVideoFeed.module.css';
 import EmptyVideo from '~/v4/icons/EmptyVideo';
 import { IconComponent } from '~/v4/core/IconComponent';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 
 interface EmptyCommunityVideoFeedProps {
   pageId?: string;
@@ -33,9 +33,9 @@ export const EmptyCommunityVideoFeed = ({
         imgIcon={() => <EmptyVideo className={styles.emptyCommunityVideoFeed__icon} />}
       />
       <div>
-        <Typography.Title className={styles.emptyCommunityVideoFeed__text}>
+        <Typography.TitleBold className={styles.emptyCommunityVideoFeed__text}>
           No videos yet
-        </Typography.Title>
+        </Typography.TitleBold>
       </div>
     </div>
   );

@@ -89,9 +89,9 @@ const Video = ({
         }
       />
       {videoLeftCount > 0 && isLastVideo && (
-        <Typography.Heading className={styles.videoContent__videoCover}>
+        <Typography.Headline className={styles.videoContent__videoCover}>
           + {videoLeftCount + 1}
-        </Typography.Heading>
+        </Typography.Headline>
       )}
       {videoLeftCount === 0 || !isLastVideo ? (
         <div className={styles.videoContent__playButtonCover}>

@@ -259,7 +259,7 @@ export const renderer: CustomRenderer = ({
         pageId: 'story_page',
         componentId: 'comment_tray_component',
         header: (
-          <Typography.Heading className={styles.commentTrayHeader}>Comments</Typography.Heading>
+          <Typography.Headline className={styles.commentTrayHeader}>Comments</Typography.Headline>
         ),
         children: renderCommentTray(),
         isDismissable: false,

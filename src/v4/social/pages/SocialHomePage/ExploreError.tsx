@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 
 import styles from './ExploreError.module.css';
 
@@ -17,7 +17,7 @@ export const ExploreError = () => {
     <div className={styles.exploreError}>
       <ExploreErrorIcon />
       <div className={styles.exploreError__text}>
-        <Typography.Title>Something went wrong</Typography.Title>
+        <Typography.TitleBold>Something went wrong</Typography.TitleBold>
         <Typography.Caption>Please try again.</Typography.Caption>
       </div>
     </div>

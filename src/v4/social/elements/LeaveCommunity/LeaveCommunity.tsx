@@ -2,8 +2,7 @@ import React from 'react';
 import styles from './LeaveCommunity.module.css';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button } from '~/v4/core/natives/Button/Button';
-import { Typography } from '~/v4/core/components/Typography';
-import AngleRight from '~/v4/icons/AngleRight';
+import { Typography } from '~/v4/core/components';
 
 type LeaveCommunityProps = {
   pageId?: string;

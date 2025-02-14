@@ -19,6 +19,8 @@ import useCommunityMembersCollection from '~/v4/social/hooks/collections/useComm
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Button as AriaButton } from '~/v4/core/components/AriaButton';
 import styles from './CommunityAddMemberPage.module.css';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
+import { useNetworkState } from 'react-use';
 interface CommunityAddMemberPageProps {
   member?: MemberCommunitySetup[];
   communityId?: string;
@@ -42,6 +44,8 @@ export const CommunityAddMemberPage = ({
   const [selectedMembers, setSelectedMembers] = useState<MemberCommunitySetup[]>(members ?? []);
   const { onBack } = useNavigation();
   const { isDesktop } = useResponsive();
+  const notification = useNotifications();
+  const { online } = useNetworkState();
 
   const { users, hasMore, loadMore, isLoading } = useAllUsersCollection({
     queryParams: {
@@ -95,6 +99,13 @@ export const CommunityAddMemberPage = ({
   };
 
   const handleAddMember = () => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to add member. Please try again.',
+        alignment: 'fixed',
+      });
+      return;
+    }
     onAddedAction ? handleSubmitAddMember() : setMembers(selectedMembers);
     isDesktop ? closePopup?.() : onBack();
   };
@@ -161,9 +172,9 @@ export const CommunityAddMemberPage = ({
             onPress={() => (isDesktop ? closePopup?.() : onBack())}
             defaultClassName={styles.communityAddMemberPage__closeButton}
           />
-          <Typography.Title className={styles.communityAddMemberPage__title}>
+          <Typography.TitleBold className={styles.communityAddMemberPage__title}>
             Add member
-          </Typography.Title>
+          </Typography.TitleBold>
           <div className={styles.communityAddMemberPage__emptySapce} />
         </div>
         <div className={styles.communityAddMemberPage__searchWrap}>

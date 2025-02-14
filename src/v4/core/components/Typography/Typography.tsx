@@ -1,181 +1,55 @@
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
+import styles from './Typography.module.css';
 import clsx from 'clsx';
-import typography from '~/v4/styles/typography.module.css';
 
-type TypographyRenderer = ({ typoClassName }: { typoClassName: string }) => JSX.Element;
+type TypographyElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
 
-type TypographyProps =
-  | {
-      children: React.ReactNode;
-      className?: string;
-      style?: React.CSSProperties;
-    }
-  | { renderer: TypographyRenderer };
-
-const isRendererProp = (props: TypographyProps): props is { renderer: TypographyRenderer } => {
-  return (props as { renderer: TypographyRenderer }).renderer !== undefined;
+type TypographyProps = ComponentPropsWithoutRef<TypographyElement> & {
+  as?: TypographyElement;
 };
 
-export const Typography = {
-  Heading: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-headings']),
-      });
-    }
+export function Typography({ as: Element = 'p', children, className, ...props }: TypographyProps) {
+  return (
+    <Element className={clsx(styles.typography, className)} {...props}>
+      {children}
+    </Element>
+  );
+}
 
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <h1
-        className={clsx(typography['typography'], typography['typography-headings'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </h1>
-    );
-  },
-
-  Title: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-titles']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <h2
-        className={clsx(typography['typography'], typography['typography-titles'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </h2>
-    );
-  },
-
-  Subtitle: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-sub-title']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <h3
-        className={clsx(typography['typography'], typography['typography-sub-title'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </h3>
-    );
-  },
-
-  Body: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-body']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <span
-        className={clsx(typography['typography'], typography['typography-body'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </span>
-    );
-  },
-
-  BodyBold: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-body-bold']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <span
-        className={clsx(typography['typography'], typography['typography-body-bold'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </span>
-    );
-  },
-
-  Caption: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-caption']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <span
-        className={clsx(typography['typography'], typography['typography-caption'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </span>
-    );
-  },
-
-  CaptionBold: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-caption-bold']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <span
-        className={clsx(typography['typography'], typography['typography-caption-bold'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </span>
-    );
-  },
-
-  Headline: (props: TypographyProps) => {
-    if (isRendererProp(props)) {
-      return props.renderer({
-        typoClassName: clsx(typography['typography'], typography['typography-headline']),
-      });
-    }
-
-    const { children, className, style, ...rest } = props;
-
-    return (
-      <h1
-        className={clsx(typography['typography'], typography['typography-headline'], className)}
-        style={style}
-        {...rest}
-      >
-        {children}
-      </h1>
-    );
-  },
+Typography.Headline = function ({ as = 'h1', className, ...props }: TypographyProps) {
+  return <Typography as={as} className={clsx(styles.typography__headline, className)} {...props} />;
 };
 
-export default Typography;
+Typography.TitleBold = function ({ as = 'h2', className, ...props }: TypographyProps) {
+  return (
+    <Typography as={as} className={clsx(styles.typography__titleBold, className)} {...props} />
+  );
+};
+
+Typography.Title = function ({ as = 'h2', className, ...props }: TypographyProps) {
+  return <Typography as={as} className={clsx(styles.typography__title, className)} {...props} />;
+};
+
+Typography.BodyBold = function ({ as = 'p', className, ...props }: TypographyProps) {
+  return <Typography as={as} className={clsx(styles.typography__bodyBold, className)} {...props} />;
+};
+
+Typography.Body = function ({ as = 'p', className, ...props }: TypographyProps) {
+  return <Typography as={as} className={clsx(styles.typography__body, className)} {...props} />;
+};
+
+Typography.CaptionBold = function ({ as = 'span', className, ...props }: TypographyProps) {
+  return (
+    <Typography as={as} className={clsx(styles.typography__captionBold, className)} {...props} />
+  );
+};
+
+Typography.Caption = function ({ as = 'span', className, ...props }: TypographyProps) {
+  return <Typography as={as} className={clsx(styles.typography__caption, className)} {...props} />;
+};
+
+Typography.CaptionSmall = function ({ as = 'span', className, ...props }: TypographyProps) {
+  return (
+    <Typography as={as} className={clsx(styles.typography__captionSmall, className)} {...props} />
+  );
+};

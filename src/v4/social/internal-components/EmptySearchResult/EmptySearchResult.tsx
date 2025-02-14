@@ -9,9 +9,9 @@ export const EmptySearchResult = (props: EmptySearchResultProps) => {
   return (
     <div className={styles.emptySearchResult} {...props}>
       <NoResultIcon className={styles.emptySearchResult__icon} />
-      <Typography.Title className={styles.emptySearchResult__text}>
+      <Typography.TitleBold className={styles.emptySearchResult__text}>
         No results found
-      </Typography.Title>
+      </Typography.TitleBold>
     </div>
   );
 };

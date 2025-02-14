@@ -12,11 +12,14 @@
 
 .tabButton[data-active='true'] {
   font-weight: 600;
-  color: var(--asc-color-white);
   background-color: var(--asc-color-primary-default);
   border: 1px solid transparent;
 }
 
 .tabButton__text {
   font-size: 1.0625rem;
+}
+
+.tabButton__text[data-active='true'] {
+  color: var(--asc-color-white);
 }

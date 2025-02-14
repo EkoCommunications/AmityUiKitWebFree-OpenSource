@@ -55,9 +55,9 @@ export const UserRelationshipList: React.FC<UserRelationshipListProps> = ({
       {!isLoading && relationships?.length === 0 ? (
         <div className={styles.userRelationshipList__emptyContainer}>
           <List className={styles.userRelationshipList__emptyIcon} />
-          <Typography.Title className={styles.userRelationshipList__emptyText}>
+          <Typography.TitleBold className={styles.userRelationshipList__emptyText}>
             Nothing here to see yet
-          </Typography.Title>
+          </Typography.TitleBold>
         </div>
       ) : (
         <>

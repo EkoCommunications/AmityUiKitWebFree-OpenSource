@@ -1,24 +1,26 @@
 import clsx from 'clsx';
 import React, { ReactNode, useState } from 'react';
-import { Typography } from '~/v4/core/components/Typography/TypographyV4';
+import { Typography } from '~/v4/core/components';
 import { useNotificationData } from '~/v4/core/providers/NotificationProvider';
 import styles from './Notification.module.css';
 
 interface NotificationProps {
-  className?: string;
+  alignment?: 'fullscreen' | 'withSidebar' | 'fixed';
   content: ReactNode;
   icon?: ReactNode;
   duration?: number;
   isShowAttributes?: string | boolean;
+  className?: string;
   onClose?: () => void;
 }
 
 export const Notification = ({
-  className,
+  alignment = 'withSidebar',
   content,
   icon,
   duration,
   isShowAttributes,
+  className,
   onClose,
 }: NotificationProps) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -37,9 +39,14 @@ export const Notification = ({
       <div
         data-show-detail-media-attachment={isShowAttributes}
         className={clsx(styles.notificationContainer, className)}
+        data-alignment={alignment}
       >
         <div className={clsx(styles.icon__container)}>{icon}</div>{' '}
-        {typeof content === 'string' ? <Typography.Body>{content}</Typography.Body> : content}
+        {typeof content === 'string' ? (
+          <Typography.Body className={styles.notification__text}>{content}</Typography.Body>
+        ) : (
+          content
+        )}
       </div>
     )
   );

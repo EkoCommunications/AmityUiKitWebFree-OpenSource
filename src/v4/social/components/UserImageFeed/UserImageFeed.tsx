@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import usePostsCollection from '~/v4/social/hooks/collections/usePostsCollection';
-import styles from './UserImageFeed.module.css';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import { ImageGallery } from '~/v4/social/internal-components/ImageGallery';
 import { EmptyUserImageFeed } from '~/v4/social/elements/EmptyUserImageFeed/EmptyUserImageFeed';
@@ -9,6 +8,8 @@ import { PrivateUserImageFeed } from '~/v4/social/elements/PrivateUserImageFeed'
 import { BlockedUserImageFeed } from '~/v4/social/elements/BlockedUserImageFeed';
 import useFollowCount from '~/v4/core/hooks/objects/useFollowCount';
 import { ErrorContent } from '~/v4/social/internal-components/ErrorContent';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
+import styles from './UserImageFeed.module.css';
 
 interface UserImageFeedProps {
   userId: string;
@@ -74,13 +75,17 @@ export const UserImageFeed = ({ pageId = '*', userId }: UserImageFeedProps) => {
 
   return (
     <div data-qa-anchor={accessibilityId} style={themeStyles}>
-      {renderImageFeed()}
-      {hasMore && (
-        <div
-          ref={(node) => setIntersectionNode(node)}
-          className={styles.userImageFeed__observerTarget}
-        />
-      )}
+      <NoInternetConnectionHoc page="feed" refresh={refresh}>
+        <>
+          {renderImageFeed()}
+          {hasMore && (
+            <div
+              ref={(node) => setIntersectionNode(node)}
+              className={styles.userImageFeed__observerTarget}
+            />
+          )}
+        </>
+      </NoInternetConnectionHoc>
     </div>
   );
 };

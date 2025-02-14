@@ -24,12 +24,12 @@ export const CategoryTitle = ({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       data-qa-anchor={accessibilityId}
       className={styles.categoryTitle}
       style={themeStyles}
     >
       {categoryName}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 };

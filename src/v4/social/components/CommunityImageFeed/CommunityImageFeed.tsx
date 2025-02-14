@@ -7,6 +7,7 @@ import useIntersectionObserver from '~/v4/core/hooks/useIntersectionObserver';
 import { EmptyCommunityImageFeed } from '~/v4/social/elements/EmptyCommunityImageFeed';
 import useCommunity from '~/v4/core/hooks/collections/useCommunity';
 import LockPrivateContent from '~/v4/social/internal-components/LockPrivateContent';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
 
 type CommunityImageFeedProps = {
   pageId?: string;
@@ -65,18 +66,18 @@ export const CommunityImageFeed = ({ pageId = '*', communityId }: CommunityImage
     );
 
   return (
-    <div
-      style={themeStyles}
-      data-qa-anchor={accessibilityId}
-      className={styles.communityImageFeed__container}
-    >
-      {posts?.length === 0 && !isLoading && (
-        <EmptyCommunityImageFeed pageId={pageId} componentId={componentId} />
-      )}
-      {posts?.length > 0 && (
-        <ImageGallery posts={posts} pageId={pageId} componentId={communityId} />
-      )}
-      {isLoading && renderLoading()}
+    <div style={themeStyles} data-qa-anchor={accessibilityId}>
+      <NoInternetConnectionHoc page="feed" refresh={refresh}>
+        <div className={styles.communityImageFeed__container}>
+          {posts?.length === 0 && !isLoading && (
+            <EmptyCommunityImageFeed pageId={pageId} componentId={componentId} />
+          )}
+          {posts?.length > 0 && (
+            <ImageGallery posts={posts} pageId={pageId} componentId={communityId} />
+          )}
+          {isLoading && renderLoading()}
+        </div>
+      </NoInternetConnectionHoc>
       <div ref={(node) => setIntersectionNode(node)} />
     </div>
   );

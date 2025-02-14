@@ -17,6 +17,7 @@
   width: 1.5rem;
   height: 1.5rem;
   fill: var(--asc-color-base-default);
+  color: var(--asc-color-base-default);
 }
 
 .userMenu__editProfile__text {
@@ -27,6 +28,7 @@
   width: 1.5rem;
   height: 1.5rem;
   fill: var(--asc-color-base-default);
+  color: var(--asc-color-base-default);
 }
 
 .userMenu__reportUser__text {
@@ -37,6 +39,7 @@
   width: 1.5rem;
   height: 1.5rem;
   fill: var(--asc-color-base-default);
+  color: var(--asc-color-base-default);
 }
 
 .userMenu__blockedUser__text {

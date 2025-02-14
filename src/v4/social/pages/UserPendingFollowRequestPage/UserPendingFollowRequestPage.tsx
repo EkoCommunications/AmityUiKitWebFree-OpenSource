@@ -33,9 +33,9 @@ export const UserPendingFollowRequestPage = () => {
       <div className={styles.userPendingFollowRequestPage__container}>
         <div className={styles.userPendingFollowRequestPage__topBar}>
           <BackButton pageId={pageId} onPress={() => onBack()} />
-          <Typography.Title className={styles.userPendingFollowRequestPage__topBar__text}>
+          <Typography.TitleBold className={styles.userPendingFollowRequestPage__topBar__text}>
             Follow requests ({pendingCount})
-          </Typography.Title>
+          </Typography.TitleBold>
         </div>
         <div className={styles.userPendingFollowRequestPage__description}>
           <Typography.Caption>

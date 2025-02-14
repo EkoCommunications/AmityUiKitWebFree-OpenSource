@@ -8,6 +8,8 @@ import { Switch } from '~/v4/core/components/AriaSwitch';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import styles from './CommunityStorySettingPage.module.css';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
+import { useNetworkState } from 'react-use';
 
 type CommunityStorySettingPageProps = {
   community: Amity.Community;
@@ -15,20 +17,29 @@ type CommunityStorySettingPageProps = {
 
 export const CommunityStorySettingPage = ({ community }: CommunityStorySettingPageProps) => {
   const pageId = 'community_story_permission_page';
-
+  const notification = useNotifications();
+  const { online } = useNetworkState();
   const { onBack } = useNavigation();
   const { info } = useConfirmContext();
   const { themeStyles, accessibilityId } = useAmityPage({ pageId });
   const [isSelected, setIsSelected] = useState(community?.allowCommentInStory);
 
   const handleToggleChange = async (selected: boolean) => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to update community story permissions. Please try again.',
+      });
+      return;
+    }
     setIsSelected(selected);
     try {
       await CommunityRepository.updateCommunity(community?.communityId, {
         storySetting: { enableComment: selected },
       });
     } catch (error) {
-      info({ title: 'Failed to update community story permissions. Please try again.' });
+      notification.info({
+        content: 'Failed to update community story permissions. Please try again.',
+      });
     }
   };
 
@@ -40,9 +51,9 @@ export const CommunityStorySettingPage = ({ community }: CommunityStorySettingPa
     >
       <div className={styles.communityStorySettingPage__communityTitleWrap}>
         <BackButton onPress={() => onBack()} />
-        <Typography.Title className={styles.communityStorySettingPage__communityTitle}>
+        <Typography.TitleBold className={styles.communityStorySettingPage__communityTitle}>
           Story comments
-        </Typography.Title>
+        </Typography.TitleBold>
         <div className={styles.communityStorySettingPage__emptyDiv} />
       </div>
       <div className={styles.communityStorySettingPage__wrapLabel}>

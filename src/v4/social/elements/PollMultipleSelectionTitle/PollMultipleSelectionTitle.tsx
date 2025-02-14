@@ -19,8 +19,8 @@ export const PollMultipleSelectionTitle = ({
     elementId,
   });
   return (
-    <Typography.Title data-qa-anchor={accessibilityId} style={themeStyles}>
+    <Typography.TitleBold data-qa-anchor={accessibilityId} style={themeStyles}>
       {config.text}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 };

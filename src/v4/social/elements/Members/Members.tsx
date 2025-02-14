@@ -5,7 +5,7 @@ import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { IconComponent } from '~/v4/core/IconComponent';
 import { Button } from '~/v4/core/natives/Button/Button';
 import { Members as MembersIcon } from '~/v4/icons/Members';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 import styles from './Members.module.css';
 
 type MembersProps = {

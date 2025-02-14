@@ -24,6 +24,8 @@ import useUserBlock from '~/v4/social/hooks/useUserBlock';
 import { SingleImageViewer } from '~/v4/social/internal-components/SingleImageViewer';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { useNetworkState } from 'react-use';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 
 interface UserProfileHeaderProps {
   user?: Amity.User | null;
@@ -60,6 +62,8 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
   const { followUser, unFollowUser, cancelFollow } = useUserFollow();
   const { unblockUser } = useUserBlock();
   const { setDrawerData, removeDrawerData } = useDrawer();
+  const { online } = useNetworkState();
+  const notification = useNotifications();
 
   const unFollowUserButton = ({
     onClickButton,
@@ -193,7 +197,15 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
         <FollowUserButton
           pageId={pageId}
           componentId={componentId}
-          onClick={() => followUser(user.userId)}
+          onClick={() => {
+            if (!online) {
+              notification.info({
+                content: 'Oops, something went wrong.',
+              });
+              return;
+            }
+            followUser(user.userId);
+          }}
         />
       )}
 
@@ -203,7 +215,15 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
         <PendingUserButton
           pageId={pageId}
           componentId={componentId}
-          onClick={() => cancelFollow(user.userId)}
+          onClick={() => {
+            if (!online) {
+              notification.info({
+                content: 'Oops, something went wrong.',
+              });
+              return;
+            }
+            cancelFollow(user.userId);
+          }}
         />
       )}
 
@@ -211,14 +231,20 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user, page
         <UnblockUserButton
           pageId={pageId}
           componentId={componentId}
-          onClick={() =>
+          onClick={() => {
+            if (!online) {
+              notification.info({
+                content: 'Failed to unblock user. Please try again.',
+              });
+              return;
+            }
             unblockUser({
               pageId,
               componentId,
               userId: user.userId,
               displayName: user.displayName ?? user.userId,
-            })
-          }
+            });
+          }}
         />
       )}
 

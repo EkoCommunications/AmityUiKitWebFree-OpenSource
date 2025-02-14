@@ -17,6 +17,8 @@ import { CommunityDisplayName } from '~/v4/social/elements/CommunityDisplayName/
 import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge/CommunityOfficialBadge';
 import { CommunityJoinedButton } from '~/v4/social/elements/CommunityJoinedButton/CommunityJoinedButton';
 import styles from './RecommendedCommunities.module.css';
+import { useNetworkState } from 'react-use';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 
 type RecommendedCommunityCardProps = {
   pageId: string;
@@ -110,7 +112,8 @@ export const RecommendedCommunities = ({ pageId = '*' }: RecommendedCommunitiesP
     pageId,
     componentId,
   });
-
+  const { online } = useNetworkState();
+  const notification = useNotifications();
   const { goToCommunitiesByCategoryPage, goToCommunityProfilePage } = useNavigation();
 
   const {
@@ -130,9 +133,25 @@ export const RecommendedCommunities = ({ pageId = '*' }: RecommendedCommunitiesP
     },
   });
 
-  const handleJoinButtonClick = (communityId: string) => joinCommunity(communityId);
+  const handleJoinButtonClick = (communityId: string) => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to join community. Please try again.',
+      });
+      return;
+    }
+    joinCommunity(communityId);
+  };
 
-  const handleLeaveButtonClick = (communityId: string) => leaveCommunity(communityId);
+  const handleLeaveButtonClick = (communityId: string) => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to leave community. Please try again.',
+      });
+      return;
+    }
+    leaveCommunity(communityId);
+  };
 
   return (
     <Carousel

@@ -5,10 +5,12 @@
   display: grid;
   cursor: pointer;
   place-content: center;
-  fill: var(--asc-color-white);
+  fill: var(--asc-color-base-inverse);
+  color: var(--asc-color-base-inverse);
 }
 
 .backButton__icon {
   width: 1.5rem;
   height: 1.5rem;
+  color: var(--asc-color-base-default);
 }

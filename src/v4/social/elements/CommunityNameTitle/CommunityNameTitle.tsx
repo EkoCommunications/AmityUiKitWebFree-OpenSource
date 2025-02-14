@@ -21,8 +21,8 @@ export const CommunityNameTitle = ({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title style={themeStyles} data-qa-anchor={accessibilityId}>
+    <Typography.TitleBold style={themeStyles} data-qa-anchor={accessibilityId}>
       {config.text}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 };

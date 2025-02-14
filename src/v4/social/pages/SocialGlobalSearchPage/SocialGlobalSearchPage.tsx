@@ -1,6 +1,6 @@
 import { Key } from 'react-aria';
-import { useClickAway } from 'react-use';
 import { UserRepository } from '@amityco/ts-sdk';
+import { useClickAway } from 'react-use';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { SecondaryTab } from '~/v4/core/components/SecondaryTab';
 import { TopSearchBar } from '~/v4/social/components/TopSearchBar';

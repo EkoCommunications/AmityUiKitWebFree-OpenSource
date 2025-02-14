@@ -21,7 +21,8 @@ import { CreateNewStoryButton } from '~/v4/social/elements/CreateNewStoryButton'
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { FileTrigger } from 'react-aria-components';
 import { useMotionValue, motion } from 'framer-motion';
-
+import { PageTypes } from '~/v4/core/providers/NavigationProvider';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
 import styles from './StoryPage.module.css';
 
 const MIN_IMAGE_DURATION = 5000; // 5 seconds
@@ -71,6 +72,8 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [lastSeenIndex, setLastSeenIndex] = useState(-1);
   const [isError, setIsError] = useState(false);
+
+  const { page } = useNavigation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -136,12 +139,15 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
       setIsError(true);
       notification.error({
         content: 'Failed to delete story',
+        alignment: page.type === PageTypes.ViewStoryPage ? 'fullscreen' : 'withSidebar',
       });
       return;
     } finally {
       if (!isError) {
         notification.success({
           content: 'Story deleted',
+          alignment:
+            page.type === PageTypes.ViewStoryPage && !isLastStory ? 'fullscreen' : 'withSidebar',
         });
         refresh();
         if (stories.length === 1) {
@@ -228,6 +234,10 @@ export const GlobalFeedStory: React.FC<GlobalFeedStoryProps> = ({
   const discardStory = () => {
     setFile(null);
   };
+
+  useEffect(() => {
+    refresh();
+  }, []);
 
   const addStoryButton = (
     <FileTrigger

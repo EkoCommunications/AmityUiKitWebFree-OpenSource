@@ -95,31 +95,27 @@ export const TextWithMention = ({
   };
 
   return (
-    <Typography.Body
-      renderer={({ typoClassName }) => (
-        <div className={clsx(styles.textWithMention__container, typoClassName)}>
-          {isExpanded ? (
-            renderText(editorState.root.children)
-          ) : (
-            <Truncate
-              lines={maxLines}
-              ellipsis={
-                <>
-                  ...
-                  <Button
-                    className={styles.textWithMention__seeMore}
-                    onPress={() => setIsExpanded(true)}
-                  >
-                    See more
-                  </Button>
-                </>
-              }
-            >
-              <div>{renderText(editorState.root.children)}</div>
-            </Truncate>
-          )}
-        </div>
+    <Typography.Body className={styles.textWithMention__container}>
+      {isExpanded ? (
+        renderText(editorState.root.children)
+      ) : (
+        <Truncate
+          lines={maxLines}
+          ellipsis={
+            <>
+              ...
+              <Button
+                className={styles.textWithMention__seeMore}
+                onPress={() => setIsExpanded(true)}
+              >
+                See more
+              </Button>
+            </>
+          }
+        >
+          <div>{renderText(editorState.root.children)}</div>
+        </Truncate>
       )}
-    />
+    </Typography.Body>
   );
 };

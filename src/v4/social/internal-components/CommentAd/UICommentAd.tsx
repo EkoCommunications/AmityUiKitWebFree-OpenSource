@@ -58,13 +58,9 @@ export const UICommentAd = ({
               </div>
               <div className={styles.commentAd__adCard__detail}>
                 <div className={styles.commentAd__adCard__textContainer}>
-                  <Typography.Caption
-                    renderer={({ typoClassName }) => (
-                      <div className={clsx(typoClassName, styles.commentAd__adCard__description)}>
-                        {ad.description}
-                      </div>
-                    )}
-                  />
+                  <Typography.Caption className={styles.commentAd__adCard__description}>
+                    {ad.description}
+                  </Typography.Caption>
                   <Typography.BodyBold className={styles.commentAd__adCard__headline}>
                     {ad.headline}
                   </Typography.BodyBold>

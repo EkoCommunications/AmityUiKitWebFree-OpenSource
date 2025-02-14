@@ -22,6 +22,7 @@ import { CreatePost } from '~/v4/icons/CreatePost';
 import usePost from '~/v4/core/hooks/objects/usePost';
 import usePoll from '~/v4/social/hooks/usePoll';
 import { ClosePollIcon } from '~/v4/icons/ClosePoll';
+import { useNetworkState } from 'react-use';
 
 interface PostMenuProps {
   post: Amity.Post;
@@ -47,6 +48,8 @@ export const PostMenu = ({
   const { openPopup } = usePopupContext();
   const { post: childPost } = usePost(post.children?.[0]);
   const { item: poll } = usePoll(childPost?.data?.pollId);
+  const notification = useNotifications();
+  const { online } = useNetworkState();
 
   const shouldCall = useMemo(() => post?.targetType === 'community', [post?.targetType]);
 
@@ -216,7 +219,13 @@ export const PostMenu = ({
         <Button
           data-qa-anchor={`${pageId}/${componentId}/report_post_button`}
           className={styles.postMenu__item}
-          onPress={() => onClosePollClick()}
+          onPress={() => {
+            if (!online) {
+              notification.info({ content: 'Oops, something went wrong.' });
+              return;
+            }
+            onClosePollClick();
+          }}
         >
           <ClosePollIcon className={styles.postMenu__closePoll__icon} />
           <Typography.BodyBold className={styles.postMenu__reportPost__text}>
@@ -260,7 +269,13 @@ export const PostMenu = ({
         <Button
           data-qa-anchor={`${pageId}/${componentId}/delete_post`}
           className={styles.postMenu__item}
-          onPress={() => onDeleteClick()}
+          onPress={() => {
+            if (!online) {
+              notification.info({ content: 'Oops, something went wrong.' });
+              return;
+            }
+            onDeleteClick();
+          }}
         >
           <TrashIcon className={styles.postMenu__deletePost__icon} />
           <Typography.BodyBold className={styles.postMenu__deletePost__text}>

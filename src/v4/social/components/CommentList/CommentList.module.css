@@ -13,6 +13,10 @@
   text-align: center;
 }
 
+.commentList__viewAllComments__button__text {
+  color: var(--asc-color-base-default);
+}
+
 .commentList__container_intersection {
   height: 1px;
 }

@@ -23,10 +23,12 @@ import { ArrowRightButton } from '~/v4/social/elements/ArrowRightButton';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { FileTrigger } from 'react-aria-components';
 
-import styles from './StoryPage.module.css';
 import { useGetActiveStoriesByTarget } from '~/v4/social/hooks/useGetActiveStories';
 import { useMotionValue, motion } from 'framer-motion';
 import useSDK from '~/v4/core/hooks/useSDK';
+import { PageTypes } from '~/v4/core/providers/NavigationProvider';
+import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import styles from './StoryPage.module.css';
 
 interface CommunityFeedStoryProps {
   pageId?: string;
@@ -69,6 +71,7 @@ export const CommunityFeedStory = ({
   const dragEventTarget = useRef(new EventTarget());
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isError, setIsError] = useState(false);
+  const { page } = useNavigation();
 
   const { stories: storiesData, refresh } = useGetActiveStoriesByTarget({
     targetId: communityId,
@@ -144,13 +147,33 @@ export const CommunityFeedStory = ({
   };
 
   const onDeleteStory = async (storyId: string) => {
+    const isLastStory = currentIndex === stories.length - 1;
+
     try {
       await StoryRepository.softDeleteStory(storyId);
     } catch (error) {
       setIsError(true);
       notification.error({
         content: 'Failed to delete story',
+        alignment: page.type === PageTypes.ViewStoryPage ? 'fullscreen' : 'withSidebar',
       });
+      return;
+    } finally {
+      if (!isError) {
+        notification.success({
+          content: 'Story deleted',
+          alignment:
+            page.type === PageTypes.ViewStoryPage && !isLastStory ? 'fullscreen' : 'withSidebar',
+        });
+        refresh();
+        if (stories.length === 1) {
+          onBack();
+        } else if (isLastStory) {
+          previousStory();
+        } else {
+          setCurrentIndex((prevIndex) => prevIndex);
+        }
+      }
     }
   };
 
@@ -163,21 +186,7 @@ export const CommunityFeedStory = ({
       okText: 'Delete',
       onOk: async () => {
         setIsBottomSheetOpen(false);
-        if (story.syncState === 'synced') await onDeleteStory(story.storyId);
-
-        const isLastStory = currentIndex === stories.length - 1;
-        notification.success({
-          content: 'Story deleted',
-        });
-
-        refresh();
-        if (stories.length === 1) {
-          onBack();
-        } else if (isLastStory) {
-          previousStory();
-        } else {
-          setCurrentIndex((prevIndex) => prevIndex);
-        }
+        await onDeleteStory(story.storyId);
       },
     });
   };

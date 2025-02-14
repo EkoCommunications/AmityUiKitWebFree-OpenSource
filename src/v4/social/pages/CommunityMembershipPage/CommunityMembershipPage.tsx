@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAmityPage } from '~/v4/core/hooks/uikit';
 import { BackButton } from '~/v4/social/elements';
 import { useNavigation } from '~/v4/core/providers/NavigationProvider';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 import { Plus } from '~/v4/icons/Plus';
 import { Button } from '~/v4/core/natives/Button';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
@@ -78,9 +78,9 @@ export const CommunityMembershipPage = ({ community }: CommunityMembershipPagePr
     >
       <div className={styles.communityMembershipPage__topBar}>
         <BackButton onPress={() => onBack()} />
-        <Typography.Title className={styles.communityMembershipPage__title}>
+        <Typography.TitleBold className={styles.communityMembershipPage__title}>
           All members
-        </Typography.Title>
+        </Typography.TitleBold>
         <Button
           className={styles.communityMembershipPage__addMemberButton}
           onPress={() => {

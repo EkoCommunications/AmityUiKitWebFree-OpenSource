@@ -41,6 +41,7 @@ import { CommunityAddCategoryPage } from '~/v4/social/pages';
 import styles from './EditCommunity.module.css';
 import { Popover } from '~/v4/core/components/AriaPopover';
 import { RadioGroup } from '~/v4/core/components/AriaRadioGroup';
+import { useNetworkState } from 'react-use';
 
 type EditCommunityProps = {
   community: Amity.Community;
@@ -54,6 +55,7 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
 
   const { isDesktop } = useResponsive();
   const notification = useNotifications();
+  const { online } = useNetworkState();
   const { confirm } = useConfirmContext();
   const { themeStyles } = useAmityPage({ pageId });
   const { setDrawerData, removeDrawerData } = useDrawer();
@@ -163,6 +165,12 @@ export const EditCommunity = ({ mode, community }: EditCommunityProps) => {
   };
 
   const validateAndSubmit = async (data: EditFormValues) => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to save your community profile. Please try again.',
+      });
+      return;
+    }
     try {
       setSubmitting(true);
 

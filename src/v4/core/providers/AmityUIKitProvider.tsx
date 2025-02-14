@@ -56,6 +56,9 @@ const InternalComponent = ({
   onDisconnected,
   getAuthToken,
   configs,
+  activeRoute,
+  onRouteChange,
+  seoOptimizationEnabled = false,
 }: AmityUIKitProviderProps) => {
   const queryClient = new QueryClient();
   const [client, setClient] = useState<Amity.Client | null>(null);
@@ -82,7 +85,7 @@ const InternalComponent = ({
 
       try {
         // Set up the AmityUIKitManager
-        AmityUIKitManager.setup({ apiKey, apiRegion, apiEndpoint });
+        AmityUIKitManager.setup({ apiKey, apiRegion, apiEndpoint, seoOptimizationEnabled });
 
         AdEngine.instance;
 
@@ -141,7 +144,10 @@ const InternalComponent = ({
                         }}
                       >
                         <PostRendererProvider config={postRendererConfig}>
-                          <NavigationProvider>
+                          <NavigationProvider
+                            activeRoute={activeRoute}
+                            onRouteChange={onRouteChange}
+                          >
                             <PageBehaviorProvider pageBehavior={pageBehavior}>
                               <StoryProvider>
                                 <CommunitySetupProvider>
@@ -174,6 +180,11 @@ const InternalComponent = ({
 
 export type AmityUIKitConfig = Config;
 
+export type AmityRoute = {
+  route: string;
+  id?: string;
+};
+
 interface AmityUIKitProviderProps {
   apiKey: string;
   apiRegion: string;
@@ -203,6 +214,9 @@ interface AmityUIKitProviderProps {
   onDisconnected?: () => void;
   getAuthToken?: () => Promise<string>;
   configs?: AmityUIKitConfig;
+  activeRoute?: AmityRoute;
+  onRouteChange?: (route: AmityRoute) => void;
+  seoOptimizationEnabled?: boolean;
 }
 
 const AmityUIKitProvider: React.FC<AmityUIKitProviderProps> = (props) => {
