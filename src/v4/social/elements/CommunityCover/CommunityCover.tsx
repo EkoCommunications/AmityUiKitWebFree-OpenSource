@@ -57,9 +57,9 @@ export const CommunityCover: React.FC<CommunityCoverProps> = ({
           {isSticky && community && (
             <>
               {!community.isPublic && <Lock className={styles.communityCover__privateIcon} />}
-              <Typography.Title className={styles.communityCover__communityName}>
+              <Typography.TitleBold className={styles.communityCover__communityName}>
                 {community?.displayName}
-              </Typography.Title>
+              </Typography.TitleBold>
               {community?.isOfficial && <CommunityOfficialBadge />}
             </>
           )}

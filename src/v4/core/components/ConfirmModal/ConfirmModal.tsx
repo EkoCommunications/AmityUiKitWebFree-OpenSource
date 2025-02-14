@@ -3,7 +3,7 @@ import React, { Fragment, ReactNode, useState } from 'react';
 import { CloseButton } from '~/v4/social/elements';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button } from '~/v4/core/components/AriaButton';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 import { Dialog, Modal, ModalOverlay } from 'react-aria-components';
 import { ConfirmType, useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import styles from './ConfirmModal.module.css';
@@ -49,12 +49,12 @@ const Confirm = ({
             return (
               <Fragment>
                 <div className={clsx(styles.popup__header)}>
-                  <Typography.Title
+                  <Typography.TitleBold
                     className={styles.popup__header__title}
                     data-qa-anchor={`${pageId}/${componentId}/modal-title`}
                   >
                     {title}
-                  </Typography.Title>
+                  </Typography.TitleBold>
                   <CloseButton
                     pageId={pageId}
                     onPress={close}
@@ -105,7 +105,9 @@ const Confirm = ({
                       }
                     }}
                   >
-                    <Typography.BodyBold>{okText}</Typography.BodyBold>
+                    <Typography.BodyBold className={styles.popup__footer__okText}>
+                      {okText}
+                    </Typography.BodyBold>
                   </Button>
                 </div>
               </Fragment>

@@ -40,14 +40,14 @@ export class AmityUIKitManager {
       http?: string;
       mqtt?: string;
     };
+    seoOptimizationEnabled?: boolean;
   }): void {
     if (!AmityUIKitManager.instance) {
       AmityUIKitManager.instance = new AmityUIKitManager();
-      const client: Amity.Client = ASCClient.createClient(
-        config.apiKey,
-        config.apiRegion,
-        config?.apiEndpoint ? { apiEndpoint: config.apiEndpoint } : {},
-      );
+      const client: Amity.Client = ASCClient.createClient(config.apiKey, config.apiRegion, {
+        apiEndpoint: config.apiEndpoint,
+        rteEnabled: !config.seoOptimizationEnabled,
+      });
 
       AmityUIKitManager.setClient(client);
     }

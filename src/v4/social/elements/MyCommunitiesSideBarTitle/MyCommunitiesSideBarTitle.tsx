@@ -24,12 +24,12 @@ export const MyCommunitiesSideBarTitle = ({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       style={themeStyles}
       data-qa-anchor={accessibilityId}
       className={styles.myCommunitiesSideBarTitle}
     >
       {config.text}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 };

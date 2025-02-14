@@ -25,12 +25,12 @@ export function ExploreTrendingTitle({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       className={clsx(styles.exploreTrendingTitle, titleClassName)}
       style={themeStyles}
       data-qa-anchor={accessibilityId}
     >
       {config.text}
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 }

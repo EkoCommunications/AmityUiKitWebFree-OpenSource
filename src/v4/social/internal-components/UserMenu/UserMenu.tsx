@@ -5,8 +5,6 @@ import Pencil from '~/v4/icons/Pencil';
 import BlockedUser from '~/v4/icons/BlockedUser';
 import { Typography } from '~/v4/core/components';
 import useSDK from '~/v4/core/hooks/useSDK';
-import { UserRepository } from '@amityco/ts-sdk';
-import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 import { usePageBehavior } from '~/v4/core/providers/PageBehaviorProvider';
 import useUserBlock from '~/v4/social/hooks/useUserBlock';
@@ -14,6 +12,7 @@ import useUserReportedByMe from '~/v4/social/hooks/useUserReportedByMe';
 import useUserReport from '~/v4/social/hooks/useUserReport';
 import Flag from '~/v4/icons/Flag';
 import useFollowCount from '~/v4/core/hooks/objects/useFollowCount';
+import { useNetworkState } from 'react-use';
 
 interface UserMenuProps {
   user?: Amity.User | null;
@@ -29,12 +28,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   onCloseMenu,
 }) => {
   const { currentUserId } = useSDK();
+  const { online } = useNetworkState();
+  const notification = useNotifications();
   const { isReportedByMe } = useUserReportedByMe(user?.userId);
   const { blockUser, unblockUser } = useUserBlock();
   const { reportUser, unReportUser } = useUserReport();
   const { AmityUserProfilePageBehavior } = usePageBehavior();
   const { followStatus } = useFollowCount(user?.userId);
-
   const isCurrentUser = user?.userId === currentUserId;
 
   if (!user) return null;
@@ -64,6 +64,12 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           className={styles.userMenu__button}
           onPress={() => {
             onCloseMenu();
+            if (!online) {
+              notification.info({
+                content: `Failed to ${isReportedByMe ? 'unreport' : 'report'} user. Please try again.`,
+              });
+              return;
+            }
             if (isReportedByMe) unReportUser(user.userId);
             else reportUser(user.userId);
           }}
@@ -83,7 +89,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           if (isCurrentUser) {
             AmityUserProfilePageBehavior?.goToBlockedUsersPage?.();
             onCloseMenu();
-          } else
+          } else {
+            if (!online) {
+              notification.info({
+                content: `Failed to ${followStatus === 'blocked' ? 'unblock' : 'block'} user. Please try again.`,
+              });
+              return;
+            }
             followStatus === 'blocked'
               ? unblockUser({
                   pageId,
@@ -97,6 +109,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                   userId: user.userId,
                   displayName: user.displayName ?? user.userId,
                 });
+          }
         }}
       >
         <BlockedUser className={styles.userMenu__blockedUser__icon} />

@@ -107,7 +107,7 @@ export const PollDurationOptions = ({
           <div className={styles.pollDurationOptions__calendar}>
             <div className={styles.calendarNav}>
               <BackButton onPress={() => setIsShowDateTimePicker(false)} />
-              <Typography.Title>Ends on</Typography.Title>
+              <Typography.TitleBold>Ends on</Typography.TitleBold>
               <AriaButton
                 slot={null}
                 variant="text"

@@ -77,6 +77,7 @@ export const CommentTray = ({
           referenceType={referenceType}
           replyTo={isDesktop ? undefined : (replyTo as Amity.Comment)}
           shouldAllowCreation={shouldAllowCreation}
+          containerClassName={styles.commentTrayContainer__commentComposer}
         />
       )}
     </div>

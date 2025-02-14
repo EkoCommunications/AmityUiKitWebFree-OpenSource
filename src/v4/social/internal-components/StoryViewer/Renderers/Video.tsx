@@ -145,7 +145,7 @@ export const renderer: CustomRenderer = ({
   const isCreator = creator?.userId === user?.userId;
   const { hasStoryPermission } = useStoryPermission(community?.communityId);
 
-  const [videoDuration, setVideoDuration] = useState<number | null>(null);
+  const [videoDuration, setVideoDuration] = useState<number | null>(DEFAULT_VIDEO_DURATION);
   const [videoSrc, setVideoSrc] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -182,6 +182,7 @@ export const renderer: CustomRenderer = ({
       });
 
       return () => {
+        setVideoSrc('');
         if (blobUrl) URL.revokeObjectURL(blobUrl);
       };
     }
@@ -218,7 +219,7 @@ export const renderer: CustomRenderer = ({
         action('play', true);
       }
     }
-  }, [isPaused, isBottomSheetOpen, isOpenCommentSheet, action]);
+  }, [isPaused, isBottomSheetOpen, isOpenCommentSheet, vid, action]);
 
   useEffect(() => {
     if (fileInputRef.current) {
@@ -303,9 +304,9 @@ export const renderer: CustomRenderer = ({
         pageId: 'story_page',
         componentId: 'comment_tray_component',
         header: (
-          <Typography.Heading className={rendererStyles.commentTrayHeader}>
+          <Typography.Headline className={rendererStyles.commentTrayHeader}>
             Comments
-          </Typography.Heading>
+          </Typography.Headline>
         ),
         children: renderCommentTray(),
         isDismissable: false,

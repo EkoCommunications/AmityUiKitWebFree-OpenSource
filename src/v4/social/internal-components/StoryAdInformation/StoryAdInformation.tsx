@@ -35,7 +35,7 @@ export const StoryAdInformation = ({
               <div className={styles.drawer__innerContent}>
                 <div className={styles.drawer__placeholder} />
                 <Drawer.Title className={styles.drawer__title}>
-                  <Typography.Title>About this advertisement</Typography.Title>
+                  <Typography.TitleBold>About this advertisement</Typography.TitleBold>
                 </Drawer.Title>
                 <div className={styles.drawer__content__data}>
                   <Typography.BodyBold className={styles.drawer__content__data__title}>

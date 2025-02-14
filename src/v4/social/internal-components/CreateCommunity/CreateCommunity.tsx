@@ -45,6 +45,7 @@ import { ChevronTop } from '~/v4/icons/ChevronTop';
 import { ChevronDown } from '~/v4/icons/ChevronDown';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import styles from './CreateCommunity.module.css';
+import { useNetworkState } from 'react-use';
 
 type CreateCommunityProps = {
   mode: AmityCommunitySetupPageMode;
@@ -76,6 +77,7 @@ export function CreateCommunity({ mode }: CreateCommunityProps) {
   const description = watch('description');
   const notification = useNotifications();
   const { confirm } = useConfirmContext();
+  const { online } = useNetworkState();
 
   const { AmityCommunitySetupPageBehavior } = usePageBehavior();
 
@@ -116,6 +118,12 @@ export function CreateCommunity({ mode }: CreateCommunityProps) {
   };
 
   const validateAndSubmit = async (data: CreateFormValues) => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to create community. Please try again.',
+      });
+      return;
+    }
     try {
       setSubmitting(true);
 

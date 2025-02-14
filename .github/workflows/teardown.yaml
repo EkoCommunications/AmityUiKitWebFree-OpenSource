@@ -18,7 +18,15 @@ jobs:
           AWS_S3_BUCKET: ui-kit-open-source.dev.amity.co
           PATH_TO_DELETE: ${{ github.event.pull_request.number }}
 
-      - uses: strumwolf/delete-deployment-environment@v2
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          environment: dev/${{ github.event.pull_request.number }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          role-to-assume: ${{ vars.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Remove S3 files
+        env:
+          AWS_S3_BUCKET: uikit.dev.amity.co
+        run: |
+          aws s3 rm s3://$AWS_S3_BUCKET/${{ github.event.pull_request.number }} --recursive

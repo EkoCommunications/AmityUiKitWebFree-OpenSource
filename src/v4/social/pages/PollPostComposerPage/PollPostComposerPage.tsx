@@ -45,6 +45,7 @@ import { Switch } from '~/v4/core/components/AriaSwitch';
 import { useSDK } from '~/v4/core/hooks/useSDK';
 import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { isAdmin } from '~/v4/utils/permissions';
+import { useNetworkState } from 'react-use';
 
 type PollPostComposerPageProps = {
   targetId: string | null;
@@ -83,6 +84,7 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
   const { community } = useCommunity({ communityId: targetId });
   const { moderators } = useCommunityModeratorsCollection({ communityId: community?.communityId });
   const notification = useNotifications();
+  const { online } = useNetworkState();
   const { closePopup } = usePopupContext();
   const { confirm, info } = useConfirmContext();
   const { setDrawerData, removeDrawerData } = useDrawer();
@@ -236,6 +238,13 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
   }
 
   const validateAndSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (!online) {
+      notification.info({
+        content: 'Failed to create post. Please try again.',
+        alignment: 'fixed',
+      });
+      return;
+    }
     try {
       setIsCreating(true);
 
@@ -524,11 +533,7 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
         {isCreating && (
           <>
             <div className={styles.pollPostComposerPage__overlay} />
-            <Notification
-              icon={<Spinner />}
-              content="Posting..."
-              className={styles.pollPostComposerPage__notification}
-            />
+            <Notification icon={<Spinner />} content="Posting..." alignment="fixed" />
           </>
         )}
         {isError && (
@@ -538,7 +543,7 @@ export const PollPostComposerPage = ({ targetId, targetType }: PollPostComposerP
             <Notification
               duration={3000}
               content="Failed to create post"
-              className={styles.pollPostComposerPage__notification}
+              alignment="fixed"
               icon={<ExclamationCircle className={styles.createPost_notificationIcon} />}
             />
           </>

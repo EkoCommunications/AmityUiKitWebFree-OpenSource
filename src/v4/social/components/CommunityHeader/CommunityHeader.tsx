@@ -16,6 +16,8 @@ import { useSDK } from '~/v4/core/hooks/useSDK';
 import { CommunityPostSettings } from '@amityco/ts-sdk';
 import { CommunityPrivateBadge } from '~/v4/social/elements/CommunityPrivateBadge/CommunityPrivateBadge';
 import { CommunityOfficialBadge } from '~/v4/social/elements/CommunityOfficialBadge';
+import { useNetworkState } from 'react-use';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 
 interface CommunityProfileHeaderProps {
   pageId?: string;
@@ -35,6 +37,8 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
   const { isDesktop } = useResponsive();
   const { AmityCommunityProfilePageBehavior } = usePageBehavior();
   const { currentUserId } = useSDK();
+  const { online } = useNetworkState();
+  const notification = useNotifications();
 
   const {
     avatarFileUrl,
@@ -127,7 +131,15 @@ export const CommunityHeader: React.FC<CommunityProfileHeaderProps> = ({
             <CommunityJoinButton
               size="medium"
               pageId={pageId}
-              onClick={joinCommunity}
+              onClick={() => {
+                if (!online) {
+                  notification.info({
+                    content: 'Failed to join community. Please try again.',
+                  });
+                  return;
+                }
+                joinCommunity();
+              }}
               componentId={componentId}
               className={styles.communityProfile__joinButton}
             />

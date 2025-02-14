@@ -68,4 +68,8 @@
     max-height: 50vh;
     min-width: 30rem;
   }
+
+  .commentTrayContainer__commentComposer {
+    border-top: 1px solid var(--asc-color-base-shade4);
+  }
 }

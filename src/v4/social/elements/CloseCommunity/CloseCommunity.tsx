@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './CloseCommunity.module.css';
 import { useAmityElement } from '~/v4/core/hooks/uikit';
 import { Button } from '~/v4/core/natives/Button/Button';
-import { Typography } from '~/v4/core/components/Typography';
+import { Typography } from '~/v4/core/components';
 
 type CloseCommunityProps = {
   pageId?: string;

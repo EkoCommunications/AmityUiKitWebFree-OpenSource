@@ -58,9 +58,9 @@ const Image = ({
         placeholder={<div className={styles.imageContent__skeleton}></div>}
       />
       {imageLeftCount > 0 && isLastImage && (
-        <Typography.Heading className={styles.imageContent__imgCover}>
+        <Typography.Headline className={styles.imageContent__imgCover}>
           + {imageLeftCount + 1}
-        </Typography.Heading>
+        </Typography.Headline>
       )}
     </Button>
   );

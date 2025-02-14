@@ -38,7 +38,7 @@ export const SecondaryTab = ({
             className={styles.tab}
             data-qa-anchor={tab.accessibilityId}
           >
-            <Typography.Title className={labelClassName}>{tab.label}</Typography.Title>
+            <Typography.TitleBold className={labelClassName}>{tab.label}</Typography.TitleBold>
           </Tab>
         ))}
       </TabList>

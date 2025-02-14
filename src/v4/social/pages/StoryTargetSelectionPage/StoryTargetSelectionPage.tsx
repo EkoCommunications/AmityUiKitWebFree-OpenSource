@@ -18,6 +18,8 @@ import { useStoryContext } from '~/v4/social/providers/StoryProvider';
 import { Typography } from '~/v4/core/components';
 import { CommunitySmallListSekeleton } from '~/v4/core/components/CommunitySmallListSekeleton/CommunitySmallListSekeleton';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
+import { canCreatePostCommunity } from '~/v4/social/utils';
+import useSDK from '~/v4/core/hooks/useSDK';
 
 export function StoryTargetSelectionPage() {
   const pageId = 'select_story_target_page';
@@ -31,6 +33,7 @@ export function StoryTargetSelectionPage() {
   });
   const { AmityStoryTargetSelectionPage } = usePageBehavior();
   const { file, setFile } = useStoryContext();
+  const { client } = useSDK();
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
 
@@ -54,24 +57,26 @@ export function StoryTargetSelectionPage() {
     );
   };
 
-  const renderCommunity = communities.map((community) => {
-    return (
-      <FileTrigger key={community.communityId} onSelect={handleFileSelect}>
-        <Button onPress={() => handleOnClickCommunity(community.communityId)}>
-          <div className={styles.selectStoryTargetPage__communityItem_container}>
-            <div className={styles.selectStoryTargetPage__communityAvatar}>
-              <CommunityAvatar pageId={pageId} community={community} />
+  const renderCommunity = communities
+    .filter((community) => canCreatePostCommunity(client, community))
+    .map((community) => {
+      return (
+        <FileTrigger key={community.communityId} onSelect={handleFileSelect}>
+          <Button onPress={() => handleOnClickCommunity(community.communityId)}>
+            <div className={styles.selectStoryTargetPage__communityItem_container}>
+              <div className={styles.selectStoryTargetPage__communityAvatar}>
+                <CommunityAvatar pageId={pageId} community={community} />
+              </div>
+              <div className={styles.selectStoryTargetPage__communityName}>
+                {!community.isPublic && <CommunityPrivateBadge />}
+                <CommunityDisplayName pageId={pageId} community={community} />
+                {community.isOfficial && <CommunityOfficialBadge />}
+              </div>
             </div>
-            <div className={styles.selectStoryTargetPage__communityName}>
-              {!community.isPublic && <CommunityPrivateBadge />}
-              <CommunityDisplayName pageId={pageId} community={community} />
-              {community.isOfficial && <CommunityOfficialBadge />}
-            </div>
-          </div>
-        </Button>
-      </FileTrigger>
-    );
-  });
+          </Button>
+        </FileTrigger>
+      );
+    });
 
   useIntersectionObserver({
     onIntersect: () => {

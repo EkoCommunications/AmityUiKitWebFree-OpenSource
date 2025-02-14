@@ -14,6 +14,7 @@ import { Explore } from './Explore';
 import { ExploreProvider } from '~/v4/social/providers/ExploreProvider';
 import { HomePageTab } from '~/v4/social/constants/HomePageTab';
 import { useLayoutContext } from '~/v4/social/providers/LayoutProvider';
+import { NoInternetConnectionHoc } from '~/v4/social/internal-components/NoInternetConnection/NoInternetConnectionHoc';
 
 export function SocialHomePage() {
   const pageId = 'social_home_page';
@@ -40,10 +41,6 @@ export function SocialHomePage() {
 
   const handleClickButton = () => {
     setIsShowCreatePostMenu((prev) => !prev);
-  };
-
-  const handleClickCreateCommunity = () => {
-    //
   };
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -94,15 +91,18 @@ export function SocialHomePage() {
           />
         </div>
       </div>
-      <div className={styles.socialHomePage__contents} ref={containerRef} onScroll={handleScroll}>
-        {activeTab === HomePageTab.Newsfeed && <Newsfeed pageId={pageId} />}
-        {activeTab === HomePageTab.Explore && (
-          <ExploreProvider>
-            <Explore pageId={pageId} />
-          </ExploreProvider>
-        )}
-        {activeTab === HomePageTab.MyCommunities && <MyCommunities pageId={pageId} />}
-      </div>
+      <NoInternetConnectionHoc page="feed" className={styles.socialHomePage__noConnection}>
+        <div className={styles.socialHomePage__contents} ref={containerRef} onScroll={handleScroll}>
+          {activeTab === HomePageTab.Newsfeed && <Newsfeed pageId={pageId} />}
+          {activeTab === HomePageTab.Explore && (
+            <ExploreProvider>
+              <Explore pageId={pageId} />
+            </ExploreProvider>
+          )}
+          {activeTab === HomePageTab.MyCommunities && <MyCommunities pageId={pageId} />}
+        </div>
+      </NoInternetConnectionHoc>
+
       {isShowCreatePostMenu && (
         <div className={styles.socialHomePage__createPostMenu}>
           <CreatePostMenu pageId={pageId} />

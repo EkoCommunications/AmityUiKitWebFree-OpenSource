@@ -100,7 +100,9 @@ const Application = () => {
         {page.type === PageTypes.CommunitiesByCategoryPage && (
           <CommunitiesByCategoryPage categoryId={page.context.categoryId} />
         )}
-        {page.type === PageTypes.UserFeed && <UserProfilePage userId={page.context.userId} />}
+        {page.type === PageTypes.UserProfilePage && (
+          <UserProfilePage userId={page.context.userId} />
+        )}
         {page.type === PageTypes.CommunitySetupPage && (
           <CommunitySetupPage mode={page.context?.mode} community={page.context?.community} />
         )}

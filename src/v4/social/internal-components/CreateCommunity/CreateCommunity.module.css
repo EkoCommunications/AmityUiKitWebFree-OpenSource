@@ -76,6 +76,7 @@
   line-height: 1.25rem;
   letter-spacing: -0.015rem;
   color: var(--asc-color-base-default);
+  background-color: var(--asc-color-background-default);
   border-bottom: 1px solid var(--asc-color-base-shade4);
 }
 
@@ -104,6 +105,7 @@
   word-break: break-all;
   letter-spacing: -0.015rem;
   color: var(--asc-color-base-default);
+  background-color: var(--asc-color-background-default);
   border-bottom: 1px solid var(--asc-color-base-shade4);
 }
 

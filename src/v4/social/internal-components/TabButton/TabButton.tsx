@@ -38,9 +38,9 @@ export function TabButton({
       {...rest}
     >
       {isActive ? (
-        <Typography.Title data-active={isActive} className={styles.tabButton__text}>
+        <Typography.TitleBold data-active={isActive} className={styles.tabButton__text}>
           {children}
-        </Typography.Title>
+        </Typography.TitleBold>
       ) : (
         <Typography.Caption data-active={isActive} className={styles.tabButton__text}>
           {children}

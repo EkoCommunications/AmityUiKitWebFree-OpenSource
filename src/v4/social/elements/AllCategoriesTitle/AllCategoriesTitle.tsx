@@ -22,12 +22,12 @@ export const AllCategoriesTitle = ({
   if (isExcluded) return null;
 
   return (
-    <Typography.Title
+    <Typography.TitleBold
       data-qa-anchor={accessibilityId}
       className={styles.communityName__truncate}
       style={themeStyles}
     >
       All Categories
-    </Typography.Title>
+    </Typography.TitleBold>
   );
 };

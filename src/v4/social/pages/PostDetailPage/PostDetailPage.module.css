@@ -34,6 +34,7 @@
 
 .postDetailPage__topBar__title {
   text-align: center;
+  color: var(--asc-color-base-default);
 }
 
 .postDetailPage__topBar__menuBar {

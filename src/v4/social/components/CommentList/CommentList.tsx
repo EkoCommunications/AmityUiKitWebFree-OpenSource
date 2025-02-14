@@ -9,6 +9,8 @@ import { CommentAd } from '~/v4/social/internal-components/CommentAd/CommentAd';
 import { CommentSkeleton } from '~/v4/social/components/Comment/CommentSkeleton';
 import styles from './CommentList.module.css';
 import { Typography } from '~/v4/core/components';
+import { Button } from '~/v4/core/components/AriaButton';
+import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { useNetworkState } from 'react-use';
 import Redo from '~/v4/icons/Redo';
 
@@ -41,6 +43,7 @@ export const CommentList = ({
 }: CommentListProps) => {
   const componentId = 'comment_tray_component';
   const { online } = useNetworkState();
+  const { isDesktop } = useResponsive();
 
   const { themeStyles, accessibilityId } = useAmityComponent({
     componentId,
@@ -49,6 +52,7 @@ export const CommentList = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [intersectionNode, setIntersectionNode] = useState<HTMLDivElement | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   const { items, loadMore, hasMore, isLoading } = usePaginator({
     fetcher: CommentRepository.getComments,
@@ -118,18 +122,32 @@ export const CommentList = ({
           </div>
         );
       })}
-      {/* TODO: add this button when implement desktop view  */}
-      {/* <div className={styles.postCommentList__viewAllComments__button}>
-        <Typography.BodyBold>View all comments...</Typography.BodyBold>
-      </div> */}
+
+      {isDesktop && !expanded && (
+        <Button
+          className={styles.commentList__viewAllComments__button}
+          variant="text"
+          onPress={() => {
+            loadMore();
+            setExpanded(true);
+          }}
+        >
+          <Typography.BodyBold className={styles.commentList__viewAllComments__button__text}>
+            View all comments...
+          </Typography.BodyBold>
+        </Button>
+      )}
+
       {isLoading && (
         <CommentSkeleton pageId={pageId} componentId={componentId} numberOfSkeletons={3} />
       )}
 
-      <div
-        ref={(node) => setIntersectionNode(node)}
-        className={styles.commentList__container_intersection}
-      />
+      {(!isDesktop || (isDesktop && expanded)) && (
+        <div
+          ref={(node) => setIntersectionNode(node)}
+          className={styles.commentList__container_intersection}
+        />
+      )}
     </div>
   );
 };

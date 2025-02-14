@@ -30,6 +30,7 @@
   top: 30.6rem;
   width: 20rem;
   z-index: 100;
+  display: none;
   position: fixed;
   padding: 0.25rem 1rem;
   border-radius: 0 0 0.5rem 0.5rem;
@@ -65,5 +66,9 @@
     width: 20rem;
     position: fixed;
     padding: 0 1rem;
+  }
+
+  .socialGlobalSearchPage__searchResultContainer__footer {
+    display: initial;
   }
 }

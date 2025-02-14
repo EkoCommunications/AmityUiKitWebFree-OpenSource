@@ -100,7 +100,7 @@ export const CommunityAddCategoryPage = ({ category }: CommunityAddCategoryPageP
       <div className={styles.communityAddCategoryPage__topMenuSticky}>
         <div className={styles.communityAddCategoryPage__navbar}>
           <CloseButton pageId={pageId} onPress={() => handleClosePage()} />
-          <Typography.Title>Select category</Typography.Title>
+          <Typography.TitleBold>Select category</Typography.TitleBold>
           <Typography.Body className={styles.communityAddCategoryPage__categoryCount}>
             {selectedCategories.length}/{MAX_CATEGORIES}
           </Typography.Body>

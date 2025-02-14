@@ -16,6 +16,7 @@ import { useNotifications } from '~/v4/core/providers/NotificationProvider';
 import { UnderlineInput } from '~/v4/social/internal-components/UnderlineInput';
 import { useConfirmContext } from '~/v4/core/providers/ConfirmProvider';
 import { ERROR_RESPONSE } from '~/v4/social/constants/errorResponse';
+import { useNetworkState } from 'react-use';
 
 interface EditUserProfilePageProps {
   userId: string;
@@ -31,6 +32,7 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
 
   const { themeStyles } = useAmityPage({ pageId });
   const { onBack } = useNavigation();
+  const { online } = useNetworkState();
   const { confirm, info } = useConfirmContext();
   const { user } = useUser({ userId });
 
@@ -111,6 +113,10 @@ export const EditUserProfilePage: React.FC<EditUserProfilePageProps> = ({ userId
       avatarFileId: newImage?.fileId,
     };
     e.preventDefault();
+    if (!online) {
+      notification.info({ content: 'Failed to save your profile. Please try again.' });
+      return;
+    }
     user?.userId && mutateUpdateEditUserProfile(updatedValue);
   };
 

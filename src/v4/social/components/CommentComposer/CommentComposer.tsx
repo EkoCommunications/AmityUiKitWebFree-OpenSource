@@ -4,7 +4,7 @@ import { useUser } from '~/v4/core/hooks/objects/useUser';
 import { useImage } from '~/v4/core/hooks/useImage';
 import useSDK from '~/v4/core/hooks/useSDK';
 import User from '~/v4/icons/User';
-import { Button } from '~/v4/core/natives/Button';
+import { Button } from '~/v4/core/components/AriaButton';
 import { CommentInput, CommentInputRef } from './CommentInput';
 import { useMutation } from '@tanstack/react-query';
 import { CommentRepository } from '@amityco/ts-sdk';
@@ -14,6 +14,11 @@ import { Mentionees, Metadata } from '~/v4/helpers/utils';
 import styles from './CommentComposer.module.css';
 import clsx from 'clsx';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
+import { PageTypes, useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { Notification } from '~/v4/core/components/Notification';
+import { useNetworkState } from 'react-use';
+import ExclamationCircle from '~/v4/icons/ExclamationCircle';
 
 const LockSvg = () => {
   return (
@@ -58,11 +63,14 @@ export const CommentComposer = ({
   const userId = useSDK().currentUserId;
   const { user } = useUser({ userId });
   const { isDesktop } = useResponsive();
+  const notification = useNotifications();
+  const { online } = useNetworkState();
   const avatarUrl = useImage({ fileId: user?.avatar?.fileId, imageSize: 'small' });
   const editorRef = useRef<CommentInputRef | null>(null);
   const composerInputRef = useRef<HTMLDivElement | null>(null);
   const componentId = 'comment_composer_bar';
   const mentionContainerRef = useRef<HTMLDivElement | null>(null);
+  const { page } = useNavigation();
 
   const [composerHeight, setComposerHeight] = useState(0);
 
@@ -91,7 +99,11 @@ export const CommentComposer = ({
         mentionees: params.mentionees as Amity.UserMention[],
       });
     },
-    onError: (error) => {},
+    onError: () => {
+      notification.info({
+        content: 'Oops, something went wrong',
+      });
+    },
     onSuccess: () => {
       setTextValue({
         data: { text: '' },
@@ -114,6 +126,14 @@ export const CommentComposer = ({
 
   return (
     <div className={styles.commentComposer}>
+      {!online && isPending && page.type == PageTypes.ViewStoryPage && (
+        <Notification
+          icon={<ExclamationCircle className={styles.commentComposer__notificationIcon} />}
+          content={'Oops, something went wrong'}
+          alignment="fixed"
+          duration={3000}
+        />
+      )}
       <div className={styles.commentComposer__top}>
         <div className={styles.commentComposer__mentionContainer} ref={mentionContainerRef} />
         {replyTo && !isDesktop && (
@@ -179,10 +199,19 @@ export const CommentComposer = ({
           />
         </div>
         <Button
+          variant="text"
           data-qa-anchor={`${pageId}/${componentId}/comment_composer_post`}
           isDisabled={!textValue?.data?.text || isPending}
           className={styles.commentComposer__button}
-          onPressStart={() => mutateAsync({ params: textValue })}
+          onPressStart={() => {
+            if (!online && page.type !== PageTypes.ViewStoryPage) {
+              notification.info({
+                content: 'Oops, something went wrong',
+              });
+              return;
+            }
+            mutateAsync({ params: textValue });
+          }}
         >
           <Typography.Body>Post</Typography.Body>
         </Button>

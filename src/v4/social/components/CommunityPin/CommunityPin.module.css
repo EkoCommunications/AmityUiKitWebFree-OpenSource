@@ -21,4 +21,8 @@
     background-color: transparent;
     border: 1px solid var(--asc-color-base-shade4);
   }
+
+  .communityPin__noInternet {
+    margin: 0;
+  }
 }

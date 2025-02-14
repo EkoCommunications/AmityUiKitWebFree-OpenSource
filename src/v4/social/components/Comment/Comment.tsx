@@ -22,13 +22,15 @@ import millify from 'millify';
 import useCommunityPostPermission from '~/v4/social/hooks/useCommunityPostPermission';
 import { useResponsive } from '~/v4/core/hooks/useResponsive';
 import { Popover } from '~/v4/core/components/AriaPopover';
-import { useNavigation } from '~/v4/core/providers/NavigationProvider';
+import { PageTypes, useNavigation } from '~/v4/core/providers/NavigationProvider';
 import { BrandBadge } from '~/v4/social/internal-components/BrandBadge';
 import { Button } from '~/v4/core/natives/Button';
 import { ReactionList } from '~/v4/social/components/ReactionList';
 import { usePopupContext } from '~/v4/core/providers/PopupProvider';
 import { useDrawer } from '~/v4/core/providers/DrawerProvider';
 import styles from './Comment.module.css';
+import { useNotifications } from '~/v4/core/providers/NotificationProvider';
+import { useNetworkState } from 'react-use';
 
 const Like = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -92,8 +94,9 @@ export const Comment = ({
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [hasClickLoadMore, setHasClickLoadMore] = useState(false);
   const [commentData, setCommentData] = useState<CreateCommentParams>();
-
-  const [isShowMore, setIsShowMore] = useState(false);
+  const notification = useNotifications();
+  const { online } = useNetworkState();
+  const { page } = useNavigation();
 
   const { isModerator: isModeratorUser } = useCommunityPostPermission({
     community,
@@ -120,6 +123,13 @@ export const Comment = ({
   };
 
   const handleDeleteComment = () => {
+    if (!online) {
+      notification.info({
+        content: 'Oops, something went wrong',
+        alignment: `${page.type === PageTypes.ViewStoryPage ? 'fullscreen' : 'withSidebar'}`,
+      });
+      return;
+    }
     confirm({
       pageId,
       componentId,
@@ -142,6 +152,13 @@ export const Comment = ({
   };
 
   const handleSaveComment = useCallback(async () => {
+    if (!online) {
+      notification.info({
+        content: 'Oops, something went wrong',
+        alignment: `${page.type === PageTypes.ViewStoryPage ? 'fullscreen' : 'withSidebar'}`,
+      });
+      return;
+    }
     if (!commentData || !comment.commentId) return;
 
     await CommentRepository.updateComment(comment.commentId, {

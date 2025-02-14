@@ -2,13 +2,13 @@ import React from 'react';
 import millify from 'millify';
 import Chat from '~/v4/icons/Chat';
 import UserRegular from '~/v4/icons/UserRegular';
-import useConnectionStates from '~/social/hooks/useConnectionStates';
 import ConnectionSpinner from '~/v4/icons/ConnectionSpinner';
 import { Typography } from '~/v4/core/components';
 import useChatInfo from '~/v4/chat/hooks/useChatInfo';
 import { Avatar } from '~/v4/core/components/Avatar/Avatar';
 import { useAmityComponent } from '~/v4/core/hooks/uikit';
 import styles from './ChatHeader.module.css';
+import { useNetworkState } from 'react-use';
 
 interface ChatHeaderProps {
   channel: Amity.Channel | null;
@@ -20,7 +20,7 @@ export const ChatHeader = ({ channel, pageId = '*' }: ChatHeaderProps) => {
   const componentId = 'chat_header';
   const { themeStyles } = useAmityComponent({ pageId, componentId });
   const { chatName, chatAvatar } = useChatInfo({ channel });
-  const isOnline = useConnectionStates();
+  const { online } = useNetworkState();
 
   return (
     <div className={styles.messageListHeader} style={themeStyles}>
@@ -29,10 +29,10 @@ export const ChatHeader = ({ channel, pageId = '*' }: ChatHeaderProps) => {
       </div>
       <div>
         <div className={styles.displayName}>
-          <Typography.Title>{chatName || 'Loading...'}</Typography.Title>
+          <Typography.TitleBold>{chatName || 'Loading...'}</Typography.TitleBold>
         </div>
         <div className={styles.memberCount}>
-          {isOnline ? (
+          {online ? (
             <>
               <UserRegular className={styles.memberIcon} />
               <Typography.Caption>

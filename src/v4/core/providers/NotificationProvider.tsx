@@ -12,7 +12,10 @@ interface Notification {
   duration?: number;
 }
 
-type NotificationInput = Omit<Notification, 'id'> & { duration?: number; className?: string };
+type NotificationInput = Omit<Notification, 'id'> & {
+  duration?: number;
+  alignment?: 'fullscreen' | 'withSidebar' | 'fixed';
+};
 
 interface NotificationContextProps {
   notifications: Notification[];
@@ -69,19 +72,19 @@ export const NotificationProvider: React.FC = ({ children }) => {
             addNotifications({
               ...data,
               icon: <CheckCircle className={styles.icon} />,
-              className: data.className,
+              alignment: data.alignment,
             }),
           info: (data: Omit<NotificationInput, 'icon'>) =>
             addNotifications({
               ...data,
               icon: <ExclamationCircle className={styles.icon} />,
-              className: data.className,
+              alignment: data.alignment,
             }),
           error: (data: Omit<NotificationInput, 'icon'>) =>
             addNotifications({
               ...data,
               icon: <Remove className={styles.icon} />,
-              className: data.className,
+              alignment: data.alignment,
             }),
           show: (data: Omit<NotificationInput, 'icon'>) => addNotifications(data),
         },

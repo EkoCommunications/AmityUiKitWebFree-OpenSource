@@ -177,9 +177,4 @@
     padding: unset;
     height: unset;
   }
-
-  .draftsPage__notification {
-    position: relative;
-    left: -9rem;
-  }
 }

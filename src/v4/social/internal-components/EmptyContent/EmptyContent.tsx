@@ -47,7 +47,9 @@ export const EmptyContent: React.FC<EmptyContentProps> = ({
 
       {config.text ? (
         <>
-          <Typography.Title className={styles.emptyContent__text}>{config.text}</Typography.Title>
+          <Typography.TitleBold className={styles.emptyContent__text}>
+            {config.text}
+          </Typography.TitleBold>
           {infoConfig.text && (
             <Typography.Caption className={styles.emptyContent__text}>
               {infoConfig.text}
@@ -55,7 +57,7 @@ export const EmptyContent: React.FC<EmptyContentProps> = ({
           )}
         </>
       ) : text ? (
-        <Typography.Title className={styles.emptyContent__text}>{text}</Typography.Title>
+        <Typography.TitleBold className={styles.emptyContent__text}>{text}</Typography.TitleBold>
       ) : null}
     </div>
   );

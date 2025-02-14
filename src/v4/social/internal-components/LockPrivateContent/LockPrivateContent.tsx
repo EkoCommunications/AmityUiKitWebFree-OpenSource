@@ -7,9 +7,9 @@ export const LockPrivateContent = () => {
   return (
     <div className={styles.lockPrivateContent__wrap}>
       <Lock className={styles.lockPrivateContent__lockIcon} />
-      <Typography.Title className={styles.lockPrivateContent__title}>
+      <Typography.TitleBold className={styles.lockPrivateContent__title}>
         This community is private
-      </Typography.Title>
+      </Typography.TitleBold>
       <Typography.Body className={styles.lockPrivateContent__body}>
         Only invited members can see the posts.
       </Typography.Body>

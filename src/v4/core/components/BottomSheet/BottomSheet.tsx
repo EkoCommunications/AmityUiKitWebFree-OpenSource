@@ -26,7 +26,7 @@ export const BottomSheet = ({ children, headerTitle, ...props }: BottomSheetProp
           <Sheet.Header />
           {headerTitle && (
             <Sheet.Header className={styles.bottomSheet__header}>
-              <Typography.Title>{headerTitle}</Typography.Title>
+              <Typography.TitleBold>{headerTitle}</Typography.TitleBold>
             </Sheet.Header>
           )}
         </Sheet.Header>
